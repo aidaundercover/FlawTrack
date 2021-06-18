@@ -1,4 +1,4 @@
-package com.example.flawtrack
+package com.undercover.flawtrack
 
 import io.flutter.embedding.android.FlutterActivity
 
