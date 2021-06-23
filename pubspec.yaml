@@ -24,6 +24,9 @@ dependencies:
   flutter:
     sdk: flutter
   cloud_firestore: ^2.2.2
+  firebase_auth: ^1.4.1
+  google_sign_in: ^5.0.4
+  auto_size_text: ^2.1.0
 
 
 
