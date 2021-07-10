@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flawtrack/const.dart';
 import 'package:flawtrack/routes.dart';
-import 'package:swapper/net/auth_service.dart';
+import 'package:flawtrack/services/auth_service.dart';
+
+var warning;
 
 class ForgotPassword extends StatefulWidget {
   @override
@@ -9,10 +11,11 @@ class ForgotPassword extends StatefulWidget {
 }
 
 class _ForgotPasswordState extends State<ForgotPassword> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: greenWhite,
+      backgroundColor: yellow,
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -21,7 +24,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 child: Row(
                   children: [
                     IconButton(
-                        icon: Icon(Icons.arrow_back, size: 20, color: green),
+                        icon: Icon(Icons.arrow_back,
+                            size: 20, color: primaryColor),
                         onPressed: () {
                           Navigator.of(context).pushNamed(AppRoutes.authLogin);
                         }),
@@ -39,7 +43,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 child: Text(
                   'Forgot your password?',
                   style: TextStyle(
-                      color: green,
+                      color: primaryColor,
                       fontFamily: 'Arial',
                       fontWeight: FontWeight.bold,
                       fontSize: 20),
@@ -54,7 +58,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 child: Text(
                   'Email',
                   style: TextStyle(
-                      color: green,
+                      color: primaryColor,
                       fontFamily: 'Arial',
                       fontWeight: FontWeight.bold,
                       fontSize: 16),
@@ -68,7 +72,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   controller: emailRecover,
                   keyboardType: TextInputType.emailAddress,
                   style: TextStyle(
-                    color: green,
+                    color: primaryColor,
                     fontFamily: 'Arial',
                     fontSize: 15,
                     fontWeight: FontWeight.normal,
@@ -82,20 +86,19 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   decoration: InputDecoration(
                     hintText: 'exmaple@mail.com',
                     hintStyle: TextStyle(
-                        color: lightGreen, fontFamily: 'Arial', fontSize: 15),
+                        color: lightYellow, fontFamily: 'Arial', fontSize: 15),
                     filled: false,
                     enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: lightGreen),
+                        borderSide: BorderSide(color: lightYellow),
                         borderRadius: BorderRadius.circular(0)),
                     focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: lightGreen, width: 2),
+                      borderSide: BorderSide(color: lightYellow, width: 2),
                     ),
                     errorBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: Colors.red[600], width: 2)),
+                        borderSide: BorderSide(color: Colors.red, width: 2)),
                     focusedErrorBorder: OutlineInputBorder(
                         borderSide:
-                            BorderSide(color: Colors.red[600], width: 2)),
+                            BorderSide(color: Colors.red, width: 2)),
                   ),
                 )),
             SizedBox(
@@ -109,16 +112,15 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   child: TextButton(
                     onPressed: () {
                       try {
-                        sendPasswordResetEmail(emailRecover.toString());
                         Navigator.of(context).pushNamed(AppRoutes.authLogin);
                         warning =
                             "A password reset link has been sent to $emailRecover";
                       } catch (e) {
-                        return e.message;
+                        return warning;
                       }
                     },
                     child: Container(
-                      color: green,
+                      color: primaryColor,
                       child: Text(
                         'SUBMIT',
                         style: TextStyle(

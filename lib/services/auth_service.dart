@@ -1,9 +1,16 @@
 // ignore: import_of_legacy_library_into_null_safe
-import 'package:apple_sign_in/apple_sign_in.dart';
+import 'dart:ffi';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+TextEditingController usernameController = TextEditingController();
+TextEditingController emailController = TextEditingController();
+TextEditingController passwordController = TextEditingController();
+TextEditingController repasswordController = TextEditingController();
+TextEditingController emailRecover = TextEditingController();
 
 class AuthService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -26,8 +33,9 @@ class AuthService {
   }
 
   getProfileImage() {
-    if(_firebaseAuth.currentUser!.photoURL != null) {
-      return Image.network(_firebaseAuth.currentUser!.photoURL, height: 100, width: 100);
+    if (_firebaseAuth.currentUser!.photoURL != null) {
+      return Image.network('${_firebaseAuth.currentUser!.photoURL}',
+          height: 100, width: 100);
     } else {
       return Icon(Icons.account_circle, size: 100);
     }
@@ -37,17 +45,20 @@ class AuthService {
   Future<String> createUserWithEmailAndPassword(
       String email, String password, String name) async {
     final authResult = await _firebaseAuth.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
+        email: emailController.text, password: passwordController.text);
+    Map<String, dynamic> userData = {"username": "$name", "email": "$email"};
 
-    // Update the username
+    CollectionReference collectionReference =
+        FirebaseFirestore.instance.collection('users');
+    collectionReference.add(userData);
+
     await updateUserName(name, authResult.user);
     return authResult.user!.uid;
   }
+  // Update the usern
 
-  Future updateUserName(String name, User currentUser) async {
-    await currentUser.updateProfile(displayName: name);
+  Future updateUserName(name, currentUser) async {
+    await currentUser.updateDisplayName(name);
     await currentUser.reload();
   }
 
@@ -61,14 +72,12 @@ class AuthService {
   }
 
   // Sign Out
-  signOut() async {
+  Future<void> signOut() async {
     return await _firebaseAuth.signOut();
   }
 
   // Reset Password
-  Future sendPasswordResetEmail(String email) async {
-    return _firebaseAuth.sendPasswordResetEmail(email: email);
-  }
+  Future sendPasswordResetEmail(final String email) async {}
 
   // Create Anonymous User
   Future singInAnonymously() {
@@ -88,7 +97,8 @@ class AuthService {
   Future convertWithGoogle() async {
     final currentUser = _firebaseAuth.currentUser;
     final GoogleSignInAccount? account = await _googleSignIn.signIn();
-    final GoogleSignInAuthentication _googleAuth = await account!.authentication;
+    final GoogleSignInAuthentication _googleAuth =
+        await account!.authentication;
     final AuthCredential credential = GoogleAuthProvider.credential(
       idToken: _googleAuth.idToken,
       accessToken: _googleAuth.accessToken,
@@ -100,7 +110,8 @@ class AuthService {
   // GOOGLE
   Future<String> signInWithGoogle() async {
     final GoogleSignInAccount? account = await _googleSignIn.signIn();
-    final GoogleSignInAuthentication _googleAuth = await account!.authentication;
+    final GoogleSignInAuthentication _googleAuth =
+        await account!.authentication;
     final AuthCredential credential = GoogleAuthProvider.credential(
       idToken: _googleAuth.idToken,
       accessToken: _googleAuth.accessToken,
@@ -109,47 +120,15 @@ class AuthService {
   }
 
   // APPLE
-  Future signInWithApple() async {
-    final AuthorizationResult result = await AppleSignIn.performRequests([
-      AppleIdRequest(requestedScopes: [Scope.email, Scope.fullName])
-    ]);
-
-    switch (result.status) {
-      case AuthorizationStatus.authorized:
-        final AppleIdCredential _auth = result.credential;
-        final OAuthProvider oAuthProvider =
-            new OAuthProvider("apple.com");
-
-        final AuthCredential credential = oAuthProvider.credential(
-          idToken: String.fromCharCodes(_auth.identityToken),
-          accessToken: String.fromCharCodes(_auth.authorizationCode),
-        );
-
-        await _firebaseAuth.signInWithCredential(credential);
-
-        // update the user information
-        if (_auth.fullName != null) {
-          await _firebaseAuth.currentUser!.updateDisplayName("${_auth.fullName.givenName} ${_auth.fullName.familyName}");
-        }
-
-        break;
-
-      case AuthorizationStatus.error:
-        print("Sign In Failed ${result.error.localizedDescription}");
-        break;
-
-      case AuthorizationStatus.cancelled:
-        print("User Cancled");
-        break;
-    }
-  }
 
   Future createUserWithPhone(String phone, BuildContext context) async {
     _firebaseAuth.verifyPhoneNumber(
         phoneNumber: phone,
         timeout: Duration(seconds: 0),
         verificationCompleted: (AuthCredential authCredential) {
-          _firebaseAuth.signInWithCredential(authCredential).then((UserCredential result){
+          _firebaseAuth
+              .signInWithCredential(authCredential)
+              .then((UserCredential result) {
             Navigator.of(context).pop(); // to pop the dialog box
             Navigator.of(context).pushReplacementNamed('/home');
           }).catchError((e) {
@@ -157,7 +136,7 @@ class AuthService {
           });
         },
         verificationFailed: (FirebaseAuthException exception) {
-          return ;
+          return;
         },
         codeSent: (String verificationId, [int? forceResendingToken]) async {
           final _codeController = TextEditingController();
@@ -173,11 +152,14 @@ class AuthService {
               actions: <Widget>[
                 TextButton(
                   child: Text("submit", style: TextStyle(color: Colors.white)),
-                  style: TextButton.styleFrom( primary: Colors.green),
+                  style: TextButton.styleFrom(primary: Colors.green),
                   onPressed: () {
-                    var _credential = PhoneAuthProvider.credential(verificationId: verificationId,
+                    var _credential = PhoneAuthProvider.credential(
+                        verificationId: verificationId,
                         smsCode: _codeController.text.trim());
-                    _firebaseAuth.signInWithCredential(_credential).then((UserCredential result){
+                    _firebaseAuth
+                        .signInWithCredential(_credential)
+                        .then((UserCredential result) {
                       Navigator.of(context).pop(); // to pop the dialog box
                       Navigator.of(context).pushReplacementNamed('/home');
                     }).catchError((e) {

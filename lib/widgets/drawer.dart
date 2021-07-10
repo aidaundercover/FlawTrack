@@ -1,12 +1,11 @@
+import 'package:flawtrack/views/settings/settings_main.dart';
 import 'package:flutter/material.dart';
 import 'package:flawtrack/const.dart';
+// ignore: import_of_legacy_library_into_null_safe
+import 'package:geocoder/geocoder.dart' show Address, Coordinates, Geocoder;
 import 'package:geolocator/geolocator.dart';
-import 'package:geocoder/geocoder.dart';
 import 'package:flawtrack/routes.dart';
-import 'package:swapper/net/auth_service.dart';
 import 'dart:async';
-import 'package:swapper/views/charity/charity.dart';
-import 'package:swapper/views/settings/settings_main.dart';
 
 class DrawerCustom extends StatefulWidget {
   @override
@@ -15,8 +14,8 @@ class DrawerCustom extends StatefulWidget {
 
 class _DrawerCustomState extends State<DrawerCustom> {
   bool isSwitched = false;
-  StreamSubscription<Position> _streamSubscription;
-  Address addres;
+  late StreamSubscription<Position> _streamSubscription;
+  late Address addres;
 
   @override
   void initState() {
@@ -46,7 +45,7 @@ class _DrawerCustomState extends State<DrawerCustom> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Container(
-                          decoration: BoxDecoration(color: green, boxShadow: [
+                          decoration: BoxDecoration(color: primaryColor, boxShadow: [
                             BoxShadow(
                               color: Color.fromRGBO(0, 0, 0, 0.16),
                               blurRadius: 6,
@@ -84,7 +83,7 @@ class _DrawerCustomState extends State<DrawerCustom> {
                                                   "A",
                                                   style: TextStyle(
                                                       fontSize: 35.0,
-                                                      color: greenSlight),
+                                                      color: lightYellow),
                                                 ),
                                               ),
                                             ),
@@ -130,7 +129,7 @@ class _DrawerCustomState extends State<DrawerCustom> {
                                 Icon(Icons.location_on_rounded,
                                     size: 23, color: Colors.red),
                                 SizedBox(width: 15),
-                                Text(" $locationAddress",
+                                Text("",
                                     style: TextStyle(
                                         fontSize: 13,
                                         fontFamily: 'Arial',
@@ -161,7 +160,7 @@ class _DrawerCustomState extends State<DrawerCustom> {
                                     width: 23,
                                     height: 23),
                                 SizedBox(width: 15),
-                                Text('$coins' + 'баллов',
+                                Text('' + 'баллов',
                                     style: TextStyle(
                                         fontSize: 13,
                                         fontFamily: 'Arial',
@@ -192,41 +191,6 @@ class _DrawerCustomState extends State<DrawerCustom> {
                                         fontWeight: FontWeight.normal,
                                         color: Colors.black)),
                               ]),
-                            ]),
-                      ),
-                      Divider(height: 1),
-                      Container(
-                        height: 60,
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Row(children: [
-                                SizedBox(width: 20),
-                                ImageIcon(AssetImage('assets/images/help.png'),
-                                    size: 23,
-                                    color: Color.fromRGBO(221, 195, 126, 1.0)),
-                                SizedBox(width: 15),
-                                Text('Charity',
-                                    style: TextStyle(
-                                        fontSize: 13,
-                                        fontFamily: 'Arial',
-                                        fontWeight: FontWeight.normal,
-                                        color: Colors.black)),
-                              ]),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(20.0, 0, 0, 0),
-                                child: IconButton(
-                                    icon: Icon(Icons.chevron_right_rounded,
-                                        size: 25, color: Colors.black),
-                                    onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => Charity()));
-                                    }),
-                              )
                             ]),
                       ),
                       Divider(height: 1),
@@ -299,8 +263,8 @@ class _DrawerCustomState extends State<DrawerCustom> {
                                       print(isSwitched);
                                     });
                                   },
-                                  activeTrackColor: lightGreen,
-                                  activeColor: green,
+                                  activeTrackColor: lightYellow,
+                                  activeColor: primaryColor,
                                 ),
                               )
                             ]),
@@ -357,7 +321,6 @@ class _DrawerCustomState extends State<DrawerCustom> {
                                 fontWeight: FontWeight.normal,
                                 color: Colors.black)),
                         onTap: () {
-                          signOut();
                           Navigator.of(context).pushNamed(AppRoutes.authLogin);
                         }),
                   ]))

@@ -1,12 +1,20 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flawtrack/home_widget_citizen.dart';
+import 'package:flawtrack/services/custom_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:flawtrack/routes.dart';
 import 'dart:io';
-import 'package:flawtrack/views/auth/signin.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'home_widget.dart';
+import 'package:flawtrack/widgets/provider_widget.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:flawtrack/services/auth_service.dart';
+
+
+
 
 var user;
 Future<void> main() async {
@@ -22,18 +30,74 @@ Future<void> main() async {
   /// STEP 2. Pass your root widget (MyApp) along with Catcher configuration:
   ///
   user = username;
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({ Key? key }) : super(key: key);
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  var colors = CustomColors(WidgetsBinding.instance!.window.platformBrightness);
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance!.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance!.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangePlatformBrightness() {
+    setState(() {
+      colors = CustomColors(WidgetsBinding.instance!.window.platformBrightness);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: OnBoardingPage(),
-      routes: AppRoutes.define(),
+    return Provider(
+      auth: AuthService(),
+      db: FirebaseFirestore.instance,
+      colors: colors,
+      key: null,
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+            brightness: Brightness.light,
+            primarySwatch: Colors.blue,
+            textTheme: TextTheme(bodyText2: GoogleFonts.quicksand(fontSize: 14.0))),
+        darkTheme: ThemeData(
+            brightness: Brightness.dark,
+            primarySwatch: Colors.blue,
+            textTheme: TextTheme(bodyText2: GoogleFonts.bitter(fontSize: 14.0))),
+        home: HomeController(),
+        routes: AppRoutes.define(),
+      ),
+    );
+  }
+}
+
+class HomeController extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final AuthService auth = Provider.of(context).auth;
+    return StreamBuilder<String>(
+      stream: auth.onAuthStateChanged,
+      builder: (context, AsyncSnapshot<String> snapshot) {
+        if (snapshot.connectionState == ConnectionState.active) {
+          final bool signedIn = snapshot.hasData;
+          return signedIn ? OnBoardingPage() : HomeCitizen();
+        }
+        return Container();
+      },
     );
   }
 }
@@ -50,7 +114,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
   void _onIntroEnd(context) {
     Navigator.of(context).push(
       MaterialPageRoute(
-          builder: (_) => user == null ? LoginPage() : Home()),
+          builder: (_) => HomeCitizen()),
     );
   }
 

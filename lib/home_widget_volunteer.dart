@@ -3,14 +3,14 @@ import 'pages.dart';
 import 'package:flawtrack/views/home_view.dart';
 
 
-class Home extends StatefulWidget {
+class HomeVolunteer extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _HomeState();
+    return _HomeVolunteerState();
   }
 }
 
-class _HomeState extends State<Home> {
+class _HomeVolunteerState extends State<HomeVolunteer> {
   int _currentIndex = 0;
   final List<Widget> _children = [
     HomeView(),

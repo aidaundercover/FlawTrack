@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Event {
   String title;
   DateTime startDate;
@@ -7,10 +9,29 @@ class Event {
   String description;
   String organization;
   String imgUrl;
+  String eventType;
+  String documentId;
 
+  final DocumentReference reference;
 
+  Event.fromSnapshot(DocumentSnapshot snapshot)
+      : this.fromMap(
+          snapshot.data() as Map<String, dynamic>,
+          'title',
+          ''.toDate(),
+          '',
+          '',
+          'address',
+          'description',
+          'organization',
+          'imgUrl',
+          'eventType',
+          'documentId',
+          reference: snapshot.reference,
+        );
 
-  Event(
+  Event.fromMap(
+      Map<String, dynamic> map,
       this.title,
       this.startDate,
       this.endDate,
@@ -18,17 +39,19 @@ class Event {
       this.address,
       this.description,
       this.organization,
-      this.imgUrl
-      );
+      this.imgUrl,
+      this.eventType,
+      this.documentId,
+      {required this.reference});
 
-  Map<String, dynamic> toJson() => {
-    'title': title,
-    'startDate': startDate,
-    'endDate': endDate,
-    'budget': budget,
-    'address': address,
-    'description': description,
-    'organization': organization,
-    'imgUrl': imgUrl,
-  };
+  @override
+  String toString() => 'Event<$title:$description>';
+
+  int getDaysUntilEvent() {
+    int diff = startDate.difference(DateTime.now()).inDays;
+    if (diff < 0) {
+      diff = 0;
+    }
+    return diff;
+  }
 }

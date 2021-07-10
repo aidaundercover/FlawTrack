@@ -1,5 +1,4 @@
 // ignore: import_of_legacy_library_into_null_safe
-import 'package:apple_sign_in/apple_sign_in.dart' show AppleSignIn, AppleSignInButton;
 import 'package:auth_buttons/auth_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flawtrack/services/auth_service.dart';
@@ -7,11 +6,9 @@ import 'package:flawtrack/widgets/provider_widget.dart';
 import 'package:flawtrack/const.dart';
 import 'package:auto_size_text/auto_size_text.dart' show AutoSizeText;
 // ignore: import_of_legacy_library_into_null_safe
-import 'package:flutter_spinkit/flutter_spinkit.dart' show SpinKitDoubleBounce;
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 // ignore: import_of_legacy_library_into_null_safe
-import 'package:international_phone_input/international_phone_input.dart' show InternationalPhoneInput;
-
 
 // ignore: todo
 // TODO move this to tone location
@@ -35,15 +32,6 @@ class _SignUpViewState extends State<SignUpView> {
   @override
   void initState() {
     super.initState();
-
-    _useAppleSignIn();
-  }
-
-  _useAppleSignIn() async {
-    final isAvailable = await AppleSignIn.isAvailable();
-    setState(() {
-      _showAppleSignIn = isAvailable;
-    });
   }
 
   _SignUpViewState({required this.authFormType});
@@ -294,17 +282,7 @@ class _SignUpViewState extends State<SignUpView> {
       textFields.add(SizedBox(height: 20));
     }
 
-    if (authFormType == AuthFormType.phone) {
-      textFields.add(
-        InternationalPhoneInput(
-            decoration: buildSignUpInputDecoration("Enter Phone Number"),
-            onPhoneNumberChange: onPhoneNumberChange,
-            initialPhoneNumber: _phone,
-            initialSelection: 'US',
-            showCountryCodes: true),
-      );
-      textFields.add(SizedBox(height: 20));
-    }
+    if (authFormType == AuthFormType.phone) {}
 
     return textFields;
   }
@@ -356,12 +334,12 @@ class _SignUpViewState extends State<SignUpView> {
       Container(
         width: MediaQuery.of(context).size.width * 0.7,
         child: ElevatedButton(
-        style: ButtonStyle(
-          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30.0))),
-          backgroundColor: MaterialStateProperty.all<Color>(white),
-        ),
+          style: ButtonStyle(
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0))),
+            backgroundColor: MaterialStateProperty.all<Color>(white),
+          ),
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
@@ -413,7 +391,6 @@ class _SignUpViewState extends State<SignUpView> {
             color: Colors.white,
           ),
           SizedBox(height: 10),
-          buildAppleSignIn(_auth),
           SizedBox(height: 10),
           GoogleAuthButton(
             onPressed: () async {
@@ -457,18 +434,5 @@ class _SignUpViewState extends State<SignUpView> {
       ),
       visible: visible,
     );
-  }
-
-  Widget buildAppleSignIn(_auth) {
-    if (authFormType != AuthFormType.convert && _showAppleSignIn == true) {
-      return AppleSignInButton(
-        onPressed: () async {
-          await _auth.signInWithApple();
-          Navigator.of(context).pushReplacementNamed('/home');
-        },
-      );
-    } else {
-      return Container();
-    }
   }
 }
