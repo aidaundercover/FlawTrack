@@ -27,7 +27,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                         icon: Icon(Icons.arrow_back,
                             size: 20, color: primaryColor),
                         onPressed: () {
-                          Navigator.of(context).pushNamed(AppRoutes.authLogin);
+                          Navigator.of(context).pushNamed(AppRoutes.signIn);
                         }),
                   ],
                 )),
@@ -112,7 +112,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   child: TextButton(
                     onPressed: () {
                       try {
-                        Navigator.of(context).pushNamed(AppRoutes.authLogin);
+                        Navigator.of(context).pushNamed(AppRoutes.signIn);
                         warning =
                             "A password reset link has been sent to $emailRecover";
                       } catch (e) {

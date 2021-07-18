@@ -8,7 +8,8 @@ import 'package:flawtrack/home_widget_volunteer.dart';
 class AppRoutes {
   AppRoutes._();
 
-  static const String authLogin = '/auth-signin';
+  static const String signIn = '/auth-signin';
+  static const String signUp = '/auth-signup';
   static const String homeCitizen = '/home_citizen';
   static const String homeVolunteer = '/home_volunteer';
   static const String forgotPassword = '/forgot-password';
@@ -20,7 +21,8 @@ class AppRoutes {
 
   static Map<String, WidgetBuilder> define() {
     return {
-      authLogin: (context) => SignUpView(key: key, authFormType: authFormType),
+      signIn: (context) => SignUpView(key: key,authFormType: AuthFormType.signIn),
+      signUp: (context) => SignUpView(key: key, authFormType: AuthFormType.signUp),
       homeCitizen: (context) => HomeCitizen(),
       homeVolunteer: (context) => HomeVolunteer(),
       forgotPassword: (context) => ForgotPassword(),

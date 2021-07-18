@@ -27,7 +27,6 @@ class SignUpView extends StatefulWidget {
 
 class _SignUpViewState extends State<SignUpView> {
   AuthFormType authFormType;
-  bool _showAppleSignIn = false;
 
   @override
   void initState() {
@@ -200,9 +199,7 @@ class _SignUpViewState extends State<SignUpView> {
         ],
       ),
     );
-    return SizedBox(
-      height: 0,
-    );
+    
   }
 
   AutoSizeText buildHeaderText() {

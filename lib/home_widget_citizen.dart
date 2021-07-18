@@ -1,6 +1,7 @@
+import 'package:flawtrack/const.dart';
 import 'package:flutter/material.dart';
 import 'pages.dart';
-import 'package:flawtrack/views/home_view.dart';
+import 'package:flawtrack/views/main/home_view.dart';
 
 
 class HomeCitizen extends StatefulWidget {
@@ -28,6 +29,12 @@ class _HomeCitizenState extends State<HomeCitizen> {
       bottomNavigationBar: BottomNavigationBar(
           onTap: onTabTapped,
           currentIndex: _currentIndex,
+          backgroundColor: white,
+          selectedItemColor: black,
+          unselectedItemColor: grey,
+          iconSize: 32,
+          showUnselectedLabels: true,
+          selectedLabelStyle: TextStyle(fontFamily: 'Roboto'),
           items: [
             BottomNavigationBarItem(
               icon: Icon(Icons.home),

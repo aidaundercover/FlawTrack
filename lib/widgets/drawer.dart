@@ -2,10 +2,12 @@ import 'package:flawtrack/views/settings/settings_main.dart';
 import 'package:flutter/material.dart';
 import 'package:flawtrack/const.dart';
 // ignore: import_of_legacy_library_into_null_safe
-import 'package:geocoder/geocoder.dart' show Address, Coordinates, Geocoder;
 import 'package:geolocator/geolocator.dart';
 import 'package:flawtrack/routes.dart';
 import 'dart:async';
+import 'package:flutter_geocoder/geocoder.dart';
+import 'package:flutter_geocoder/model.dart';
+
 
 class DrawerCustom extends StatefulWidget {
   @override
@@ -82,8 +84,9 @@ class _DrawerCustomState extends State<DrawerCustom> {
                                                 child: Text(
                                                   "A",
                                                   style: TextStyle(
+                                                      fontFamily:'Roboto',
                                                       fontSize: 35.0,
-                                                      color: lightYellow),
+                                                      color: primaryColor),
                                                 ),
                                               ),
                                             ),
@@ -92,7 +95,7 @@ class _DrawerCustomState extends State<DrawerCustom> {
                                               "Aida Abkenova",
                                               style: TextStyle(
                                                 color: Colors.black,
-                                                fontFamily: 'Arial',
+                                                fontFamily:'Roboto',
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 13,
                                               ),
@@ -103,7 +106,7 @@ class _DrawerCustomState extends State<DrawerCustom> {
                                               "aida.undercover@gmail.com",
                                               style: TextStyle(
                                                   color: Colors.black,
-                                                  fontFamily: 'Arial',
+                                                  fontFamily:'Roboto',
                                                   fontWeight: FontWeight.normal,
                                                   fontSize: 12),
                                               textAlign: TextAlign.start,
@@ -126,13 +129,13 @@ class _DrawerCustomState extends State<DrawerCustom> {
                             children: [
                               Row(children: [
                                 SizedBox(width: 20),
-                                Icon(Icons.location_on_rounded,
-                                    size: 23, color: Colors.red),
+                                Icon(Icons.location_on_outlined,
+                                    size: 23, color: black),
                                 SizedBox(width: 15),
                                 Text("",
                                     style: TextStyle(
                                         fontSize: 13,
-                                        fontFamily: 'Arial',
+                                        fontFamily:'Roboto',
                                         fontWeight: FontWeight.normal,
                                         color: Colors.black)),
                               ]),
@@ -156,14 +159,14 @@ class _DrawerCustomState extends State<DrawerCustom> {
                               Row(children: [
                                 SizedBox(width: 20),
                                 Image(
-                                    image: AssetImage('assets/images/coin.png'),
+                                    image: AssetImage('assets/coin.png'),
                                     width: 23,
                                     height: 23),
                                 SizedBox(width: 15),
                                 Text('' + 'баллов',
                                     style: TextStyle(
                                         fontSize: 13,
-                                        fontFamily: 'Arial',
+                                        fontFamily:'Roboto',
                                         fontWeight: FontWeight.normal,
                                         color: Colors.black)),
                               ]),
@@ -181,7 +184,7 @@ class _DrawerCustomState extends State<DrawerCustom> {
                                 Icon(
                                   Icons.map,
                                   size: 23,
-                                  color: Colors.redAccent
+                                  color: black
                                 ),
                                 SizedBox(width: 15),
                                 Text('Карта',
@@ -239,11 +242,9 @@ class _DrawerCustomState extends State<DrawerCustom> {
                             children: [
                               Row(children: [
                                 SizedBox(width: 20),
-                                ImageIcon(AssetImage('assets/images/bulb.png'),
+                                ImageIcon(AssetImage('assets/bulb.png'),
                                     size: 23,
-                                    color: isSwitched
-                                        ? Colors.yellow
-                                        : Color.fromRGBO(42, 39, 112, 1.0)),
+                                    color: black),
                                 SizedBox(width: 15),
                                 Text(isSwitched ? 'Light Theme' : 'Dark Theme',
                                     style: TextStyle(
@@ -321,7 +322,7 @@ class _DrawerCustomState extends State<DrawerCustom> {
                                 fontWeight: FontWeight.normal,
                                 color: Colors.black)),
                         onTap: () {
-                          Navigator.of(context).pushNamed(AppRoutes.authLogin);
+                          Navigator.of(context).pushNamed(AppRoutes.signIn);
                         }),
                   ]))
             ],

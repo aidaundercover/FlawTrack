@@ -1,17 +1,16 @@
-import 'package:flawtrack/const.dart';
 import 'package:flutter/material.dart';
 import 'pages.dart';
 import 'package:flawtrack/views/main/home_view.dart';
 
 
-class HomeVolunteer extends StatefulWidget {
+class Home extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _HomeVolunteerState();
+    return _HomeState();
   }
 }
 
-class _HomeVolunteerState extends State<HomeVolunteer> {
+class _HomeState extends State<Home> {
   int _currentIndex = 0;
   final List<Widget> _children = [
     HomeView(),
@@ -27,14 +26,8 @@ class _HomeVolunteerState extends State<HomeVolunteer> {
     return Scaffold(
       body: _children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: white,
           onTap: onTabTapped,
           currentIndex: _currentIndex,
-          selectedItemColor: black,
-          unselectedItemColor: grey,
-          iconSize: 32,
-          showUnselectedLabels: true,
-          selectedLabelStyle: TextStyle(fontFamily: 'Roboto'),
           items: [
             BottomNavigationBarItem(
               icon: Icon(Icons.home),

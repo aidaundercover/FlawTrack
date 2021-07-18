@@ -9,8 +9,6 @@ import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flawtrack/widgets/provider_widget.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:flawtrack/services/auth_service.dart';
 
 
@@ -30,7 +28,6 @@ Future<void> main() async {
   /// STEP 2. Pass your root widget (MyApp) along with Catcher configuration:
   ///
   user = username;
-  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
   runApp(MyApp());
 }
 
@@ -72,12 +69,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
             brightness: Brightness.light,
-            primarySwatch: Colors.blue,
-            textTheme: TextTheme(bodyText2: GoogleFonts.quicksand(fontSize: 14.0))),
+            fontFamily: 'Roboto'
+            ),
         darkTheme: ThemeData(
             brightness: Brightness.dark,
-            primarySwatch: Colors.blue,
-            textTheme: TextTheme(bodyText2: GoogleFonts.bitter(fontSize: 14.0))),
+            fontFamily: 'Roboto'
+            ),
         home: HomeController(),
         routes: AppRoutes.define(),
       ),
@@ -120,7 +117,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 
   Widget _buildFullscrenImage() {
     return Image.asset(
-      'assets/fullscreen.jpg',
+      'assets/welone.jpg',
       fit: BoxFit.cover,
       height: double.infinity,
       width: double.infinity,
@@ -152,7 +149,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.only(top: 16, right: 16),
-            child: _buildImage('flutter.png', 100),
+            child: _buildImage('welone.png', 100),
           ),
         ),
       ),
@@ -238,7 +235,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
             bodyAlignment: Alignment.bottomCenter,
             imageAlignment: Alignment.topCenter,
           ),
-          image: _buildImage('img1.jpg'),
+          image: _buildImage('weltwo.jpg'),
           reverse: true,
         ),
       ],
