@@ -170,6 +170,14 @@ class _DrawerCustomState extends State<DrawerCustom> {
                                         fontWeight: FontWeight.normal,
                                         color: Colors.black)),
                               ]),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(20.0, 0, 0, 0),
+                                child: IconButton(
+                                    icon: Icon(Icons.chevron_right_rounded,
+                                        size: 25, color: Colors.black),
+                                    onPressed: () {}),
+                              )
                             ]),
                       ),
                       Divider(height: 1),
@@ -190,10 +198,17 @@ class _DrawerCustomState extends State<DrawerCustom> {
                                 Text('Карта',
                                     style: TextStyle(
                                         fontSize: 13,
-                                        fontFamily: 'Arial',
                                         fontWeight: FontWeight.normal,
                                         color: Colors.black)),
                               ]),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(20.0, 0, 0, 0),
+                                child: IconButton(
+                                    icon: Icon(Icons.chevron_right_rounded,
+                                        size: 25, color: Colors.black),
+                                    onPressed: () {}),
+                              )
                             ]),
                       ),
                       Divider(height: 1),
@@ -213,7 +228,6 @@ class _DrawerCustomState extends State<DrawerCustom> {
                                 Text('Настройки',
                                     style: TextStyle(
                                         fontSize: 13,
-                                        fontFamily: 'Arial',
                                         fontWeight: FontWeight.normal,
                                         color: Colors.black)),
                               ]),
@@ -242,14 +256,13 @@ class _DrawerCustomState extends State<DrawerCustom> {
                             children: [
                               Row(children: [
                                 SizedBox(width: 20),
-                                ImageIcon(AssetImage('assets/bulb.png'),
+                                ImageIcon(AssetImage('assets/theme.png'),
                                     size: 23,
                                     color: black),
                                 SizedBox(width: 15),
-                                Text(isSwitched ? 'Light Theme' : 'Dark Theme',
+                                Text('Dark Theme',
                                     style: TextStyle(
                                         fontSize: 13,
-                                        fontFamily: 'Arial',
                                         fontWeight: FontWeight.normal,
                                         color: Colors.black)),
                               ]),
@@ -286,7 +299,6 @@ class _DrawerCustomState extends State<DrawerCustom> {
                                 Text('Поддержка',
                                     style: TextStyle(
                                         fontSize: 13,
-                                        fontFamily: 'Arial',
                                         fontWeight: FontWeight.normal,
                                         color: Colors.black)),
                               ]),
@@ -318,7 +330,6 @@ class _DrawerCustomState extends State<DrawerCustom> {
                         child: Text('Sign Out',
                             style: TextStyle(
                                 fontSize: 13,
-                                fontFamily: 'Arial',
                                 fontWeight: FontWeight.normal,
                                 color: Colors.black)),
                         onTap: () {

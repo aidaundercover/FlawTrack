@@ -16,7 +16,6 @@ class _HomeCitizenState extends State<HomeCitizen> {
   final List<Widget> _children = [
     HomeView(),
     Maps(),
-    Volunteers(),
     Forum(),
     Profile()
   ];
@@ -35,6 +34,7 @@ class _HomeCitizenState extends State<HomeCitizen> {
           iconSize: 32,
           showUnselectedLabels: true,
           selectedLabelStyle: TextStyle(fontFamily: 'Roboto'),
+          type: BottomNavigationBarType.fixed,
           items: [
             BottomNavigationBarItem(
               icon: Icon(Icons.home),

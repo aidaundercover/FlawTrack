@@ -9,4 +9,4 @@ const lightYellow = Color.fromRGBO(255, 251, 234, 1.0);
 const acquaMarine = Color.fromRGBO(142, 238, 221, 1.0);
 const grey = Color.fromRGBO(0, 0, 0, 0.6);
 
-var width;
+var widthGlobal;

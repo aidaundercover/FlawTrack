@@ -31,7 +31,7 @@ Widget buildMapsCard(BuildContext context, String img, String text, Widget fun) 
         child: Row(
           children: [
             Expanded(
-              flex: 60,
+              flex: 6,
               child: Padding(
                 padding: const EdgeInsets.only(left: 30),
                 child: Text(
@@ -45,6 +45,7 @@ Widget buildMapsCard(BuildContext context, String img, String text, Widget fun) 
               )
             ),
             Expanded(
+                flex: 4,
                 child: Image.asset(img)
                 )
         ],),

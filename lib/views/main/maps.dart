@@ -33,25 +33,24 @@ class _MapsViewState extends State<MapsView> {
       ),
       drawer: DrawerCustom(),
       body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children:[ Container(
-            width: (MediaQuery.of(context).size.width) * 0.85,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Image.asset('assets/maps.png'),
-                SizedBox(height: 10,),
-                buildMapsCard(context, 'assets/mapscard1.png', 'Карта\nпроблем', MapsOfProblems()),
-                buildMapsCard(context, 'assets/mapscard2.png', 'Карта\nисправлений', MapsOfCorrections()),
-                buildMapsCard(context, 'assets/mapscard1.png', 'Карта\nволентеров', MapsOfVolunteers()),
-                SizedBox(height: 50,)
-              ],
+        child: Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children:[ Container(
+              width: (MediaQuery.of(context).size.width) * 0.85,
+              child: Column(
+                children: [
+                  Image.asset('assets/maps.png'),
+                  SizedBox(height: 10,),
+                  buildMapsCard(context, 'assets/mapscard1.png', 'Карта\nпроблем', MapsOfProblems()),
+                  buildMapsCard(context, 'assets/mapscard2.png', 'Карта\nисправлений', MapsOfCorrections()),
+                  buildMapsCard(context, 'assets/mapscard1.png', 'Карта\nволентеров', MapsOfVolunteers()),
+                  SizedBox(height: 50,)
+                ],
+              ),
             ),
+            ]
           ),
-          ]
         ),
       ),
     );

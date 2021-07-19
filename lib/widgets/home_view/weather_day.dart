@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 Widget weatherOftheDay(String dayOfWeek, double width, int humidity, IconData icons,
     String nightTemp, String dayTemp) {
   return Padding(
-    padding: const EdgeInsets.fromLTRB(0, 8.5, 0, 8.5),
+    padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
     child: Container(
       child: Row(
         children: [
