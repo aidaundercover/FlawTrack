@@ -5,17 +5,25 @@ Widget locationView(double width) {
     width: width,
     height: 65,
     child: Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Icon(Icons.location_on, 
-        size: 25, color: Colors.red),
-        SizedBox(width: 3,),
-        Text('Павлодар, Казахстан', 
-        style: TextStyle(
-          decoration: TextDecoration.underline,
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-        ),)
-    ],),
+        Expanded(child: Container(), flex: 1,),
+        Expanded(
+          flex: 9,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Icon(Icons.location_on, 
+              size: 25, color: Colors.red),
+              SizedBox(width: 3,),
+              Text('Павлодар, Казахстан', 
+              style: TextStyle(
+                decoration: TextDecoration.underline,
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),)
+          ],),
+        ),
+      ],
+    ),
   );
 }

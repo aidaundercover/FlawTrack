@@ -13,6 +13,8 @@ class AppRoutes {
   static const String homeCitizen = '/home_citizen';
   static const String homeVolunteer = '/home_volunteer';
   static const String forgotPassword = '/forgot-password';
+  static const String anonymousSignIn = '/anonymousSignIn';
+  static const String convertUser = '/convertUser';
 
   static get authFormType => null;
 
@@ -26,6 +28,8 @@ class AppRoutes {
       homeCitizen: (context) => HomeCitizen(),
       homeVolunteer: (context) => HomeVolunteer(),
       forgotPassword: (context) => ForgotPassword(),
+      anonymousSignIn : (context) => SignUpView(key: key, authFormType: AuthFormType.anonymous),
+      convertUser : (context) => SignUpView(key: key,authFormType: AuthFormType.convert),
     };
   }
 }

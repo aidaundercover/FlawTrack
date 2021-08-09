@@ -16,7 +16,6 @@ class _HomeVolunteerState extends State<HomeVolunteer> {
   final List<Widget> _children = [
     HomeView(),
     Maps(),
-    Volunteers(),
     Forum(),
     Profile()
   ];

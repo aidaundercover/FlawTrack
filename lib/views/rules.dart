@@ -13,6 +13,7 @@ class UsingRules extends StatelessWidget {
       backgroundColor: white,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
+        elevation: 0,
         toolbarHeight: 60,
         centerTitle: true,
         title: Text(
@@ -54,7 +55,7 @@ class UsingRules extends StatelessWidget {
                   width: 1), 
                   children: [  
                       TableRow( children: [  
-                        Column(children:[ImageIcon(AssetImage('assets/trashcan.png'), size: 24, color: black)]),  
+                        Column(children:[ImageIcon(AssetImage('assets/tableicons/trashcan.png'), size: 24, color: black)]),  
                         Column(children:[Text('Мусор в неположенном месте', style: TextStyle(fontSize: 15.0))]),  
                       ]),  
                       TableRow( children: [  

@@ -2,6 +2,7 @@ import 'package:flawtrack/widgets/home_view/become_volunteer_widget.dart';
 import 'package:flawtrack/widgets/home_view/events_widget.dart';
 import 'package:flawtrack/widgets/home_view/fund_widget.dart';
 import 'package:flawtrack/widgets/home_view/location_view.dart';
+import 'package:flawtrack/widgets/home_view/news_slider.dart';
 import 'package:flawtrack/widgets/home_view/using_advices.dart';
 import 'package:flawtrack/widgets/home_view/weather_card.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,9 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+
+
+
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width*0.88;
@@ -55,7 +59,8 @@ class _HomeViewState extends State<HomeView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              locationView(width),
+              locationView(width/0.88),
+              NewsTile(),
               Text('Главная',
                 style: TextStyle(
                   fontSize: 20,
