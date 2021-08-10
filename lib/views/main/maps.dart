@@ -42,9 +42,9 @@ class _MapsViewState extends State<MapsView> {
                 children: [
                   Image.asset('assets/maps.png'),
                   SizedBox(height: 10,),
-                  buildMapsCard(context, 'assets/mapscard1.png', 'Карта\nпроблем', MapsOfProblems()),
-                  buildMapsCard(context, 'assets/mapscard2.png', 'Карта\nисправлений', MapsOfCorrections()),
-                  buildMapsCard(context, 'assets/mapscard1.png', 'Карта\nволентеров', MapsOfVolunteers()),
+                  buildMapsCard(context, 'assets/maps/mapscard1.png', 'Карта\nпроблем', MapsOfProblems()),
+                  buildMapsCard(context, 'assets/maps/mapscard2.png', 'Карта\nисправлений', MapsOfCorrections()),
+                  buildMapsCard(context, 'assets/maps/mapscard1.png', 'Карта\nволентеров', MapsOfVolunteers()),
                   SizedBox(height: 50,)
                 ],
               ),

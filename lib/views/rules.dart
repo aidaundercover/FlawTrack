@@ -1,6 +1,5 @@
 import 'package:flawtrack/const.dart';
 import 'package:flutter/material.dart';
-import 'package:flawtrack/routes.dart';
 
 class UsingRules extends StatelessWidget {
   const UsingRules({Key? key}) : super(key: key);
@@ -28,7 +27,7 @@ class UsingRules extends StatelessWidget {
           builder: (context) => IconButton(
             icon: Icon(Icons.arrow_back_ios_outlined, size: 25, color: black),
             onPressed: () {
-              Navigator.of(context).pushNamed(AppRoutes.homeCitizen);
+              Navigator.of(context).pop();
             },
           ),
         ),
