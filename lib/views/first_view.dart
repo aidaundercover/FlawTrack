@@ -1,4 +1,5 @@
 import 'package:flawtrack/const.dart';
+import 'package:flawtrack/routes.dart';
 import 'package:flawtrack/views/welcome.dart';
 import 'package:flutter/material.dart';
 
@@ -15,7 +16,7 @@ class _FirstViewState extends State<FirstView> {
   Widget build(BuildContext context) {
     final _width = MediaQuery.of(context).size.width;
     final _height = MediaQuery.of(context).size.height;
-    String _selected= 'One';
+    String _selected= 'Русский';
     // ignore: unused_local_variable
     List<Map> _myJson = [
       {'id': '0', 'image': 'assets/welcome/russia.png', 'title': 'Русский'},
@@ -81,41 +82,52 @@ class _FirstViewState extends State<FirstView> {
                 Expanded(
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<String>(
-                          iconSize: 20,
                           iconEnabledColor: darkBlue,
-                          itemHeight: 60,
+                          iconDisabledColor: grey,
+                          itemHeight: 55,
                           value: _selected,
                           style: TextStyle(
-                                          fontSize: 21, fontWeight: FontWeight.w600),
-                          icon: const Icon(Icons.arrow_drop_down_outlined),
+                            fontSize: 21, fontWeight: FontWeight.w600, color: black),
+                          icon: const Icon(Icons.arrow_drop_down_outlined, size: 30,),
                           onChanged: (String? newValue) {
                             setState(() {
                               _selected = newValue!;
                             });
                           },
-                          items: <String>['Русский', 'English', 'Four']
-                          .map<DropdownMenuItem<String>>((String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: 
+                          onTap: (){
+
+                          },
+                          items: _myJson.map((Map map) {
+                            return DropdownMenuItem<String>(
+                              value: map["title"].toString(),
+                              child: Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 15.0),
+                                    child: Image.asset(
+                                      map['image'],
+                                      width: 42,
+                                    ),
+                                  ),
                                   Padding(
                                     padding: const EdgeInsets.only(left: 15.0),
                                     child: Text(
-                                      value,
+                                      map['title'],
                                       style: TextStyle(
-                                          fontSize: 21, fontWeight: FontWeight.w600),
+                                          fontSize: 19, fontWeight: FontWeight.w600),
                                     ),
                                   )
-                          );
-                        }).toList(),
+                                ],
+                              ),
+                            );
+                          }).toList()),
                           ),
                   ),
-                ),
               ],
             ),
           ),
           SizedBox(
-            height: _height * 0.014,
+            height: _height * 0.024,
           ),
           ElevatedButton(
             style: ButtonStyle(
@@ -142,7 +154,7 @@ class _FirstViewState extends State<FirstView> {
             ),
             onPressed: () {
               Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => OnBoardingPage()));
+                  MaterialPageRoute(builder: (context) => Welcome()));
             },
           ),
           SizedBox(height: _height * 0.05),
@@ -160,7 +172,7 @@ class _FirstViewState extends State<FirstView> {
                   ),
                 ),
                 onPressed: () {
-                  Navigator.of(context).pushReplacementNamed('/auth-signin');
+                  Navigator.of(context).pushReplacementNamed(AppRoutes.signIn);
                 },
               ),
             ),

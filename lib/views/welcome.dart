@@ -1,22 +1,24 @@
 import 'package:flawtrack/const.dart';
+import 'package:flawtrack/routes.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 
+class Welcome extends StatefulWidget {
+  const Welcome({ Key? key }) : super(key: key);
 
-class OnBoardingPage extends StatefulWidget {
   @override
-  _OnBoardingPageState createState() => _OnBoardingPageState();
+  _WelcomeState createState() => _WelcomeState();
 }
 
-class _OnBoardingPageState extends State<OnBoardingPage> {
+class _WelcomeState extends State<Welcome> {
+
   final introKey = GlobalKey<IntroductionScreenState>();
 
   void _onIntroEnd(context) {
-    Navigator.of(context).pushReplacementNamed('/auth-signup');
+    Navigator.of(context).pushReplacementNamed(AppRoutes.signIn);
   }
   
-
   @override
   Widget build(BuildContext context) {
 
@@ -24,7 +26,9 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
 
     Widget _buildImage(String assetName) {
     return Image.asset('assets/welcome/$assetName', 
-          width: _width*0.72);
+          width: _width*0.72,
+          alignment: Alignment.center,
+          );
     }
 
 
@@ -36,37 +40,42 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
     final Shader linearGradient = LinearGradient(
         colors: <Color>[
           primaryColor, 
-          yellow
+          primaryColor.withOpacity(0.5)
           ],
       ).createShader(Rect.fromLTWH(0.0, 0.0, 200.0, 70.0));
 
     return IntroductionScreen(
       key: introKey,
       globalBackgroundColor: Colors.white,
-      globalHeader: Align(
-        alignment: Alignment.topRight,
-          child: Padding(
-            padding: const EdgeInsets.only(top: 16, right: 16),
-            child: Image.asset(
-              'assets/welcome/welone.png'
-              )
-          ),
-      ),
       pages: [
         PageViewModel(
           title: "Закрпеляй проблемы на\n карте свеого города",
           image: _buildImage('welone.png'),
           decoration: pageDecoration,
+          bodyWidget: Container(
+            decoration: BoxDecoration(
+            ),
+          )
         ),
         PageViewModel(
           title: "Будьте на связи с жителями своего района",
           image: _buildImage('weltwo.png'),
           decoration: pageDecoration,
+          bodyWidget: Container(
+            decoration: BoxDecoration(
+              
+            ),
+          )
         ),
         PageViewModel(
           title: "Получай баллы за\n достижения",
           image: _buildImage('weltwo.png'),
           decoration: pageDecoration,
+          bodyWidget: Container(
+            decoration: BoxDecoration(
+              
+            ),
+          )
         ),
       ],
       onDone: () => _onIntroEnd(context),
@@ -75,10 +84,11 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
       nextFlex: 0,
       showDoneButton: true,
       skip: const Text('Пропустить', style: TextStyle(color: grey, fontSize: 16,)),
-      next: Container(
+      done: Container(
         width: 68,
         height: 68,
         decoration: BoxDecoration(
+          color: white,
           shape: BoxShape.circle,
           boxShadow: [
             BoxShadow(
@@ -105,11 +115,12 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
             ),
           )
         )),
-      done: Container(
+      next: Container(
         width: 68,
         height: 68,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
+          color: white,
           boxShadow: [
             BoxShadow(
                 color: black.withOpacity(0.25),
@@ -149,3 +160,5 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
     );
   }
 }
+
+

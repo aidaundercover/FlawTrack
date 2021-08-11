@@ -6,7 +6,7 @@ class Provider extends InheritedWidget {
   final db;
   final colors;
 
-  Provider({required key, required Widget child, required this.auth, this.db, this.colors}) : super(key: key, child: child);
+  Provider({key, required Widget child, required this.auth, this.db, this.colors}) : super(key: key, child: child);
 
   @override
   bool updateShouldNotify(InheritedWidget oldWidget) {

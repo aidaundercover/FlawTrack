@@ -48,7 +48,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       auth: AuthService(),
       db: FirebaseFirestore.instance,
       colors: colors,
-      key: null,
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
