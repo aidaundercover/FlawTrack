@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flawtrack/home_widget_citizen.dart';
 import 'package:flawtrack/services/custom_colors.dart';
-import 'package:flawtrack/views/first_view.dart';
+import 'package:flawtrack/views/error/smth_went_wrong.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flawtrack/routes.dart';
@@ -15,7 +14,6 @@ import 'package:flawtrack/services/auth_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
   FlutterError.onError = (FlutterErrorDetails details) {
     FlutterError.dumpErrorToConsole(details);
     if (kReleaseMode) exit(1);
@@ -34,6 +32,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   var colors = CustomColors(WidgetsBinding.instance!.window.platformBrightness);
 
+  final Future<FirebaseApp> _initialization = Firebase.initializeApp(); 
 
   @override
   void didChangePlatformBrightness() {
@@ -44,43 +43,42 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return Provider(
-      auth: AuthService(),
-      db: FirebaseFirestore.instance,
-      colors: colors,
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-            brightness: Brightness.light,
-            fontFamily: 'Roboto'
+    return FutureBuilder(
+      future: _initialization,
+      builder:(context, snapshot){
+        if (snapshot.hasError) {
+          return SomethingWentWrong();
+        }
+
+        // Once complete, show your application
+        if (snapshot.connectionState == ConnectionState.done) {
+          return Provider(
+              auth: AuthService(),
+              db: FirebaseFirestore.instance,
+              child: MaterialApp(
+                  debugShowCheckedModeBanner: false,
+                  theme: ThemeData(
+                  brightness: Brightness.light,
+                  fontFamily: 'Roboto'
+                ),
+              darkTheme: ThemeData(
+                  brightness: Brightness.dark,
+                  fontFamily: 'Roboto'
+                ),
+              home: AuthService().handleAuth(),
+              routes: AppRoutes.define(),
             ),
-        darkTheme: ThemeData(
-            brightness: Brightness.dark,
-            fontFamily: 'Roboto'
-            ),
-        home: HomeController(),
-        routes: AppRoutes.define(),
-      ),
+          );
+        }
+
+        // Otherwise, show something whilst waiting for initialization to complete
+        return CircularProgressIndicator();
+      } 
     );
   }
 }
 
-class HomeController extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final AuthService auth = Provider.of(context).auth;
-    return StreamBuilder<String>(
-      stream: auth.onAuthStateChanged,
-      builder: (context, AsyncSnapshot<String> snapshot) {
-        if (snapshot.connectionState == ConnectionState.active) {
-          final bool signedIn = snapshot.hasData;
-          return signedIn ? HomeCitizen() : FirstView();
-        }
-        return Container();
-      },
-    );
-  }
-}
+
 
 
 

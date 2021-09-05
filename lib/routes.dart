@@ -1,3 +1,4 @@
+import 'package:flawtrack/views/auth/sign_in.dart';
 import 'package:flutter/material.dart';
 import 'package:flawtrack/views/auth/signup.dart';
 import 'package:flawtrack/views/auth/forgotpassword.dart';
@@ -20,12 +21,11 @@ class AppRoutes {
 
   static Map<String, WidgetBuilder> define() {
     return {
-      signIn: (context) => SignUpView(authFormType: AuthFormType.signIn),
-      signUp: (context) => SignUpView( authFormType: AuthFormType.signUp),
-      homeCitizen: (context) => HomeCitizen(),
-      homeVolunteer: (context) => HomeVolunteer(),
-      forgotPassword: (context) => ForgotPassword(),
-      convertUser : (context) => SignUpView(authFormType: AuthFormType.convert),
+      signIn: (BuildContext context) => LoginPage(),
+      signUp: (BuildContext context) => SignUp(),
+      homeCitizen: (BuildContext context) => HomeCitizen(),
+      homeVolunteer: (BuildContext context) => HomeVolunteer(),
+      forgotPassword: (BuildContext context) => ForgotPassword(),
     };
   }
 }

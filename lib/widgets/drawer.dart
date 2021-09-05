@@ -1,3 +1,4 @@
+import 'package:flawtrack/services/auth_service.dart';
 import 'package:flawtrack/views/settings/settings_main.dart';
 import 'package:flutter/material.dart';
 import 'package:flawtrack/const.dart';
@@ -7,7 +8,6 @@ import 'package:flawtrack/routes.dart';
 import 'dart:async';
 import 'package:flutter_geocoder/geocoder.dart';
 import 'package:flutter_geocoder/model.dart';
-
 
 class DrawerCustom extends StatefulWidget {
   @override
@@ -47,7 +47,8 @@ class _DrawerCustomState extends State<DrawerCustom> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Container(
-                          decoration: BoxDecoration(color: primaryColor, boxShadow: [
+                          decoration:
+                              BoxDecoration(color: primaryColor, boxShadow: [
                             BoxShadow(
                               color: Color.fromRGBO(0, 0, 0, 0.16),
                               blurRadius: 6,
@@ -84,7 +85,7 @@ class _DrawerCustomState extends State<DrawerCustom> {
                                                 child: Text(
                                                   "A",
                                                   style: TextStyle(
-                                                      fontFamily:'Roboto',
+                                                      fontFamily: 'Roboto',
                                                       fontSize: 35.0,
                                                       color: primaryColor),
                                                 ),
@@ -95,7 +96,7 @@ class _DrawerCustomState extends State<DrawerCustom> {
                                               "Aida Abkenova",
                                               style: TextStyle(
                                                 color: Colors.black,
-                                                fontFamily:'Roboto',
+                                                fontFamily: 'Roboto',
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 13,
                                               ),
@@ -106,7 +107,7 @@ class _DrawerCustomState extends State<DrawerCustom> {
                                               "aida.undercover@gmail.com",
                                               style: TextStyle(
                                                   color: Colors.black,
-                                                  fontFamily:'Roboto',
+                                                  fontFamily: 'Roboto',
                                                   fontWeight: FontWeight.normal,
                                                   fontSize: 12),
                                               textAlign: TextAlign.start,
@@ -135,7 +136,7 @@ class _DrawerCustomState extends State<DrawerCustom> {
                                 Text("",
                                     style: TextStyle(
                                         fontSize: 13,
-                                        fontFamily:'Roboto',
+                                        fontFamily: 'Roboto',
                                         fontWeight: FontWeight.normal,
                                         color: Colors.black)),
                               ]),
@@ -166,7 +167,7 @@ class _DrawerCustomState extends State<DrawerCustom> {
                                 Text('' + 'баллов',
                                     style: TextStyle(
                                         fontSize: 13,
-                                        fontFamily:'Roboto',
+                                        fontFamily: 'Roboto',
                                         fontWeight: FontWeight.normal,
                                         color: Colors.black)),
                               ]),
@@ -189,11 +190,7 @@ class _DrawerCustomState extends State<DrawerCustom> {
                             children: [
                               Row(children: [
                                 SizedBox(width: 20),
-                                Icon(
-                                  Icons.map,
-                                  size: 23,
-                                  color: black
-                                ),
+                                Icon(Icons.map, size: 23, color: black),
                                 SizedBox(width: 15),
                                 Text('Карта',
                                     style: TextStyle(
@@ -212,7 +209,6 @@ class _DrawerCustomState extends State<DrawerCustom> {
                             ]),
                       ),
                       Divider(height: 1),
-                  
                       Container(
                         height: 60,
                         child: Row(
@@ -257,8 +253,7 @@ class _DrawerCustomState extends State<DrawerCustom> {
                               Row(children: [
                                 SizedBox(width: 20),
                                 ImageIcon(AssetImage('assets/theme.png'),
-                                    size: 23,
-                                    color: black),
+                                    size: 23, color: black),
                                 SizedBox(width: 15),
                                 Text('Dark Theme',
                                     style: TextStyle(
@@ -333,7 +328,7 @@ class _DrawerCustomState extends State<DrawerCustom> {
                                 fontWeight: FontWeight.normal,
                                 color: Colors.black)),
                         onTap: () {
-                          Navigator.of(context).pushNamed(AppRoutes.signIn);
+                          AuthService.logOut();
                         }),
                   ]))
             ],

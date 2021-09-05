@@ -12,3 +12,5 @@ const divider = Color.fromRGBO(232, 232, 232, 1);
 const darkBlue = Color.fromRGBO(63, 61, 86, 1);
 
 var widthGlobal;
+
+late bool volunteer;

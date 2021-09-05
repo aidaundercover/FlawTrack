@@ -35,6 +35,7 @@ class _WelcomeState extends State<Welcome> {
     const pageDecoration = const PageDecoration(
       titleTextStyle: TextStyle(fontSize: 27.0, fontWeight: FontWeight.w700, color: darkBlue),
       pageColor: Colors.white,
+      bodyTextStyle: TextStyle(fontSize: 19, color: grey)
     );
 
     final Shader linearGradient = LinearGradient(
@@ -49,33 +50,22 @@ class _WelcomeState extends State<Welcome> {
       globalBackgroundColor: Colors.white,
       pages: [
         PageViewModel(
-          title: "Закрпеляй проблемы на\n карте свеого города",
+          title: "Закрепляйте проблемы на\n карте города",
           image: _buildImage('welone.png'),
+          body: 'У вас есть возможность отмечать проблемы разных категорий на общей карте и прикреплять докзательства',
           decoration: pageDecoration,
-          bodyWidget: Container(
-            decoration: BoxDecoration(
-            ),
-          )
         ),
         PageViewModel(
           title: "Будьте на связи с жителями своего района",
           image: _buildImage('weltwo.png'),
+          body: 'Присоединяйтсеь к чатам интересующих жилых комплексов и решайте социальные проблемы вместе',
           decoration: pageDecoration,
-          bodyWidget: Container(
-            decoration: BoxDecoration(
-              
-            ),
-          )
         ),
         PageViewModel(
-          title: "Получай баллы за\n достижения",
-          image: _buildImage('weltwo.png'),
+          title: "Получайте баллы за\n достижения",
+          image: _buildImage('welthree.png'),
+          body: 'За заполнение карты с проблемами или с исправлениями вам будут начилсяться баллы, которые дают преимущества в приложении',
           decoration: pageDecoration,
-          bodyWidget: Container(
-            decoration: BoxDecoration(
-              
-            ),
-          )
         ),
       ],
       onDone: () => _onIntroEnd(context),

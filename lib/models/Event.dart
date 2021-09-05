@@ -18,9 +18,9 @@ class Event {
       : this.fromMap(
           snapshot.data() as Map<String, dynamic>,
           'title',
-          ''.toDate(),
-          '',
-          '',
+          DateTime.now(),
+          DateTime.now(),
+          0,
           'address',
           'description',
           'organization',

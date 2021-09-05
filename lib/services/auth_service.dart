@@ -1,21 +1,29 @@
-// ignore: import_of_legacy_library_into_null_safe
+import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flawtrack/home_widget_citizen.dart';
+import 'package:flawtrack/home_widget_volunteer.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:flutter_twitter_login/flutter_twitter_login.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:flawtrack/models/FlawtrackUser.dart';
+import 'package:flawtrack/views/auth/sign_in.dart';
+import 'package:flawtrack/views/first_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
-TextEditingController usernameController = TextEditingController();
-TextEditingController emailController = TextEditingController();
-TextEditingController passwordController = TextEditingController();
-TextEditingController repasswordController = TextEditingController();
-TextEditingController emailRecover = TextEditingController();
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:firebase_core/firebase_core.dart' as firebase_core;
 
 class AuthService {
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  static FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  static FirebaseFirestore _db = FirebaseFirestore.instance;
+  static GoogleSignIn googleSignIn = GoogleSignIn();
 
-  Stream<String> get onAuthStateChanged => _firebaseAuth.authStateChanges().map(
+  Stream<String> get onAuthStateChanged => _firebaseAuth.userChanges().map(
         (user) {
           return user!.uid;
         },
@@ -27,8 +35,21 @@ class AuthService {
   }
 
   // GET CURRENT USER
-  Future getCurrentUser() async {
-    return _firebaseAuth.currentUser;
+  Future<FlawtrackUser> getCurrentUser() async {
+    var firebaseUser = _firebaseAuth.currentUser;
+    return FlawtrackUser(
+        firebaseUser!.uid, firebaseUser.email, firebaseUser.displayName);
+  }
+
+  Future<void> uploadFile(String filePath) async {
+    File file = File(filePath);
+
+    try {
+      await firebase_storage.FirebaseStorage.instance
+          .ref('uploads/file-to-upload.png')
+          .putFile(file);
+    } on firebase_core.FirebaseException {
+    }
   }
 
   getProfileImage() {
@@ -40,152 +61,181 @@ class AuthService {
     }
   }
 
-  // Email & Password Sign Up
-  Future<String> createUserWithEmailAndPassword(
-      String email, String password, String name) async {
-    final authResult = await _firebaseAuth.createUserWithEmailAndPassword(
-        email: emailController.text, password: passwordController.text);
-    Map<String, dynamic> userData = {"username": "$name", "email": "$email"};
+//Sign Up with Email
+  static signupWithEmail(
+      {required String email,
+      required String password,
+      String? name,
+      bool isVolunteer = false}) async {
 
-    CollectionReference collectionReference =
-        FirebaseFirestore.instance.collection('users');
-    collectionReference.add(userData);
+      try {
+        UserCredential res = await _firebaseAuth.createUserWithEmailAndPassword(
+        email: email, password: password);
+        final user = res.user;
+    
 
-    await updateUserName(name, authResult.user);
-    return authResult.user!.uid;
+
+        Map<String, dynamic> userData = {
+          "username": "$name",
+          "email": "$email",
+          "volunteer": isVolunteer
+        };
+
+        CollectionReference collectionReference = _db.collection('users');
+        collectionReference.add(userData);
+        return user;
+
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'email-already-in-use') {
+            return 'Аккаунт с такой почтой уже существует';
+      }
+      }
+
+      catch(e){
+        return e;
+      }
+    
   }
-  // Update the usern
+
+  // Sign In with Email
+  Future<FlawtrackUser> signInWithEmail(
+      {required String email, required String password}) async {
+    
+      UserCredential res = await _firebaseAuth.signInWithEmailAndPassword(
+        email: email, password: password);
+
+      return FlawtrackUser(res.user!.uid, res.user!.email, res.user!.displayName);
+
+    
+  }
+
+  //Sign In with third party
+
+  Future signInWithGoogle() async {
+    
+    final acc = await googleSignIn.signIn();
+    final auth = await acc!.authentication;
+    final credential = GoogleAuthProvider.credential(
+        accessToken: auth.accessToken, idToken: auth.idToken);
+    final res = await _firebaseAuth.signInWithCredential(credential);
+    return res.user;
+  }
+
+  Future<UserCredential> signInWithFacebook() async {
+
+  final LoginResult loginResult = await FacebookAuth.instance.login();
+
+  final OAuthCredential facebookAuthCredential = FacebookAuthProvider.credential(loginResult.accessToken!.token);
+
+  return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
+}
+
+Future<UserCredential> signInWithTwitter() async {
+  // Create a TwitterLogin instance
+  final TwitterLogin twitterLogin = new TwitterLogin(
+    consumerKey: '<your consumer key>',
+    consumerSecret:' <your consumer secret>',
+  );
+
+  // Trigger the sign-in flow
+  final TwitterLoginResult loginResult = await twitterLogin.authorize();
+
+  // Get the Logged In session
+  final TwitterSession twitterSession = loginResult.session;
+
+  // Create a credential from the access token
+  final twitterAuthCredential = TwitterAuthProvider.credential(
+    accessToken: twitterSession.token,
+    secret: twitterSession.secret,
+  );
+
+  // Once signed in, return the UserCredential
+  return await FirebaseAuth.instance.signInWithCredential(twitterAuthCredential);
+}
+
+  // Log out
+  static logOut() async {
+    try {
+      return await _firebaseAuth.signOut();
+    } catch (error) {
+      print(error.toString());
+      return null;
+    }
+  }
+
+  // Delete acc
+
+  static deleteAccount() async {
+    try {
+      return await _firebaseAuth.currentUser!.delete();
+    } on FirebaseAuthException catch (e) {
+  if (e.code == 'requires-recent-login') {
+    print('The user must reauthenticate before this operation can be executed.');
+  }
+}
+  }
 
   Future updateUserName(name, currentUser) async {
     await currentUser.updateDisplayName(name);
     await currentUser.reload();
   }
 
-  // Email & Password Sign In
-  Future<String> signInWithEmailAndPassword(
-      String email, String password) async {
-    return (await _firebaseAuth.signInWithEmailAndPassword(
-            email: email, password: password))
-        .user!
-        .uid;
+// Reset Password
+  passwordReset(String email) async {
+    try {
+      await _firebaseAuth.sendPasswordResetEmail(email: email);
+    } catch (e) {
+      Fluttertoast.showToast(msg: e.toString());
+    }
   }
 
-  // Sign Out
-  Future<void> signOut() async {
-    return await _firebaseAuth.signOut();
-  }
+  Widget handleAuth() {
+    return StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.userChanges(),
+        builder: (BuildContext context, snapshot) {
+          if (snapshot.hasData && snapshot.data != null) {
+            return StreamBuilder<DocumentSnapshot>(
+                stream: _db
+                    .collection("users")
+                    .doc(snapshot.data!.uid)
+                    .snapshots(includeMetadataChanges: true),
+                builder: (BuildContext context,
+                    AsyncSnapshot<DocumentSnapshot> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.active) {
+                    final bool signedIn = snapshot.hasData && FirebaseAuth.instance.currentUser!.emailVerified;
+                    if (signedIn) {
 
-  // Reset Password
-  Future sendPasswordResetEmail(final String email) async {}
-
-  // Create Anonymous User
-  Future singInAnonymously() {
-    return _firebaseAuth.signInAnonymously();
-  }
-
-  Future convertUserWithEmail(
-      String email, String password, String name) async {
-    final currentUser = _firebaseAuth.currentUser;
-
-    final credential =
-        EmailAuthProvider.credential(email: email, password: password);
-    await currentUser!.linkWithCredential(credential);
-    await updateUserName(name, currentUser);
-  }
-
-  Future convertWithGoogle() async {
-    final currentUser = _firebaseAuth.currentUser;
-    final GoogleSignInAccount? account = await _googleSignIn.signIn();
-    final GoogleSignInAuthentication _googleAuth =
-        await account!.authentication;
-    final AuthCredential credential = GoogleAuthProvider.credential(
-      idToken: _googleAuth.idToken,
-      accessToken: _googleAuth.accessToken,
-    );
-    await currentUser!.linkWithCredential(credential);
-    await updateUserName(_googleSignIn.currentUser!.displayName, currentUser);
-  }
-
-  // GOOGLE
-  Future<String> signInWithGoogle() async {
-    final GoogleSignInAccount? account = await _googleSignIn.signIn();
-    final GoogleSignInAuthentication _googleAuth =
-        await account!.authentication;
-    final AuthCredential credential = GoogleAuthProvider.credential(
-      idToken: _googleAuth.idToken,
-      accessToken: _googleAuth.accessToken,
-    );
-    return (await _firebaseAuth.signInWithCredential(credential)).user!.uid;
-  }
-
-  // APPLE
-
-  Future createUserWithPhone(String phone, BuildContext context) async {
-    _firebaseAuth.verifyPhoneNumber(
-        phoneNumber: phone,
-        timeout: Duration(seconds: 0),
-        verificationCompleted: (AuthCredential authCredential) {
-          _firebaseAuth
-              .signInWithCredential(authCredential)
-              .then((UserCredential result) {
-            Navigator.of(context).pop(); // to pop the dialog box
-            Navigator.of(context).pushReplacementNamed('/home');
-          }).catchError((e) {
-            return e;
-          });
-        },
-        verificationFailed: (FirebaseAuthException exception) {
-          return;
-        },
-        codeSent: (String verificationId, [int? forceResendingToken]) async {
-          final _codeController = TextEditingController();
-          showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (context) => AlertDialog(
-              title: Text("Enter Verification Code From Text Message"),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[TextField(controller: _codeController)],
-              ),
-              actions: <Widget>[
-                TextButton(
-                  child: Text("submit", style: TextStyle(color: Colors.white)),
-                  style: TextButton.styleFrom(primary: Colors.green),
-                  onPressed: () {
-                    var _credential = PhoneAuthProvider.credential(
-                        verificationId: verificationId,
-                        smsCode: _codeController.text.trim());
-                    _firebaseAuth
-                        .signInWithCredential(_credential)
-                        .then((UserCredential result) {
-                      Navigator.of(context).pop(); // to pop the dialog box
-                      Navigator.of(context).pushReplacementNamed('/home');
-                    }).catchError((e) {
-                      return e;
-                    });
-                  },
-                )
-              ],
-            ),
-          );
-        },
-        codeAutoRetrievalTimeout: (String verificationId) {
-          verificationId = verificationId;
+                      if(snapshot.data!['volunteer']) {
+                            return HomeVolunteer();
+                      }else{
+                            return HomeCitizen();
+                      }
+                    } else
+                      return FirstView();
+                  }
+                  return Material(
+                      child: Center(child: CircularProgressIndicator()));
+                });
+          }
+          return LoginPage();
         });
   }
+
+
+  
+// Update the usern
 }
 
 mixin NameValidator {
   static String? validate(String? value) {
     if (value!.isEmpty) {
-      return "Name can't be empty";
+      return "Поле Имя не может быть пустым";
     }
     if (value.length < 2) {
-      return "Name must be at least 2 characters long";
+      return "Имя должно содержать минимум 2 символа";
     }
     if (value.length > 50) {
-      return "Name must be less than 50 characters long";
+      return "Имя не может быть длинее 50-ти символов";
     }
     return null;
   }
@@ -194,7 +244,7 @@ mixin NameValidator {
 mixin EmailValidator {
   static String? validate(String? value) {
     if (value!.isEmpty) {
-      return "Email can't be empty";
+      return "Поле Email не может быть пустым";
     }
     return null;
   }
@@ -203,7 +253,7 @@ mixin EmailValidator {
 mixin PasswordValidator {
   static String? validate(String? value) {
     if (value!.isEmpty) {
-      return "Password can't be empty";
+      return "Пожалуйста введите пароль";
     }
     return null;
   }

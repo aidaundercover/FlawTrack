@@ -3,7 +3,6 @@ import 'package:flawtrack/routes.dart';
 import 'package:flawtrack/views/welcome.dart';
 import 'package:flutter/material.dart';
 
-
 class FirstView extends StatefulWidget {
   const FirstView({Key? key}) : super(key: key);
 
@@ -16,7 +15,7 @@ class _FirstViewState extends State<FirstView> {
   Widget build(BuildContext context) {
     final _width = MediaQuery.of(context).size.width;
     final _height = MediaQuery.of(context).size.height;
-    String _selected= 'Русский';
+    String _selected = 'Русский';
     // ignore: unused_local_variable
     List<Map> _myJson = [
       {'id': '0', 'image': 'assets/welcome/russia.png', 'title': 'Русский'},
@@ -55,15 +54,12 @@ class _FirstViewState extends State<FirstView> {
           Image.asset(
             'assets/welcome/lang_select.png',
             width: _width * 0.83,
-
           ),
           SizedBox(height: 40),
           Container(
             width: _width * 0.83,
             height: 60,
-            decoration: BoxDecoration(
-            color: white,
-            boxShadow: [
+            decoration: BoxDecoration(color: white, boxShadow: [
               BoxShadow(
                 color: black.withOpacity(0.25),
                 spreadRadius: 0,
@@ -82,47 +78,51 @@ class _FirstViewState extends State<FirstView> {
                 Expanded(
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<String>(
-                          iconEnabledColor: darkBlue,
-                          iconDisabledColor: grey,
-                          itemHeight: 55,
-                          value: _selected,
-                          style: TextStyle(
-                            fontSize: 21, fontWeight: FontWeight.w600, color: black),
-                          icon: const Icon(Icons.arrow_drop_down_outlined, size: 30,),
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              _selected = newValue!;
-                            });
-                          },
-                          onTap: (){
-
-                          },
-                          items: _myJson.map((Map map) {
-                            return DropdownMenuItem<String>(
-                              value: map["title"].toString(),
-                              child: Row(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 15.0),
-                                    child: Image.asset(
-                                      map['image'],
-                                      width: 42,
-                                    ),
+                        iconEnabledColor: darkBlue,
+                        iconDisabledColor: grey,
+                        itemHeight: 55,
+                        value: _selected,
+                        style: TextStyle(
+                            fontSize: 21,
+                            fontWeight: FontWeight.w600,
+                            color: black),
+                        icon: const Icon(
+                          Icons.arrow_drop_down_outlined,
+                          size: 30,
+                        ),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            _selected = newValue!;
+                          });
+                        },
+                        onTap: () {},
+                        items: _myJson.map((Map map) {
+                          return DropdownMenuItem<String>(
+                            value: map["title"].toString(),
+                            child: Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 15.0),
+                                  child: Image.asset(
+                                    map['image'],
+                                    width: 42,
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 15.0),
-                                    child: Text(
-                                      map['title'],
-                                      style: TextStyle(
-                                          fontSize: 19, fontWeight: FontWeight.w600),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            );
-                          }).toList()),
-                          ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 15.0),
+                                  child: Text(
+                                    map['title'],
+                                    style: TextStyle(
+                                        fontSize: 19,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                )
+                              ],
+                            ),
+                          );
+                        }).toList()),
                   ),
+                ),
               ],
             ),
           ),
@@ -153,8 +153,16 @@ class _FirstViewState extends State<FirstView> {
               ),
             ),
             onPressed: () {
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => Welcome()));
+              if(_selected=='Русский') {
+                Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (context) => Welcome()));
+              } else if(_selected=='Қазақша') {
+                Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (context) => Welcome()));
+              } else {
+                Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (context) => Welcome()));
+              }
             },
           ),
           SizedBox(height: _height * 0.05),
