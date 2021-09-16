@@ -1,6 +1,8 @@
 import 'package:flawtrack/const.dart';
 import 'package:flawtrack/routes.dart';
-import 'package:flawtrack/views/welcome.dart';
+import 'package:flawtrack/views/welcome/welcomeeng.dart';
+import 'package:flawtrack/views/welcome/welcomekz.dart';
+import 'package:flawtrack/views/welcome/welcomerus.dart';
 import 'package:flutter/material.dart';
 
 class FirstView extends StatefulWidget {
@@ -15,7 +17,7 @@ class _FirstViewState extends State<FirstView> {
   Widget build(BuildContext context) {
     final _width = MediaQuery.of(context).size.width;
     final _height = MediaQuery.of(context).size.height;
-    String _selected = 'Русский';
+    String _selected = '0';
     // ignore: unused_local_variable
     List<Map> _myJson = [
       {'id': '0', 'image': 'assets/welcome/russia.png', 'title': 'Русский'},
@@ -74,10 +76,15 @@ class _FirstViewState extends State<FirstView> {
               )
             ]),
             child: Row(
-              children: [
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
                 Expanded(
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<String>(
+                        hint: Padding(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: Text('Select Language'),
+                        ),
                         iconEnabledColor: darkBlue,
                         iconDisabledColor: grey,
                         itemHeight: 55,
@@ -90,34 +97,37 @@ class _FirstViewState extends State<FirstView> {
                           Icons.arrow_drop_down_outlined,
                           size: 30,
                         ),
-                        onChanged: (String? newValue) {
+                        onChanged: (newValue) {
                           setState(() {
                             _selected = newValue!;
+
+                            print(_selected);
                           });
                         },
-                        onTap: () {},
                         items: _myJson.map((Map map) {
-                          return DropdownMenuItem<String>(
-                            value: map["title"].toString(),
-                            child: Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 15.0),
-                                  child: Image.asset(
-                                    map['image'],
-                                    width: 42,
+                          return DropdownMenuItem(
+                            value: map["id"].toString(),
+                            child: Container(
+                              child: Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 15.0),
+                                    child: Image.asset(
+                                      map['image'],
+                                      width: 42,
+                                    ),
                                   ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 15.0),
-                                  child: Text(
-                                    map['title'],
-                                    style: TextStyle(
-                                        fontSize: 19,
-                                        fontWeight: FontWeight.w600),
-                                  ),
-                                )
-                              ],
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 15.0),
+                                    child: Text(
+                                      map['title'].toString(),
+                                      style: TextStyle(
+                                          fontSize: 19,
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                  )
+                                ],
+                              ),
                             ),
                           );
                         }).toList()),
@@ -153,16 +163,18 @@ class _FirstViewState extends State<FirstView> {
               ),
             ),
             onPressed: () {
-              if(_selected=='Русский') {
+            
+                if (_selected == '0') {
                 Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (context) => Welcome()));
-              } else if(_selected=='Қазақша') {
+                    .push(MaterialPageRoute(builder: (context) => WelcomeRu()));
+              } else if (_selected == '1') {
                 Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (context) => Welcome()));
+                    .push(MaterialPageRoute(builder: (context) => WelcomeKz()));
               } else {
-                Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (context) => Welcome()));
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => WelcomeEng()));
               }
+        
             },
           ),
           SizedBox(height: _height * 0.05),

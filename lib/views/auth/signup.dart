@@ -39,8 +39,8 @@ class _SignUpState extends State<SignUp> {
     var _width = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      bottomNavigationBar: ElevatedButton(
-        onPressed: () {
+      bottomNavigationBar: GestureDetector(
+        onTap: () {
           Navigator.of(context).pushNamed(AppRoutes.signIn);
         },
         child: Container(
@@ -48,8 +48,8 @@ class _SignUpState extends State<SignUp> {
               gradient: LinearGradient(colors: [
             primaryColor.withOpacity(0.6),
             primaryColor,
-            yellow.withOpacity(0.8),
-            primaryColor.withOpacity(0.35)
+            yellow,
+            primaryColor
           ], begin: Alignment.topLeft)),
           height: 48,
           alignment: Alignment.center,

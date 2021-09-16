@@ -4,14 +4,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 
-class Welcome extends StatefulWidget {
-  const Welcome({ Key? key }) : super(key: key);
+class WelcomeEng extends StatefulWidget {
+  const WelcomeEng({ Key? key }) : super(key: key);
 
   @override
-  _WelcomeState createState() => _WelcomeState();
+  _WelcomeEngState createState() => _WelcomeEngState();
 }
 
-class _WelcomeState extends State<Welcome> {
+class _WelcomeEngState extends State<WelcomeEng> {
 
   final introKey = GlobalKey<IntroductionScreenState>();
 
@@ -50,21 +50,21 @@ class _WelcomeState extends State<Welcome> {
       globalBackgroundColor: Colors.white,
       pages: [
         PageViewModel(
-          title: "Закрепляйте проблемы на\n карте города",
+          title: "Pin the problems of your city\non the map",
           image: _buildImage('welone.png'),
-          body: 'У вас есть возможность отмечать проблемы разных категорий на общей карте и прикреплять докзательства',
+          body: 'You have the opportunity to mark problems of different categories on the general map and attach additional documents',
           decoration: pageDecoration,
         ),
         PageViewModel(
-          title: "Будьте на связи с жителями своего района",
+          title: "Stay in touch with the residents of your area",
           image: _buildImage('weltwo.png'),
-          body: 'Присоединяйтсеь к чатам интересующих жилых комплексов и решайте социальные проблемы вместе',
+          body: 'Join the chats of the residential complexes of interest and solve social problems together',
           decoration: pageDecoration,
         ),
         PageViewModel(
-          title: "Получайте баллы за\n достижения",
+          title: "Get points for\n achievements",
           image: _buildImage('welthree.png'),
-          body: 'За заполнение карты с проблемами или с исправлениями вам будут начилсяться баллы, которые дают преимущества в приложении',
+          body: 'For filling out the card with problems or corrections, you will receive points that give advantages in the application',
           decoration: pageDecoration,
         ),
       ],
@@ -73,7 +73,7 @@ class _WelcomeState extends State<Welcome> {
       skipFlex: 0,
       nextFlex: 0,
       showDoneButton: true,
-      skip: const Text('Пропустить', style: TextStyle(color: grey, fontSize: 16,)),
+      skip: const Text('Skip', style: TextStyle(color: grey, fontSize: 16,)),
       done: Container(
         width: 68,
         height: 68,

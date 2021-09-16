@@ -1,16 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+
+import '../const.dart';
 
 class Event {
   String title;
   DateTime startDate;
-  DateTime endDate;
-  double budget;
+  late DateTime endDate;
+  late double budget;
   String address;
   String description;
   String organization;
   String imgUrl;
-  String eventType;
+  late String eventType;
   String documentId;
+  Color bc;
 
   final DocumentReference reference;
 
@@ -19,14 +23,13 @@ class Event {
           snapshot.data() as Map<String, dynamic>,
           'title',
           DateTime.now(),
-          DateTime.now(),
           0,
-          'address',
           'description',
           'organization',
           'imgUrl',
           'eventType',
           'documentId',
+          Color(0xFFA28D),
           reference: snapshot.reference,
         );
 
@@ -34,14 +37,13 @@ class Event {
       Map<String, dynamic> map,
       this.title,
       this.startDate,
-      this.endDate,
       this.budget,
       this.address,
       this.description,
       this.organization,
       this.imgUrl,
-      this.eventType,
       this.documentId,
+      this.bc,
       {required this.reference});
 
   @override
@@ -54,4 +56,35 @@ class Event {
     }
     return diff;
   }
+}
+
+Widget buildCard(Color bc, String title, String address, String imgUrl) {
+  return Container(
+    height: 90,
+    decoration: BoxDecoration(
+      color: bc,
+      borderRadius: BorderRadius.circular(7),
+    ),
+    child: Row(children: [
+      Container(
+        width: 50,
+        height: 50,
+        decoration: BoxDecoration(
+          color: Color.fromRGBO(255, 244, 244, 0.19),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        alignment: Alignment.center,
+        child: Image.network(imgUrl, width: 31,)),
+      Container(
+        height: 50,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children:[ 
+            Text(title, style: TextStyle(color: white, fontSize: 16, fontWeight: FontWeight.bold)),
+            Text(address, style: TextStyle(color: white, fontSize: 12))
+          ]
+        ),
+      )
+    ],),
+  );
 }
