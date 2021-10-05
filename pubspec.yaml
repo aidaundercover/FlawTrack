@@ -23,14 +23,13 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  cloud_firestore: ^2.2.2
-  firebase_auth: ^1.4.1
-  provider:
-  google_sign_in: ^5.0.4
-  firebase_core:
-  firebase_storage: ^9.0.0
-  shared_preferences: ^2.0.6
-  firebase_analytics: "^7.0.1"
+  cloud_firestore: 
+  firebase_auth: ^3.1.2
+  provider: ^6.0.1
+  google_sign_in: ^5.1.1
+  firebase_core: ^1.7.0
+  firebase_storage: ^10.0.4
+  shared_preferences: ^2.0.8
   flutter_facebook_auth: "^3.5.0"
   sign_in_with_apple: ^2.5.2
   flutter_geocoder: ^0.2.2-nullsafety
@@ -55,7 +54,7 @@ dependencies:
   dotted_border: ^2.0.0
 
 
-  google_maps_flutter: ^2.0.9
+  google_maps_flutter: ^2.0.11
 
   
 
@@ -107,7 +106,7 @@ flutter:
     - assets/home/
     - assets/maps/
     - assets/social/
-    - assets/tableicons/
+    - assets/pins/
     - assets/welcome/
 
 

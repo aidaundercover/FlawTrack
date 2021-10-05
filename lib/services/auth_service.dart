@@ -12,6 +12,8 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flawtrack/views/first_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'dart:async';
+import 'dart:core';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -60,7 +62,7 @@ class AuthService {
   }
 
 //Sign Up with Email
-  static signupWithEmail(
+  static Future<void> signupWithEmail(
       {required String email,
       required String password,
       String? name,
@@ -78,23 +80,21 @@ class AuthService {
 
       CollectionReference collectionReference = _db.collection('users');
       collectionReference.add(userData);
-      return user;
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'email-already-in-use') {
-        return 'Аккаунт с такой почтой уже существует';
+        if (e.code == 'email-already-in-use') {
+          print('The account already exists for that email');
+        }
+      } catch (e) {
+        print(e.toString());
       }
-    } catch (e) {
-      return e;
-    }
   }
 
   // Sign In with Email
-  Future<FlawtrackUser> signInWithEmail(
+  static Future<void> signInWithEmail(
       {required String email, required String password}) async {
     UserCredential res = await _firebaseAuth.signInWithEmailAndPassword(
         email: email, password: password);
 
-    return FlawtrackUser(res.user!.uid, res.user!.email, res.user!.displayName);
   }
 
   //Sign In with third party
@@ -135,7 +135,7 @@ class AuthService {
     } on FirebaseAuthException catch (e) {
       if (e.code == 'requires-recent-login') {
         print(
-            'The user must reauthenticate before this operation can be executed.');
+            'The user must reauthenticate before thisoperation can be executed.');
       }
     }
   }
@@ -154,37 +154,33 @@ class AuthService {
     }
   }
 
-  
   Widget handleAuth() {
     return StreamBuilder<User?>(
         stream: FirebaseAuth.instance.userChanges(),
         builder: (BuildContext context, snapshot) {
-    
-            if (snapshot.hasData && snapshot.data != null) {
-              return StreamBuilder<DocumentSnapshot>(
-                  stream: _db
-                      .collection("users")
-                      .doc(snapshot.data!.uid)
-                      .snapshots(includeMetadataChanges: true),
-                  builder: (BuildContext context,
-                      AsyncSnapshot<DocumentSnapshot> snapshot) {
-                    final bool signedIn = snapshot.hasData &&
-                        FirebaseAuth.instance.currentUser!.emailVerified;
-                    if (signedIn) {
-                      if (snapshot.data!['volunteer']) {
-                        return HomeVolunteer();
-                      } else {
-                        return HomeCitizen();
-                      }
-                    } else
-                      return FirstView();
-                  });
-            }
-            return FirstView();
-          
+          if (snapshot.hasData && snapshot.data != null) {
+            return StreamBuilder<DocumentSnapshot>(
+                stream: _db
+                    .collection("users")
+                    .doc(snapshot.data!.uid)
+                    .snapshots(includeMetadataChanges: true),
+                builder: (BuildContext context,
+                    AsyncSnapshot<DocumentSnapshot> snapshot) {
+                  final bool signedIn = snapshot.hasData &&
+                      FirebaseAuth.instance.currentUser!.emailVerified;
+                  if (signedIn) {
+                    if (snapshot.data!['volunteer']) {
+                      return HomeVolunteer();
+                    } else {
+                      return HomeCitizen();
+                    }
+                  } else
+                    return FirstView();
+                });
+          }
+          return FirstView();
         });
   }
-  
 
 // Update the usern
 }

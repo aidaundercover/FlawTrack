@@ -33,27 +33,28 @@ class _LoginPageState extends State<LoginPage> {
     var _width = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      bottomNavigationBar: GestureDetector(
-            onTap: () async{
-              await Navigator.of(context).pushReplacementNamed(AppRoutes.signUp);
-          },
-            child: Container(
-                width: _width,
-                decoration: BoxDecoration(gradient: LinearGradient(colors: [
-                  primaryColor.withOpacity(0.6),
-                  primaryColor,
-                  yellow,
-                  primaryColor
-                ],
-                begin: Alignment.topLeft
-                )),
-                height: 48,
-                alignment: Alignment.center,
-                child: Text('ЗАРЕГИСТРИРОВАТЬСЯ',
-                    style: TextStyle(
-                        fontSize: 13, fontWeight: FontWeight.bold, color: white)),
-              ),
+      bottomSheet: GestureDetector(
+        onTap: () {
+                Navigator.of(context).pushReplacementNamed(AppRoutes.signUp);
+              },
+        child: Container(
+                    width: _width,
+                    decoration: BoxDecoration(gradient: LinearGradient(colors: [
+                      primaryColor.withOpacity(0.6),
+                      primaryColor,
+                      yellow,
+                      primaryColor
+                    ],
+                    begin: Alignment.topLeft
+                    )),
+                    height: 48,
+                    alignment: Alignment.center,
+                    child: Text('ЗАРЕГИСТРИРОВАТЬСЯ',
+                        style: TextStyle(
+                            fontSize: 13, fontWeight: FontWeight.bold, color: white)),
+                  ),
       ),
+          
       backgroundColor: lightYellow,
       body: SingleChildScrollView(
         child: Center(
@@ -192,7 +193,7 @@ class _LoginPageState extends State<LoginPage> {
             TextButton(
               onPressed: () async {
                 try {
-                  await AuthService().signInWithEmail(
+                  await AuthService.signInWithEmail(
                       email: _emailController.text,
                       password: _passwordController.text).then((value) => {
                       });
