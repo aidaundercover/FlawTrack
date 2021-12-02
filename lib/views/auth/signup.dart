@@ -1,5 +1,6 @@
 import 'package:flawtrack/services/auth_service.dart';
 import 'package:flawtrack/views/auth/verify_email.dart';
+import 'package:flawtrack/views/terms_of_policy.dart';
 import 'package:flutter/material.dart';
 
 import '../../const.dart';
@@ -32,6 +33,8 @@ class _SignUpState extends State<SignUp> {
     super.initState();
     _emailController = TextEditingController(text: "");
     _passwordController = TextEditingController(text: "");
+    _nameController = TextEditingController(text: "");
+    _passwordCheckController = TextEditingController(text: "");
   }
 
   @override
@@ -87,7 +90,6 @@ class _SignUpState extends State<SignUp> {
                               width: _width * 0.76,
                               child: TextFormField(
                                 controller: _nameController,
-                                keyboardType: TextInputType.emailAddress,
                                 style: TextStyle(
                                   color: grey,
                                   fontSize: 14,
@@ -163,36 +165,39 @@ class _SignUpState extends State<SignUp> {
                             decoration: BoxDecoration(
                                 color: white,
                                 border: Border.all(color: grey, width: 1)),
-                            child: DropdownButton<String>(
-                              value: dropdownValue,
-                              iconSize: 30,
-                              itemHeight: 44,
-                              elevation: 16,
-                              hint: Text(
-                                'Волонетер ли вы?',
-                                style:
-                                    TextStyle(fontSize: 14, color: textColor),
+                            child: Center(
+                              child: DropdownButton<String>(
+                                value: dropdownValue,
+                                iconSize: 30,
+                                elevation: 16,
+                                hint: Text(
+                                  'Волонетер ли вы?',
+                                  style:
+                                      TextStyle(fontSize: 14, color: textColor),
+                                ),
+                                style: const TextStyle(color: grey),
+                                onChanged: (String? newValue) {
+                                  setState(() {
+                                    dropdownValue = newValue!;
+                                    if (dropdownValue == 'Нет') {
+                                      volunteer = false;
+                                    } else if (dropdownValue == 'Да') {
+                                      volunteer = true;
+                                    }
+                                  });
+                                },
+                                items: <String>[
+                                  'Нет',
+                                  'Да'
+                                ].map<DropdownMenuItem<String>>((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Container(
+                                      width: _width * 0.60,
+                                      child: Text(value)),
+                                  );
+                                }).toList(),
                               ),
-                              style: const TextStyle(color: grey),
-                              onChanged: (String? newValue) {
-                                setState(() {
-                                  dropdownValue = newValue!;
-                                  if (dropdownValue == 'Нет') {
-                                    volunteer = false;
-                                  } else if (dropdownValue == 'Да') {
-                                    volunteer = true;
-                                  }
-                                });
-                              },
-                              items: <String>[
-                                'Нет',
-                                'Да'
-                              ].map<DropdownMenuItem<String>>((String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value),
-                                );
-                              }).toList(),
                             ),
                           ),
                           SizedBox(height: 20),
@@ -299,7 +304,12 @@ class _SignUpState extends State<SignUp> {
                     height: 30,
                   ),
                   InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pop(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => TermsOfPolicy()));
+                    },
                     child: Text(
                       'Создавая учетную запись, вы соглашаетесь с нашей\nПолитикой конфиденциальности',
                       style: TextStyle(
@@ -316,11 +326,13 @@ class _SignUpState extends State<SignUp> {
             onPressed: () async {
               try {
                 await AuthService.signupWithEmail(
-                    email: _emailController.text,
-                    password: _passwordController.text,
-                    name: _nameController.text,
-                    isVolunteer: volunteer).then((_){
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => VerifyScreen()));
+                        email: _emailController.text,
+                        password: _passwordController.text,
+                        name: _nameController.text,
+                        isVolunteer: volunteer)
+                    .then((_) {
+                  Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (context) => VerifyScreen()));
                 });
               } catch (e) {
                 print(e);
@@ -333,6 +345,7 @@ class _SignUpState extends State<SignUp> {
                   gradient: LinearGradient(
                       colors: [primaryColor.withOpacity(0.9), primaryColor])),
               height: 43,
+              alignment: Alignment.center,
               child: Text(
                 'ПРОДОЛЖИТЬ',
                 style: TextStyle(

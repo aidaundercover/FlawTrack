@@ -10,6 +10,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flawtrack/widgets/provider_widget.dart';
 import 'package:flawtrack/services/auth_service.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,12 +35,72 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   var colors = CustomColors(WidgetsBinding.instance!.window.platformBrightness);
 
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
+  late Position currentposition;
+  String currentLocality = '';
+
+  void determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      Fluttertoast.showToast(msg: 'Please enable Your Location Service');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        Fluttertoast.showToast(msg: 'Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      Fluttertoast.showToast(
+          msg:
+              'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+
+    try {
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(position.latitude, position.longitude);
+
+      Placemark place = placemarks[0];
+
+      setState(() {
+        currentposition = position;
+        currentLocality = "${place.locality}";
+        lat = position.latitude;
+        long = position.longitude;
+
+        String translate(String code) {
+          switch (code) {
+            case 'Nursultan':
+              return 'Нур-Султан';
+            case 'Pavlodar':
+              return 'Павлодар';
+            case 'Aktau':
+              return 'Актау';
+            default:
+              return 'Калифорния';
+          }
+        }
+
+        cityGlobal = translate(currentLocality);
+        addressGlobal = translate(currentLocality) + ', Казахстан';
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
 
   @override
-  void didChangePlatformBrightness() {
-    setState(() {
-      colors = CustomColors(WidgetsBinding.instance!.window.platformBrightness);
-    });
+  void initState() {
+    super.initState();
+    determinePosition();
   }
 
   @override
@@ -56,10 +119,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               db: FirebaseFirestore.instance,
               child: MaterialApp(
                 debugShowCheckedModeBanner: false,
-                theme: ThemeData(
-                    brightness: Brightness.light, fontFamily: 'Roboto'),
-                darkTheme: ThemeData(
-                    brightness: Brightness.dark, fontFamily: 'Roboto'),
                 home: AuthService().handleAuth(),
                 routes: AppRoutes.define(),
               ),
@@ -70,7 +129,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           return SpinKitPouringHourGlass(
             color: primaryColor,
             size: 50.0,
-            
           );
         });
   }

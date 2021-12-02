@@ -20,7 +20,6 @@ Widget weatherOftheDay(String dayOfWeek, double width, int humidity, IconData ic
             ),
           ),
           Icon(Icons.water, size: 8, color: acquaMarine,),
-          SizedBox(width: 5,),
           Text('$humidity' + '%',
               style: TextStyle(
                 color: acquaMarine,
@@ -28,10 +27,8 @@ Widget weatherOftheDay(String dayOfWeek, double width, int humidity, IconData ic
                 fontWeight: FontWeight.w500
               ),
           ),
-          SizedBox(width: 6,),
           Icon(icons, size: 14,color: white,),
-          SizedBox(width: 4,),
-          Text(nightTemp+'°/ '+dayTemp+'°',
+          Text('$nightTemp'+'°/ '+'$dayTemp'+'°',
               style: TextStyle(
                 color: white,
                 fontSize: 11,

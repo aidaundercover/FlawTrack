@@ -29,7 +29,7 @@ Widget fund(BuildContext context, double width) {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-              Image.asset('assets/home_trophy_icon.png', height: 132),
+              Image.asset('assets/home/home_trophy_icon.png', height: 132),
               SizedBox(height: 20,),
               Text('Фонд', 
                 style: TextStyle(

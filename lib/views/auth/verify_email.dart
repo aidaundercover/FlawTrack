@@ -36,8 +36,16 @@ class _VerifyScreenState extends State<VerifyScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: lightYellow,
       body: Center(
-        child: Text('An email has been sent to ${user!.email} please verify'),
+        child: Container(
+          width: 300,
+          child: Row(
+            children: [
+              Text('Было отправлено письмо для потвереждения почты на адрес', textAlign: TextAlign.center,),
+              Text('${user!.email}', style: TextStyle(fontWeight: FontWeight.bold), ),
+            ],
+          )),
       ),
     );
   }
@@ -47,13 +55,9 @@ class _VerifyScreenState extends State<VerifyScreen> {
     await auth.currentUser!.reload();
     if (auth.currentUser!.emailVerified) {
       timer.cancel();
-    if (volunteer) {
       Navigator.pushReplacementNamed(
         context, AppRoutes.homeVolunteer);
-      } else {
-      Navigator.pushReplacementNamed(
-        context, AppRoutes.homeCitizen);
-        }
+      
     }
   }
 }

@@ -40,7 +40,8 @@ class _MapsViewState extends State<MapsView> {
               width: (MediaQuery.of(context).size.width) * 0.85,
               child: Column(
                 children: [
-                  Image.asset('assets/maps.png'),
+                  SizedBox(height: 13,),
+                  Image.asset('assets/maps/maps.png'),
                   SizedBox(height: 10,),
                   buildMapsCard(context, 'assets/maps/mapscard1.png', 'Карта\nпроблем', MapsOfProblems()),
                   buildMapsCard(context, 'assets/maps/mapscard2.png', 'Карта\nисправлений', MapsOfCorrections()),

@@ -1,3 +1,6 @@
+import 'package:flawtrack/models/ChatUser.dart';
+import 'package:flawtrack/models/chatTile.dart';
+import 'package:flawtrack/views/chat/kenesary.dart';
 import 'package:flawtrack/widgets/drawer.dart';
 import 'package:flutter/material.dart';
 
@@ -17,11 +20,52 @@ class _ForumViewState extends State<ForumView>
     Tab(text: 'ИСКАТЬ'),
   ];
 
-
-
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
+
+    List<ChatUsers> chatUsers = [
+      ChatUsers(
+          text: "ЖК Кенесары",
+          secondaryText: "И что вы думаете?",
+          image: "images/userImage1.jpeg",
+          time: "Сейчас"),
+      ChatUsers(
+          text: "Улица Амангельды",
+          secondaryText: "Да, сегодня в шатре",
+          image: "images/userImage2.jpeg",
+          time: "Вчера"),
+      ChatUsers(
+          text: "Улица Пушкинская",
+          secondaryText: "ахахахаххаха",
+          image: "images/userImage3.jpeg",
+          time: "31 Сен"),
+      ChatUsers(
+          text: "Аягуль Арамова",
+          secondaryText: "Предусмотрительно",
+          image: "images/userImage4.jpeg",
+          time: "28 Mar"),
+      ChatUsers(
+          text: "Алим Женисов",
+          secondaryText: "Состояние потока - лучшее",
+          image: "images/userImage5.jpeg",
+          time: "23 Mar"),
+      ChatUsers(
+          text: "Jacob Pena",
+          secondaryText: "will update you in evening",
+          image: "images/userImage6.jpeg",
+          time: "17 Mar"),
+      ChatUsers(
+          text: "Andrey Jones",
+          secondaryText: "Can you please share the file?",
+          image: "images/userImage7.jpeg",
+          time: "24 Feb"),
+      ChatUsers(
+          text: "John Wick",
+          secondaryText: "How are you?",
+          image: "images/userImage8.jpeg",
+          time: "18 Feb"),
+    ];
 
     return DefaultTabController(
         length: 2,
@@ -30,7 +74,7 @@ class _ForumViewState extends State<ForumView>
         // closest DefaultTabController.
         child: Scaffold(
           appBar: AppBar(
-              toolbarHeight: 110,
+              toolbarHeight: 60,
               backgroundColor: yellow,
               title: Text(
                 "Форум",
@@ -58,24 +102,40 @@ class _ForumViewState extends State<ForumView>
             children: <Widget>[
               SingleChildScrollView(
                 child: Center(
-                  child: Text("It's rainy here"),
+                  child: Container(
+                    height: 1000,
+                    child: ListView.builder(
+                      itemCount: chatUsers.length,
+                      shrinkWrap: true,
+                      padding: EdgeInsets.only(top: 16),
+                      physics: NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        return ConversationList(
+                            name: chatUsers[index].text,
+                            messageText: chatUsers[index].secondaryText,
+                            imageUrl: chatUsers[index].image,
+                            time: chatUsers[index].time,
+                            isMessageRead:
+                                (index == 0 || index == 3) ? true : false,
+                        );
+                      },
+                    ),
+                  ),
                 ),
               ),
               SingleChildScrollView(
                 child: Center(
                   child: Column(
                     children: [
-                      SizedBox(height: 20,),
+                      SizedBox(
+                        height: 20,
+                      ),
                       Container(
-                        width: width*0.9,
+                        width: width * 0.9,
                         height: 45,
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          border: Border.all(
-                            width: 1,
-                            color: grey
-                          )
-                        ),
+                            borderRadius: BorderRadius.circular(5),
+                            border: Border.all(width: 1, color: grey)),
                         child: Row(
                           children: [
                             Expanded(
@@ -84,44 +144,46 @@ class _ForumViewState extends State<ForumView>
                                 cursorColor: black,
                                 style: TextStyle(fontSize: 18),
                                 decoration: InputDecoration(
-                                    hintText: 'Район',
-                                    labelStyle: TextStyle(fontSize: 18),
-                                    contentPadding: EdgeInsets.only(left: 17),
-                                    enabledBorder: InputBorder.none,
-                                    focusedBorder: InputBorder.none,
-                              ),
+                                  hintText: 'Район',
+                                  labelStyle: TextStyle(fontSize: 18),
+                                  contentPadding: EdgeInsets.only(left: 17),
+                                  enabledBorder: InputBorder.none,
+                                  focusedBorder: InputBorder.none,
+                                ),
                               ),
                             ),
                             Expanded(
-                              flex: 3,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  border: Border(left: BorderSide(width: 1,color:grey))
-                                ),
-                                child: IconButton(
-                                  icon: Icon(Icons.search_sharp, size: 30, color: grey),
-                                  onPressed: () {},
-                                ),
-                              )
-                            )
+                                flex: 3,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      border: Border(
+                                          left: BorderSide(
+                                              width: 1, color: grey))),
+                                  child: IconButton(
+                                    icon: Icon(Icons.search_sharp,
+                                        size: 30, color: grey),
+                                    onPressed: () {},
+                                  ),
+                                ))
                           ],
                         ),
                       ),
                       Container(
-                        height:20,
+                        height: 20,
                         width: width,
                         color: white,
                       ),
                       Container(
                         width: width,
                         color: Color.fromRGBO(239, 255, 244, 1.0),
-                        height: 237,
+                        height: 240,
                         child: Padding(
                           padding: const EdgeInsets.only(left: 17),
                           child: Column(
                             children: [
                               Padding(
-                                padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
+                                padding:
+                                    const EdgeInsets.fromLTRB(0, 20, 0, 20),
                                 child: Align(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
@@ -130,23 +192,70 @@ class _ForumViewState extends State<ForumView>
                                       fontSize: 18,
                                       fontWeight: FontWeight.w700,
                                     ),
-                                    ),
+                                  ),
                                 ),
                               ),
                               Card(
-                                child: ListTile(
-                                  leading: CircleAvatar(
-                                    radius: 40,
-                                    backgroundImage: AssetImage('assets/forum_images/pushkino.png'),
+                                child: Container(
+                                  width: width * 0.92,
+                                  height: 65,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(10))),
+                                  child: ListTile(
+                                    leading: CircleAvatar(
+                                      radius: 40,
+                                      backgroundImage: AssetImage(
+                                          'assets/forum_images/pushkino.png'),
                                     ),
-                                  title: Text('Улица Александра Пушкина', 
-                                          style: TextStyle(
-                                            fontSize: 17
-                                          ),),
+                                    title: Text(
+                                      'Улица Майры 49',
+                                      style: TextStyle(fontSize: 17),
+                                    ),
+                                  ),
                                 ),
+                              ),
+                              SizedBox(height: 10),
+                              Card(
+                                child: Container(
+                                  width: width * 0.92,
+                                  height: 65,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(10))),
+                                  child: ListTile(
+                                    leading: CircleAvatar(
+                                      radius: 40,
+                                      backgroundImage: AssetImage(
+                                          'assets/forum_images/pushkino.png'),
+                                    ),
+                                    title: Text(
+                                      'Дом Ткачева 5',
+                                      style: TextStyle(fontSize: 17),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Row(
+                                children: [
+                                  Expanded(flex: 9, child: Container()),
+                                  Expanded(
+                                      flex: 1,
+                                      child: Container(
+                                        child: Image.asset(
+                                          'assets/forum_images/dots.png',
+                                        ),
+                                      )),
+                                ],
                               )
-                          ],),
+                            ],
+                          ),
                         ),
+                      ),
+                      SizedBox(
+                        height: 40,
                       ),
                       Container(
                         width: width,
@@ -157,7 +266,8 @@ class _ForumViewState extends State<ForumView>
                           child: Column(
                             children: [
                               Padding(
-                                padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
+                                padding:
+                                    const EdgeInsets.fromLTRB(0, 20, 0, 20),
                                 child: Align(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
@@ -167,11 +277,92 @@ class _ForumViewState extends State<ForumView>
                                       fontSize: 18,
                                       fontWeight: FontWeight.w700,
                                     ),
-                                    ),
+                                  ),
                                 ),
                               ),
-                              
-                          ],),
+                              Column(
+                                children: [
+                                  Card(
+                                    child: Container(
+                                      width: width * 0.92,
+                                      height: 65,
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10))),
+                                      child: ListTile(
+                                        leading: CircleAvatar(
+                                          radius: 40,
+                                          backgroundImage: AssetImage(
+                                              'assets/forum_images/pushkino.png'),
+                                        ),
+                                        title: Text(
+                                          'ЖК GreenCity',
+                                          style: TextStyle(fontSize: 17),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(height: 10),
+                                  Card(
+                                    child: Container(
+                                      width: width * 0.92,
+                                      height: 65,
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10))),
+                                      child: ListTile(
+                                        leading: CircleAvatar(
+                                          radius: 40,
+                                          backgroundImage: AssetImage(
+                                              'assets/forum_images/pushkino.png'),
+                                        ),
+                                        title: Text(
+                                          'Дом Ткачева 5',
+                                          style: TextStyle(fontSize: 17),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(height: 10),
+                                  Card(
+                                    child: Container(
+                                      width: width * 0.92,
+                                      height: 65,
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10))),
+                                      child: ListTile(
+                                        leading: CircleAvatar(
+                                          radius: 40,
+                                          backgroundImage: AssetImage(
+                                              'assets/forum_images/pushkino.png'),
+                                        ),
+                                        title: Text(
+                                          'Дом Ткачева 5',
+                                          style: TextStyle(fontSize: 17),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Row(
+                                    children: [
+                                      Expanded(flex: 9, child: Container()),
+                                      Expanded(
+                                          flex: 1,
+                                          child: Container(
+                                            child: Image.asset(
+                                              'assets/forum_images/dots.png',
+                                            ),
+                                          )),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       )
                     ],

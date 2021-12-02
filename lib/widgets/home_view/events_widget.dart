@@ -30,7 +30,7 @@ Widget eventsWidget(BuildContext context, double width) {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset('assets/home_event_icon.png', height: 80),
+            Image.asset('assets/home/home_event_icon.png', height: 80),
             Text('События', 
             style: TextStyle(
               fontWeight: FontWeight.bold,

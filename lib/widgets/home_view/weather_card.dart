@@ -31,12 +31,14 @@ Widget weather(double width) {
               height: 96,
               child: Column(
                 children: [
-                  Row(children: [
-                    Icon(Icons.wb_sunny, size: 53, color: white,),
-                    Text('-17' + '°',
-                      style: TextStyle(color: white, fontSize: 35),
-                    )
-                  ],),
+                  Center(
+                    child: Row(children: [
+                      Icon(Icons.wb_cloudy, size: 45, color: white,),
+                      Text('1' + '°',
+                        style: TextStyle(color: white, fontSize: 35),
+                      )
+                    ],),
+                  ),
                   Text('Переменная облачность',
                       style: TextStyle(
                         color: white,
@@ -49,11 +51,11 @@ Widget weather(double width) {
                       Text('Погода',
                       style: TextStyle(
                         color: white, 
-                        fontSize: 30,
+                        fontSize: 26,
                         fontWeight: FontWeight.w500
                         ),
                       ),
-                      Text('Пн'+', '+'15 Марта'+'09:34',
+                      Text('Вт'+', '+'2 ноября',
                       style: TextStyle(
                         color: white, 
                         fontSize: 9,
@@ -70,11 +72,11 @@ Widget weather(double width) {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                weatherOftheDay('Вторник', width, 10, Icons.wb_sunny, '-10', '45'),
-                weatherOftheDay('Вторник', width, 10, Icons.wb_sunny, '-10', '45'),
-                weatherOftheDay('Вторник', width, 10, Icons.wb_sunny, '-10', '45'),
-                weatherOftheDay('Вторник', width, 10, Icons.wb_sunny, '-10', '45'),
-                weatherOftheDay('Вторник', width, 10, Icons.wb_sunny, '-10', '45'),
+                weatherOftheDay('Среда', width, 10, Icons.wb_cloudy_rounded, '-8', '-13'),
+                weatherOftheDay('Четверг', width, 10, Icons.wb_cloudy_rounded, '-4', '-14'),
+                weatherOftheDay('Пятница', width, 10, Icons.wb_sunny, '1', '-8'),
+                weatherOftheDay('Суббота', width, 10, Icons.wb_cloudy_rounded, '2', '-6'),
+                weatherOftheDay('Воскресенье', width, 10, Icons.wb_cloudy_rounded, '6', '-3'),
               ],
               ))
         ],),

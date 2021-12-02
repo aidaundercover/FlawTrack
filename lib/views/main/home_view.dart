@@ -25,6 +25,7 @@ class _HomeViewState extends State<HomeView> {
 
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: 60,
         flexibleSpace: Container(
             decoration: BoxDecoration(
           gradient: LinearGradient(

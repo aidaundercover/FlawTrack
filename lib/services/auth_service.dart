@@ -81,20 +81,23 @@ class AuthService {
       CollectionReference collectionReference = _db.collection('users');
       collectionReference.add(userData);
     } on FirebaseAuthException catch (e) {
-        if (e.code == 'email-already-in-use') {
-          print('The account already exists for that email');
-        }
-      } catch (e) {
-        print(e.toString());
+      if (e.code == 'email-already-in-use') {
+        print('The account already exists for that email');
       }
+    } catch (e) {
+      print(e.toString());
+    }
   }
 
   // Sign In with Email
   static Future<void> signInWithEmail(
-      {required String email, required String password}) async {
+      {required String email,
+      required String password,
+      required BuildContext context}) async {
     UserCredential res = await _firebaseAuth.signInWithEmailAndPassword(
         email: email, password: password);
-
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => HomeCitizen()));
   }
 
   //Sign In with third party

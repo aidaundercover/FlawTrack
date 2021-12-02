@@ -34,8 +34,8 @@ class _LoginPageState extends State<LoginPage> {
 
     return Scaffold(
       bottomSheet: GestureDetector(
-        onTap: () {
-                Navigator.of(context).pushReplacementNamed(AppRoutes.signUp);
+        onTap: () async {
+                await Navigator.of(context).pushReplacementNamed(AppRoutes.signUp);
               },
         child: Container(
                     width: _width,
@@ -195,7 +195,7 @@ class _LoginPageState extends State<LoginPage> {
                 try {
                   await AuthService.signInWithEmail(
                       email: _emailController.text,
-                      password: _passwordController.text).then((value) => {
+                      password: _passwordController.text, context: context).then((value) => {
                       });
                   
                 } catch (e) {

@@ -1,13 +1,8 @@
 import 'package:flawtrack/services/auth_service.dart';
+import 'package:flawtrack/views/first_view.dart';
 import 'package:flawtrack/views/settings/settings_main.dart';
 import 'package:flutter/material.dart';
 import 'package:flawtrack/const.dart';
-// ignore: import_of_legacy_library_into_null_safe
-import 'package:geolocator/geolocator.dart';
-import 'package:flawtrack/routes.dart';
-import 'dart:async';
-import 'package:flutter_geocoder/geocoder.dart';
-import 'package:flutter_geocoder/model.dart';
 
 class DrawerCustom extends StatefulWidget {
   @override
@@ -16,22 +11,10 @@ class DrawerCustom extends StatefulWidget {
 
 class _DrawerCustomState extends State<DrawerCustom> {
   bool isSwitched = false;
-  late StreamSubscription<Position> _streamSubscription;
-  late Address addres;
 
   @override
   void initState() {
     super.initState();
-
-    _streamSubscription =
-        Geolocator.getPositionStream().listen((Position position) {
-      setState(() {
-        final coordinates =
-            new Coordinates(position.latitude, position.longitude);
-        convertCoordinatesToAddress(coordinates)
-            .then((value) => addres = value);
-      });
-    });
   }
 
   @override
@@ -133,7 +116,7 @@ class _DrawerCustomState extends State<DrawerCustom> {
                                 Icon(Icons.location_on_outlined,
                                     size: 23, color: black),
                                 SizedBox(width: 15),
-                                Text("",
+                                Text("$addressGlobal",
                                     style: TextStyle(
                                         fontSize: 13,
                                         fontFamily: 'Roboto',
@@ -255,7 +238,7 @@ class _DrawerCustomState extends State<DrawerCustom> {
                                 ImageIcon(AssetImage('assets/theme.png'),
                                     size: 23, color: black),
                                 SizedBox(width: 15),
-                                Text('Dark Theme',
+                                Text('Темная тема',
                                     style: TextStyle(
                                         fontSize: 13,
                                         fontWeight: FontWeight.normal,
@@ -329,22 +312,12 @@ class _DrawerCustomState extends State<DrawerCustom> {
                                 color: Colors.black)),
                         onTap: () {
                           AuthService.logOut();
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => FirstView()));
                         }),
                   ]))
             ],
           )),
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _streamSubscription.cancel();
-  }
-
-  convertCoordinatesToAddress(Coordinates coordinates) async {
-    var addresses =
-        await Geocoder.local.findAddressesFromCoordinates(coordinates);
-    return addresses.first;
   }
 }

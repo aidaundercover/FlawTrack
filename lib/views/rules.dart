@@ -54,44 +54,44 @@ class UsingRules extends StatelessWidget {
                   width: 1), 
                   children: [  
                       TableRow( children: [  
-                        Column(children:[ImageIcon(AssetImage('assets/tableicons/trashcan.png'), size: 24, color: black)]),  
-                        Column(children:[Text('Мусор в неположенном месте', style: TextStyle(fontSize: 15.0))]),  
+                        Container(height: 50, child: Column(children:[ImageIcon(AssetImage('assets/pins/trashcan.png'), size: 24, color: black)])),  
+                        Container(height: 50, child: Column(children:[Text('Мусор в неположенном месте', style: TextStyle(fontSize: 15.0))])),  
                       ]),  
                       TableRow( children: [  
-                        Column(children:[ImageIcon(AssetImage('assets/road.png'), size: 24, color: black)]),  
-                        Column(children:[Text('Дорога/тратуар разбита', style: TextStyle(fontSize: 15.0))]),  
+                        Column(children:[ImageIcon(AssetImage('assets/pins/road.png'), size: 24, color: black)]),  
+                        Column(children:[Text('Дорога/тратуар разбита', style: TextStyle(fontSize: 15.0),)]),  
                       ]),
-                      TableRow( children: [  
-                        Column(children:[ImageIcon(AssetImage('assets/dog.png'), size: 24, color: black)]),  
+                      TableRow(  children: [  
+                        Column(children:[ImageIcon(AssetImage('assets/pins/dog.png'), size: 24, color: black)]),  
                         Column(children:[Text('Бездомная/потерявшаяся собака', style: TextStyle(fontSize: 15.0))]),  
                       ]),
                       TableRow( children: [  
-                        Column(children:[ImageIcon(AssetImage('assets/cat.png'), size: 24, color: black)]),  
+                        Column(children:[ImageIcon(AssetImage('assets/pins/cat.png'), size: 24, color: black)]),  
                         Column(children:[Text('Бездомный/потерявшийся кот', style: TextStyle(fontSize: 15.0))]),  
                       ]),  
                       TableRow( children: [  
-                        Column(children:[ImageIcon(AssetImage('assets/garbagecan.png'), size: 24, color: black)]),  
+                        Column(children:[ImageIcon(AssetImage('assets/pins/trash.png'), size: 24, color: black)]),  
                         Column(children:[Text('Свалка в неположенном месте', style: TextStyle(fontSize: 15.0))]),  
                       ]),
                       TableRow( children: [  
-                        Column(children:[ImageIcon(AssetImage('assets/drops.png'), size: 24, color: black)]),  
+                        Column(children:[ImageIcon(AssetImage('assets/pins/drown.png'), size: 24, color: black)]),  
                         Column(children:[Text('Затопление', style: TextStyle(fontSize: 15.0))]),  
                       ]),
                       TableRow( children: [  
-                        Column(children:[ImageIcon(AssetImage('assets/bomzh.png'), size: 24, color: black)]),  
+                        Column(children:[ImageIcon(AssetImage('assets/pins/homeless.png'), size: 24, color: black)]),  
                         Column(children:[Text('БОМЖ', style: TextStyle(fontSize: 15.0))]),  
                       ]),  
                       TableRow( children: [  
-                        Column(children:[ImageIcon(AssetImage('assets/volunteer.png'), size: 24, color: black)]),  
+                        Column(children:[ImageIcon(AssetImage('assets/pins/volunteer.png'), size: 24, color: black)]),  
                         Column(children:[Text('Волонтер', style: TextStyle(fontSize: 15.0))]),  
                       ]),
                       TableRow( children: [  
-                        Column(children:[ImageIcon(AssetImage('assets/star.png'), size: 24, color: black)]),  
+                        Column(children:[ImageIcon(AssetImage('assets/pins/fixed.png'), size: 24, color: black)]),  
                         Column(children:[Text('Исправлено', style: TextStyle(fontSize: 15.0))]),  
                       ]),
                     ],  
               ),
-              SizedBox(height: 20,),
+              SizedBox(height: 30,),
               Center(
                 child: Text(
                     'Онлайн-этикет',
@@ -108,7 +108,7 @@ class UsingRules extends StatelessWidget {
                 child: RichText(
                   text: TextSpan(
                     text: 'Около 60% жителей планеты вовлечены в онлайн-общение, ежедневно каждый пользователь проводит в сети в среднем 6.43 часов (а это около 100 дней в году), свыше 50% всего трафика приходится на мобильные устройства.\n\n',
-                    style: TextStyle(fontSize: 15),
+                    style: TextStyle(fontSize: 15, color: black),
                     children: const <TextSpan>[
                         TextSpan(text: 'Онлайн-этикет – это не столько про четкие правила, сколько про уважение к границам и времени других людей, создание благоприятного впечатления, повышение эффективности коммуникации и умение строить взаимовыгодные отношения.\n'),
                         TextSpan(text: 'Там, где есть люди, всегда формируются нормы их взаимодействия, и Интернет исключением не является. В частной переписке с близкими и родными мы вольны общаться так, как привыкли в реальной жизни, в рамках установленных личных границ и сложившихся на протяжении многих лет шаблонов. \n'),

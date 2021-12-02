@@ -8,7 +8,7 @@ class FundOpening extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var width = MediaQuery.of(context).size.width;
+    var width = MediaQuery.of(context).size.height;
 
     return Scaffold(
       backgroundColor: yellow,
@@ -31,23 +31,30 @@ class FundOpening extends StatelessWidget {
                   fontWeight: FontWeight.bold
                 ),
               ),
-            Image.asset('assets/fund_welcome.png', width: width),
+            Image.asset('assets/fund_welcome.png', height: width*0.65,),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => FundMain()));
               },
-              child: Container(
-                height: 57,
-                width: 180,
-                color: white,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(40),
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(white),
+                fixedSize:MaterialStateProperty.all<Size>(
+                  Size(180,57),
                 ),
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(40.0),
+                )
+                )
+              ),
+              child: Container(
+                alignment: Alignment.center,
                 child: Text(
                   'Помочь',
                   style: TextStyle(
                     fontSize: 22,
-                    fontWeight: FontWeight.bold
+                    fontWeight: FontWeight.bold,
+                    color: black
                   ),
                 ),
               ),

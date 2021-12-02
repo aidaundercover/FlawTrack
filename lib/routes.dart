@@ -21,11 +21,11 @@ class AppRoutes {
 
   static Map<String, WidgetBuilder> define() {
     return {
-      signIn: (BuildContext context) => LoginPage(),
-      signUp: (BuildContext context) => SignUp(),
-      homeCitizen: (BuildContext context) => HomeCitizen(),
-      homeVolunteer: (BuildContext context) => HomeVolunteer(),
-      forgotPassword: (BuildContext context) => ForgotPassword(),
+      signIn: (context) => LoginPage(),
+      signUp: (BuildContext context) =>  SignUp(),
+      homeCitizen: (context) => HomeCitizen(),
+      homeVolunteer: (context) => HomeVolunteer(),
+      forgotPassword: (context) => ForgotPassword(),
     };
   }
 }
