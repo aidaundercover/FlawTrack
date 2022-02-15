@@ -30,7 +30,7 @@ Widget becomeVolunteer(BuildContext context, double width) {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
               Image.asset('assets/home/home_hands_icon.png', height: 64, width: 64,),
-              Text('Стать волонтером', 
+              Text('Волонтер болу', 
                 style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 13

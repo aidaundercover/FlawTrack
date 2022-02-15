@@ -26,34 +26,38 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  cloud_firestore: ^2.5.3
+  cloud_firestore: ^3.1.7
   firebase_auth: ^3.1.2
   provider: ^6.0.1
-  google_sign_in: ^5.1.1
   firebase_core: ^1.7.0
   firebase_storage: ^10.0.4
-  shared_preferences: ^2.0.8
-  flutter_facebook_auth: "^3.5.0"
-  sign_in_with_apple: ^2.5.2
+  flutter_facebook_auth: ^4.0.1
+  shared_preferences: ^2.0.11
+
 
   flutter_spinkit: ^5.1.0
   syncfusion_flutter_charts: ^19.3.47
 
 
+
   location: ^4.3.0
+
+
+
 
 
   image_picker: ^0.8.3+2
   http: ^0.13.3
   cached_network_image: ^3.1.0
-  webview_flutter: ^2.0.10
+  webview_flutter: ^3.0.0
   fluttertoast: ^8.0.8
   path_provider: ^2.0.2
   get_it: ^7.2.0
   geolocator: ^7.2.0+1
-  geocoding: ^2.0.1
+  geocoding: 
   url_launcher: ^6.0.12
 
+  email_validator: ^2.0.1
 
   auto_size_text: ^3.0.0-nullsafety.0
   flutter_native_splash: ^1.2.0
@@ -63,6 +67,7 @@ dependencies:
 
 
   google_maps_flutter: ^2.0.11
+  google_map_polyline_new: ^0.3.0+2
 
   
 

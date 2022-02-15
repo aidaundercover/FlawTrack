@@ -16,7 +16,6 @@ class BecomeVolunteer extends StatefulWidget {
 }
 
 class _BecomeVolunteerState extends State<BecomeVolunteer> {
-
   late TextEditingController _emailController;
   late TextEditingController _passwordController;
 
@@ -198,7 +197,9 @@ class _BecomeVolunteerState extends State<BecomeVolunteer> {
           ),
         ),
         onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => HomeVolunteer()));
+          volunteer = true;
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => HomeVolunteer()));
         },
       );
     }
@@ -215,12 +216,14 @@ class _BecomeVolunteerState extends State<BecomeVolunteer> {
                 borderRadius: BorderRadius.all(Radius.circular(15))),
             child: Column(
               children: [
-                SizedBox(height: 20,),
+                SizedBox(
+                  height: 20,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'FlawTrack',
+                      'FlawTrack ',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
                     ),
@@ -249,7 +252,8 @@ class _BecomeVolunteerState extends State<BecomeVolunteer> {
                           decoration: InputDecoration(
                               hintText: 'Email/Номер телефона',
                               border: OutlineInputBorder(
-                                  borderSide: BorderSide(color: grey, width: 1))),
+                                  borderSide:
+                                      BorderSide(color: grey, width: 1))),
                         ),
                       ),
                       SizedBox(
@@ -263,7 +267,8 @@ class _BecomeVolunteerState extends State<BecomeVolunteer> {
                           decoration: InputDecoration(
                               hintText: 'Пароль',
                               border: OutlineInputBorder(
-                                  borderSide: BorderSide(color: grey, width: 1))),
+                                  borderSide:
+                                      BorderSide(color: grey, width: 1))),
                         ),
                       )
                     ],

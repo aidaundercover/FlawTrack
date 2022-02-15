@@ -16,8 +16,8 @@ class ForumView extends StatefulWidget {
 class _ForumViewState extends State<ForumView>
     with SingleTickerProviderStateMixin {
   static const List<Tab> tabs = <Tab>[
-    Tab(text: 'ЧАТЫ'),
-    Tab(text: 'ИСКАТЬ'),
+    Tab(text: 'ЧАТ'),
+    Tab(text: 'ІЗДЕУ'),
   ];
 
   @override
@@ -28,42 +28,42 @@ class _ForumViewState extends State<ForumView>
       ChatUsers(
           text: "ЖК Кенесары",
           secondaryText: "И что вы думаете?",
-          image: "images/userImage1.jpeg",
+          image: "assets/forum_images/chat/useravatar.png",
           time: "Сейчас"),
       ChatUsers(
           text: "Улица Амангельды",
           secondaryText: "Да, сегодня в шатре",
-          image: "images/userImage2.jpeg",
+          image:"assets/forum_images/chat/useravatar.png",
           time: "Вчера"),
       ChatUsers(
           text: "Улица Пушкинская",
           secondaryText: "ахахахаххаха",
-          image: "images/userImage3.jpeg",
+          image:"assets/forum_images/chat/useravatar.png",
           time: "31 Сен"),
       ChatUsers(
           text: "Аягуль Арамова",
           secondaryText: "Предусмотрительно",
-          image: "images/userImage4.jpeg",
+          image: "assets/forum_images/chat/useravatar.png",
           time: "28 Mar"),
       ChatUsers(
           text: "Алим Женисов",
           secondaryText: "Состояние потока - лучшее",
-          image: "images/userImage5.jpeg",
+          image: "assets/forum_images/chat/useravatar.png",
           time: "23 Mar"),
       ChatUsers(
           text: "Jacob Pena",
           secondaryText: "will update you in evening",
-          image: "images/userImage6.jpeg",
+          image: "assets/forum_images/chat/useravatar.png",
           time: "17 Mar"),
       ChatUsers(
           text: "Andrey Jones",
           secondaryText: "Can you please share the file?",
-          image: "images/userImage7.jpeg",
+          image: "assets/forum_images/chat/useravatar.png",
           time: "24 Feb"),
       ChatUsers(
           text: "John Wick",
           secondaryText: "How are you?",
-          image: "images/userImage8.jpeg",
+          image: "assets/forum_images/chat/useravatar.png",
           time: "18 Feb"),
     ];
 
@@ -117,6 +117,7 @@ class _ForumViewState extends State<ForumView>
                             time: chatUsers[index].time,
                             isMessageRead:
                                 (index == 0 || index == 3) ? true : false,
+                      
                         );
                       },
                     ),
@@ -187,7 +188,7 @@ class _ForumViewState extends State<ForumView>
                                 child: Align(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
-                                    'Рядом',
+                                    'Жанында',
                                     style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.w700,
@@ -207,7 +208,7 @@ class _ForumViewState extends State<ForumView>
                                     leading: CircleAvatar(
                                       radius: 40,
                                       backgroundImage: AssetImage(
-                                          'assets/forum_images/pushkino.png'),
+                                          'assets/forum_images/kenesary.png'),
                                     ),
                                     title: Text(
                                       'Улица Майры 49',
@@ -229,7 +230,7 @@ class _ForumViewState extends State<ForumView>
                                     leading: CircleAvatar(
                                       radius: 40,
                                       backgroundImage: AssetImage(
-                                          'assets/forum_images/pushkino.png'),
+                                          'assets/forum_images/abylai_khan.png'),
                                     ),
                                     title: Text(
                                       'Дом Ткачева 5',
@@ -271,7 +272,7 @@ class _ForumViewState extends State<ForumView>
                                 child: Align(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
-                                    'Популярные',
+                                    'Таралған',
                                     textAlign: TextAlign.start,
                                     style: TextStyle(
                                       fontSize: 18,
@@ -294,7 +295,7 @@ class _ForumViewState extends State<ForumView>
                                         leading: CircleAvatar(
                                           radius: 40,
                                           backgroundImage: AssetImage(
-                                              'assets/forum_images/pushkino.png'),
+                                              'assets/forum_images/kabanbay.png'),
                                         ),
                                         title: Text(
                                           'ЖК GreenCity',
@@ -316,7 +317,7 @@ class _ForumViewState extends State<ForumView>
                                         leading: CircleAvatar(
                                           radius: 40,
                                           backgroundImage: AssetImage(
-                                              'assets/forum_images/pushkino.png'),
+                                              'assets/forum_images/f1.png'),
                                         ),
                                         title: Text(
                                           'Дом Ткачева 5',
@@ -338,7 +339,7 @@ class _ForumViewState extends State<ForumView>
                                         leading: CircleAvatar(
                                           radius: 40,
                                           backgroundImage: AssetImage(
-                                              'assets/forum_images/pushkino.png'),
+                                              'assets/forum_images/al_farabi.png'),
                                         ),
                                         title: Text(
                                           'Дом Ткачева 5',

@@ -147,7 +147,7 @@ class _DrawerCustomState extends State<DrawerCustom> {
                                     width: 23,
                                     height: 23),
                                 SizedBox(width: 15),
-                                Text('' + 'баллов',
+                                Text('$points'+ ' ' + 'баллов',
                                     style: TextStyle(
                                         fontSize: 13,
                                         fontFamily: 'Roboto',

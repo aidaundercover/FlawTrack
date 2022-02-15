@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flawtrack/models/Event.dart';
+import 'package:flawtrack/widgets/events/city_events.dart';
 import 'package:flutter/material.dart';
 import '../../const.dart';
 
@@ -22,7 +23,7 @@ class _EventsCalendarState extends State<EventsCalendar> {
         toolbarHeight: 60,
         backgroundColor: primaryColor,
         title: Text(
-          "Календарь событий",
+          "Іс-шаралар күнтізбесі",
           style: TextStyle(
               fontSize: 25, fontWeight: FontWeight.bold, color: black),
         ),
@@ -70,45 +71,12 @@ class _EventsCalendarState extends State<EventsCalendar> {
                     ),
                   ),
                   SizedBox(height: 25,),
-                  Container(
-                      width: _width*0.86,
-                      child: Column(children: [
-                        Text('Мероприятия на сегодня', style: TextStyle(color: darkBlue, fontWeight: FontWeight.bold, fontSize: 23)),
-                        SizedBox(height: 30,),
-                        Container(
-                          height: 90,
-                          decoration: BoxDecoration(
-                            color: Color.fromRGBO(255, 162, 141, 1.0),
-                            borderRadius: BorderRadius.circular(7),
-                          ),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                          Container(
-        width: 50,
-        height: 50,
-        decoration: BoxDecoration(
-          color: Color.fromRGBO(255, 244, 244, 0.19),
-          borderRadius: BorderRadius.circular(16),
-        ),
-        alignment: Alignment.center,
-        child: Image.asset('assets/events/broom.png', width: 31,)
-        ),
-      Container(
-        height: 60,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children:[ 
-            Text('Субботник на Айтаматова', style: TextStyle(color: white, fontSize: 16, fontWeight: FontWeight.bold)),
-            SizedBox(height: 10,),
-            Text('у памятника Абая в 17:00', style: TextStyle(color: white, fontSize: 12))
-          ]
-        ),
-      )
-    ],),
-  )
-                      ],),
-                  )
+                  Padding(
+                    padding: const EdgeInsets.only(left: 5, bottom: 15),
+                    child: Text('Бүгінге жоспарланған:', style: TextStyle(color: darkBlue, fontWeight: FontWeight.bold, fontSize: 23)),
+                  ),
+                  eventTile(context, 'Субботник на Айтаматова', 'assets/events/broom.png', 'у памятника Абая в 17:00', Color.fromRGBO(255, 162, 141, 1.0), _width)
+                  
                 ],
               ),
             ),
@@ -130,7 +98,7 @@ Widget horizontalList() {
 
     String dateFormatter(DateTime date) {
       dynamic dayData =
-          '{ "1" : "ПН", "2" : "ВТ", "3" : "СР", "4" : "ЧТ", "5" : "ПТ", "6" : "СБ", "7" : "ВС" }';
+          '{ "1" : "ДС", "2" : "СС", "3" : "СР", "4" : "БС", "5" : "ЖМ", "6" : "СБ", "7" : "ЖС" }';
 
       return json.decode(dayData)['${date.weekday}'];
     }

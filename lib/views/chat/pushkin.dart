@@ -1,8 +1,8 @@
 import 'package:flawtrack/const.dart';
 import 'package:flutter/material.dart';
 
-class Kenesary extends StatelessWidget {
-  const Kenesary({Key? key}) : super(key: key);
+class Pushkin extends StatelessWidget {
+  const Pushkin({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,7 @@ class Kenesary extends StatelessWidget {
                 ),
                 SizedBox(width: 2,),
                 CircleAvatar(
-                  backgroundImage: NetworkImage("<https://randomuser.me/api/portraits/men/5.jpg>"),
+                  backgroundImage: AssetImage("assets/forum_images/pushkino.png"),
                   maxRadius: 20,
                 ),
                 SizedBox(width: 12,),
@@ -34,9 +34,9 @@ class Kenesary extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Text("ЖК Кенесары",style: TextStyle( fontSize: 20 ,fontWeight: FontWeight.w600),),
+                      Text("Улица Александра Пушкина",style: TextStyle( fontSize: 15 ,fontWeight: FontWeight.w600),),
                       SizedBox(height: 6,),
-                      Text("2 участника, 1 онлайн",style: TextStyle(color: Colors.grey.shade600, fontSize: 13),),
+                      Text("3 участника, 1 онлайн",style: TextStyle(color: Colors.grey.shade600, fontSize: 13),),
                     ],
                   ),
                 ),

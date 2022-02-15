@@ -38,11 +38,11 @@ class _HomeCitizenState extends State<HomeCitizen> {
           items: [
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
-              label: "Главная",
+              label: "Басты бет",
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.map_sharp),
-              label: "Карты",
+              label: "Карталар",
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.speaker_notes),

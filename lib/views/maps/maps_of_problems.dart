@@ -1,10 +1,15 @@
-import 'dart:typed_data';
-import 'dart:ui' as ui;
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flawtrack/const.dart';
+import 'package:flawtrack/views/maps/takephoto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flawtrack/widgets/maps/maps.dart';
+import 'package:flawtrack/widgets/maps/problembutton.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
 class MapsOfProblems extends StatefulWidget {
   const MapsOfProblems({Key? key}) : super(key: key);
@@ -13,52 +18,64 @@ class MapsOfProblems extends StatefulWidget {
   _MapsOfProblemsState createState() => _MapsOfProblemsState();
 }
 
-Future<Uint8List> getBytesFromAsset(String path, int width) async {
-  ByteData data = await rootBundle.load(path);
-  ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
-      targetWidth: width);
-  ui.FrameInfo fi = await codec.getNextFrame();
-  return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!
-      .buffer
-      .asUint8List();
-}
-
 class _MapsOfProblemsState extends State<MapsOfProblems> {
-  Set<Marker> _markers = {};
-
-  late BitmapDescriptor mapMarker1;
-  late BitmapDescriptor mapMarker2;
-  late BitmapDescriptor mapMarker3;
-  late BitmapDescriptor mapMarker4;
-  late BitmapDescriptor mapMarker5;
-  late BitmapDescriptor mapMarker6;
+  Set<Marker> markers = {};
+  Set<Polyline> polylines = {};
 
   bool popped = true;
-
-  String mapCity = cityGlobal.toString();
   String _mapLat = lat.toString();
   String _mapLong = long.toString();
+  bool pinned = false;
+  late BitmapDescriptor markerPin;
+  late int indexg;
+  bool draggablePin = true;
+  late String tempId;
+  double opReload = 0.5;
+  bool pressRel = false;
+  late Function()? takeaPhoto;
+  late String? imagePath;
+
+  late InfoWindow pinInfo;
+
+  late String pintitle;
+  late TextEditingController pindesc;
+
+  List<bool> isSelected = [false, false, false, false, false, false];
+  List<String> iconList = [
+    'assets/pins/trashcan.png',
+    'assets/pins/cat.png',
+    'assets/pins/road.png',
+    'assets/pins/dog.png',
+    'assets/pins/trash.png',
+    'assets/pins/drown.png'
+  ];
+
+  List<String> _images = [];
+
+  File? image;
+
+  Future pickImage() async {
+    try {
+      final image = await ImagePicker().pickImage(source: ImageSource.camera);
+      if (image == null) return;
+
+      final temporaryImage = File(image.path);
+
+      setState(() {
+        this.image = temporaryImage;
+      });
+    } on PlatformException catch (e) {
+      Fluttertoast.showToast(msg: 'Access to camera was denied');
+    }
+  }
 
   @override
   void initState() {
     super.initState();
     setCustomMaker();
     dropDown();
-  }
-
-  void setCustomMaker() async {
-    mapMarker1 = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(size: Size(50, 50)), 'assets/pins/road.png');
-    mapMarker2 = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(size: Size(50, 50)), 'assets/pins/road.png');
-    mapMarker3 = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(size: Size(50, 50)), 'assets/pins/drown.png');
-    mapMarker4 = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(size: Size(50, 50)), 'assets/pins/dog.png');
-    mapMarker5 = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(size: Size(50, 50)), 'assets/pins/trash.png');
-    mapMarker6 = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(size: Size(50, 50)), 'assets/pins/cat.png');
+    selectProblem();
+    pin();
   }
 
   void dropDown() {
@@ -67,32 +84,229 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
     });
   }
 
-  void _showcontent() {
+  void pressReload() {
+    setState(() {
+      pressRel = true;
+    });
+  }
+
+  void pin() {
+    setState(() {
+      pinned = !pinned;
+    });
+  }
+
+  void selectProblem() {
+    setState(() {
+      selected = !selected;
+    });
+  }
+
+  void _chooseCity() {
     showDialog(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
-        return new AlertDialog(
-          title: new Text('Выберете город:'),
-          content: new SingleChildScrollView(
-              child: ListView.builder(
-                  itemCount: _cities.length,
-                  itemBuilder: (BuildContext ctxt, int index) {
-                    return ListTile(
-                      title: _cities[index]['title'],
-                      onTap: () {
-                        setState(() {
-                          mapCity = _cities[index]['title'].toString();
-                        });
-                      },
-                    );
-                  })),
-          actions: [
-            TextButton(
-              child: Text('Ok'),
+        return SimpleDialog(
+          title: new Text('Қаланы таңданыз:'),
+          children: <Widget>[
+            SimpleDialogOption(
               onPressed: () {
-                Navigator.of(context).pop();
+                setState(() {
+                  mapCity = 'Алматы';
+                  lat = 43.2290871;
+                  long = 76.9137495;
+                });
+                Navigator.pop(context);
               },
+              child: const Text('Алматы'),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                setState(() {
+                  mapCity = 'Актобе';
+                  lat = 50.273819;
+                  long = 57.053706;
+                });
+                Navigator.pop(context);
+              },
+              child: const Text('Актобе'),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                setState(() {
+                  mapCity = 'Актау';
+                  lat = 43.641492;
+                  long = 51.1890056;
+                });
+                Navigator.pop(context);
+              },
+              child: const Text('Актау'),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                setState(() {
+                  mapCity = 'Атырау';
+                  lat = 47.1037403;
+                  long = 51.9077089;
+                });
+                Navigator.pop(context);
+              },
+              child: const Text('Атырау'),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                setState(() {
+                  mapCity = 'Қарағанды';
+                  lat = 49.8157172;
+                  long = 73.1079241;
+                });
+                Navigator.pop(context);
+              },
+              child: const Text('Қарағанды'),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                setState(() {
+                  mapCity = 'Көкшетау';
+                  lat = 43.2290871;
+                  long = 76.9137495;
+                });
+                Navigator.pop(context);
+              },
+              child: const Text('Көкшетау'),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                setState(() {
+                  mapCity = 'Қызылорда';
+                  lat = 43.2290871;
+                  long = 76.9137495;
+                });
+                Navigator.pop(context);
+              },
+              child: const Text('Қызылорда'),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                setState(() {
+                  mapCity = 'Қостанай';
+                  lat = 43.2290871;
+                  long = 76.9137495;
+                });
+                Navigator.pop(context);
+              },
+              child: const Text('Қостанай'),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                setState(() {
+                  mapCity = 'Нур-султан';
+                  lat = 43.2290871;
+                  long = 76.9137495;
+                });
+                Navigator.pop(context);
+              },
+              child: const Text('Нур-султан'),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                setState(() {
+                  mapCity = 'Семей';
+                  lat = 43.2290871;
+                  long = 76.9137495;
+                });
+                Navigator.pop(context);
+              },
+              child: const Text('Семей'),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                setState(() {
+                  mapCity = 'Талдықорған';
+                  lat = 43.2290871;
+                  long = 76.9137495;
+                });
+                Navigator.pop(context);
+              },
+              child: const Text('Талдықорған'),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                setState(() {
+                  mapCity = 'Тараз';
+                  lat = 43.2290871;
+                  long = 76.9137495;
+                });
+                Navigator.pop(context);
+              },
+              child: const Text('Тараз'),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                setState(() {
+                  mapCity = 'Түркістан';
+                  lat = 43.2290871;
+                  long = 76.9137495;
+                });
+                Navigator.pop(context);
+              },
+              child: const Text('Түркістан'),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                setState(() {
+                  mapCity = 'Өскемен';
+                  lat = 43.2290871;
+                  long = 76.9137495;
+                });
+                Navigator.pop(context);
+              },
+              child: const Text('Өскемен'),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                setState(() {
+                  mapCity = 'Уральск';
+                  lat = 43.2290871;
+                  long = 76.9137495;
+                });
+                Navigator.pop(context);
+              },
+              child: const Text('Уральск'),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                setState(() {
+                  mapCity = 'Павлодар';
+                  lat = 52.2535496;
+                  long = 76.940024;
+                });
+                Navigator.pop(context);
+              },
+              child: const Text('Павлодар'),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                setState(() {
+                  mapCity = 'Петропавлск';
+                  lat = 43.2290871;
+                  long = 76.9137495;
+                });
+                Navigator.pop(context);
+              },
+              child: const Text('Петропавлск'),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                setState(() {
+                  mapCity = 'Шымкент';
+                  lat = 43.2290871;
+                  long = 76.9137495;
+                });
+                Navigator.pop(context);
+              },
+              child: const Text('Шымкент'),
             ),
           ],
         );
@@ -100,68 +314,70 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
     );
   }
 
+  void _showPhoto() {}
+
   void _onMapCreated(GoogleMapController controller) {
-    setCustomMaker();
-    _markers.add(
+    markers.add(
       Marker(
-          icon: mapMarker1,
+          icon: mapMarker2,
           markerId: MarkerId('id-1'),
           position: LatLng(52.2537144, 76.9424712),
           infoWindow: InfoWindow(
-            title: 'Мусор в неположенном месте',
-            snippet: 'Пластиковые и бытовые отходы',
-          )),
+            title: 'Орынды емес қоқыс',
+            snippet: 'Пластикалық және тұрмыстық қалдықтар',
+          ),
+          onTap: () {}),
     );
-    _markers.add(
+    markers.add(
       Marker(
-          icon: mapMarker2,
+          icon: mapMarker1,
           markerId: MarkerId('id-2'),
           position: LatLng(52.2498763, 76.9514241),
           infoWindow: InfoWindow(
-            title: 'Асфальтовая яма',
-            snippet: 'тратуар сломан',
+            title: 'Асфальт шұңқыры',
+            snippet: 'тратуар сынған',
           )),
     );
-    _markers.add(
+    markers.add(
       Marker(
           icon: mapMarker3,
           markerId: MarkerId('id-3'),
           position: LatLng(52.2537144, 76.9424712),
           infoWindow: InfoWindow(
-            title: 'Потоп',
+            title: 'Су тасқыны',
             snippet: 'потоп',
           )),
     );
-    _markers.add(Marker(
+    markers.add(Marker(
         icon: mapMarker4,
         markerId: MarkerId('id-4'),
         position: LatLng(52.2504187, 76.9546327),
         infoWindow: InfoWindow(
-          title: 'Бездомная собака',
-          snippet: 'плохо видит и скулит',
+          title: 'Жоғалған ит',
+          snippet: 'нашар көреді және сыбырлайды',
         )));
 
-    _markers.add(
+    markers.add(
       Marker(
           icon: mapMarker5,
           markerId: MarkerId('id-3'),
           position: LatLng(52.2537144, 76.9424712),
           infoWindow: InfoWindow(
-            title: 'Потоп',
+            title: 'Су тасқыны',
             snippet: 'потоп',
           )),
     );
-    _markers.add(
+    markers.add(
       Marker(
           icon: mapMarker6,
           markerId: MarkerId('id-4'),
           position: LatLng(52.2484178, 76.9475304),
           infoWindow: InfoWindow(
-            title: 'Бездомная кошка',
+            title: 'Үйсіз мысық',
             snippet: 'плохо видит и скулит',
           )),
     );
-    _markers.add(
+    markers.add(
       Marker(
           icon: mapMarker5,
           markerId: MarkerId('id-3'),
@@ -171,96 +387,14 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
             snippet: 'после ветра ранесло',
           )),
     );
-    _markers.add(Marker(
+    markers.add(Marker(
         icon: mapMarker4,
         markerId: MarkerId('id-8'),
         position: LatLng(52.2507743, 76.9449725),
         infoWindow: InfoWindow(
-          title: 'Бездомная собака',
-          snippet: 'скулит',
+          title: 'Үйсіз ит',
+          snippet: 'аш және жаралған',
         )));
-  }
-
-  setMarkers() {
-    _markers.add(
-      Marker(
-          icon: mapMarker1,
-          markerId: MarkerId('id-1'),
-          position: LatLng(52.2537144, 76.9424712),
-          infoWindow: InfoWindow(
-            title: 'Мусор в неположенном месте',
-            snippet: 'Пластиковые и бытовые отходы',
-          )),
-    );
-    _markers.add(
-      Marker(
-          icon: mapMarker2,
-          markerId: MarkerId('id-2'),
-          position: LatLng(52.2498763, 76.9514241),
-          infoWindow: InfoWindow(
-            title: 'Асфальтовая яма',
-            snippet: 'тратуар сломан',
-          )),
-    );
-    _markers.add(
-      Marker(
-          icon: mapMarker3,
-          markerId: MarkerId('id-3'),
-          position: LatLng(52.2537144, 76.9424712),
-          infoWindow: InfoWindow(
-            title: 'Потоп',
-            snippet: 'потоп',
-          )),
-    );
-    _markers.add(Marker(
-        icon: mapMarker4,
-        markerId: MarkerId('id-4'),
-        position: LatLng(52.2504187, 76.9546327),
-        infoWindow: InfoWindow(
-          title: 'Бездомная собака',
-          snippet: 'плохо видит и скулит',
-        )));
-
-    _markers.add(
-      Marker(
-          icon: mapMarker5,
-          markerId: MarkerId('id-3'),
-          position: LatLng(52.2537144, 76.9424712),
-          infoWindow: InfoWindow(
-            title: 'Потоп',
-            snippet: 'потоп',
-          )),
-    );
-    _markers.add(
-      Marker(
-          icon: mapMarker6,
-          markerId: MarkerId('id-4'),
-          position: LatLng(52.2484178, 76.9475304),
-          infoWindow: InfoWindow(
-            title: 'Бездомная кошка',
-            snippet: 'плохо видит и скулит',
-          )),
-    );
-    _markers.add(
-      Marker(
-          icon: mapMarker5,
-          markerId: MarkerId('id-3'),
-          position: LatLng(52.2502872, 76.9505888),
-          infoWindow: InfoWindow(
-            title: 'Свалка',
-            snippet: 'после ветра ранесло',
-          )),
-    );
-    _markers.add(Marker(
-        icon: mapMarker4,
-        markerId: MarkerId('id-8'),
-        position: LatLng(52.2507743, 76.9449725),
-        infoWindow: InfoWindow(
-          title: 'Бездомная собака',
-          snippet: 'скулит',
-        )));
-
-    return _markers;
   }
 
   @override
@@ -272,7 +406,7 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
           toolbarHeight: 60,
           backgroundColor: primaryColor,
           title: Text(
-            "Карта проблем",
+            AppLocalizations.of(context).mapsp,
             style: TextStyle(
                 fontSize: 25, fontWeight: FontWeight.bold, color: black),
           ),
@@ -286,14 +420,14 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
         body: Stack(children: [
           Positioned.fill(
             child: GoogleMap(
-              initialCameraPosition: CameraPosition(
-                  target: LatLng(lat, long), zoom: 12, bearing: 30, tilt: 80),
-              zoomControlsEnabled: true,
-              minMaxZoomPreference: MinMaxZoomPreference(15, 22),
-              onMapCreated: _onMapCreated,
-              markers: _markers,
-              myLocationButtonEnabled: true,
-            ),
+                initialCameraPosition: CameraPosition(
+                    target: LatLng(lat, long), zoom: 12, bearing: 30, tilt: 80),
+                zoomControlsEnabled: true,
+                minMaxZoomPreference: MinMaxZoomPreference(15, 22),
+                onMapCreated: _onMapCreated,
+                markers: markers,
+                myLocationButtonEnabled: true,
+                onTap: handleTap),
           ),
           Positioned(top: 60, left: 0, right: 0, child: Container())
         ]),
@@ -321,7 +455,9 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                               Padding(
                                 padding: const EdgeInsets.only(left: 14.0),
                                 child: Text(
-                                  '$mapCity',
+                                  mapCity.isEmpty
+                                      ? '${cityGlobal.toString()}'
+                                      : '$mapCity',
                                   style: TextStyle(
                                       fontSize: 20,
                                       decoration: TextDecoration.underline),
@@ -329,7 +465,7 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                               ),
                               IconButton(
                                   onPressed: () {
-                                    _showcontent();
+                                    _chooseCity();
                                   },
                                   icon: Icon(
                                     Icons.edit_location_alt,
@@ -351,162 +487,109 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                         child: Row(children: [
                           Container(
                             width: _width * 0.572,
-                            child: Column(
-                              children: [
-                                Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      TextButton(
-                                          onPressed: () {},
-                                          child: Container(
-                                            width: _width * 0.21,
-                                            height: 42,
-                                            decoration: BoxDecoration(
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                      color: Colors.black
-                                                          .withOpacity(0.25),
-                                                      offset: Offset(2, 2))
-                                                ],
-                                                border: Border.all(
-                                                    width: 1, color: grey),
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                color: white),
-                                            alignment: Alignment.center,
-                                            child: Image.asset(
-                                              'assets/pins/trashcan.png',
-                                              width: 20,
-                                            ),
-                                          )),
-                                      TextButton(
-                                          onPressed: () {},
-                                          child: Container(
-                                            width: _width * 0.21,
-                                            height: 42,
-                                            decoration: BoxDecoration(
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                      color: Colors.black
-                                                          .withOpacity(0.25),
-                                                      offset: Offset(2, 2))
-                                                ],
-                                                border: Border.all(
-                                                    width: 1, color: grey),
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                color: white),
-                                            alignment: Alignment.center,
-                                            child: Image.asset(
-                                              'assets/pins/drown.png',
-                                              width: 20,
-                                            ),
-                                          )),
-                                    ]),
-                                Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      TextButton(
-                                          onPressed: () {},
-                                          child: Container(
-                                            width: _width * 0.21,
-                                            height: 42,
-                                            decoration: BoxDecoration(
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                      color: Colors.black
-                                                          .withOpacity(0.25),
-                                                      offset: Offset(2, 2))
-                                                ],
-                                                border: Border.all(
-                                                    width: 1, color: grey),
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                color: white),
-                                            alignment: Alignment.center,
-                                            child: Image.asset(
-                                              'assets/pins/road.png',
-                                              width: 20,
-                                            ),
-                                          )),
-                                      TextButton(
-                                          onPressed: () {},
-                                          child: Container(
-                                            width: _width * 0.21,
-                                            height: 42,
-                                            decoration: BoxDecoration(
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                      color: Colors.black
-                                                          .withOpacity(0.25),
-                                                      offset: Offset(2, 2))
-                                                ],
-                                                border: Border.all(
-                                                    width: 1, color: grey),
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                color: white),
-                                            alignment: Alignment.center,
-                                            child: Image.asset(
-                                              'assets/pins/dog.png',
-                                              width: 20,
-                                            ),
-                                          )),
-                                    ]),
-                                Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      TextButton(
-                                          onPressed: () {},
-                                          child: Container(
-                                            width: _width * 0.21,
-                                            height: 41,
-                                            decoration: BoxDecoration(
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                      color: Colors.black
-                                                          .withOpacity(0.25),
-                                                      offset: Offset(2, 2))
-                                                ],
-                                                border: Border.all(
-                                                    width: 1, color: grey),
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                color: white),
-                                            alignment: Alignment.center,
-                                            child: Image.asset(
-                                              'assets/pins/cat.png',
-                                              width: 20,
-                                            ),
-                                          )),
-                                      TextButton(
-                                          onPressed: () {},
-                                          child: Container(
-                                            width: _width * 0.21,
-                                            height: 41,
-                                            decoration: BoxDecoration(
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                      color: Colors.black
-                                                          .withOpacity(0.25),
-                                                      offset: Offset(2, 2))
-                                                ],
-                                                border: Border.all(
-                                                    width: 1, color: grey),
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                color: white),
-                                            alignment: Alignment.center,
-                                            child: Image.asset(
-                                              'assets/pins/trash.png',
-                                              width: 20,
-                                            ),
-                                          )),
-                                    ]),
-                              ],
+                            child: Ink(
+                              color: Colors.white,
+                              child: GridView.count(
+                                primary: true,
+                                crossAxisCount: 3,
+                                crossAxisSpacing: 10,
+                                mainAxisSpacing: 10,
+                                children:
+                                    List.generate(isSelected.length, (index) {
+                                  return InkWell(
+                                      splashColor:
+                                          primaryColor, //the default splashColor is grey
+                                      onTap: () {
+                                        setState(() {
+                                          selected = !selected;
+                                          for (int indexBtn = 0;
+                                              indexBtn < isSelected.length;
+                                              indexBtn++) {
+                                            switch (index) {
+                                              case 1:
+                                                {
+                                                  markerPin = mapMarker2;
+                                                  pintitle = 'Үйсз ит';
+                                                  print('1');
+                                                }
+                                                break;
+                                              case 2:
+                                                {
+                                                  markerPin = mapMarker6;
+                                                  pintitle = 'Үйсз ит';
+                                                  print('2');
+                                                }
+                                                break;
+                                              case 3:
+                                                {
+                                                  markerPin = mapMarker1;
+                                                  pintitle = 'Үйсз ит';
+                                                }
+                                                break;
+                                              case 4:
+                                                {
+                                                  markerPin = mapMarker4;
+                                                  pintitle = 'Үйсз ит';
+                                                }
+                                                break;
+                                              case 5:
+                                                {
+                                                  markerPin = mapMarker5;
+                                                  pintitle = 'Үйсз ит';
+                                                }
+                                                break;
+                                              case 0:
+                                                {
+                                                  markerPin = mapMarker6;
+                                                  pintitle = 'Үйсз ит';
+                                                }
+                                                break;
+                                            }
+
+                                            if (indexBtn == index) {
+                                              isSelected[indexBtn] =
+                                                  !isSelected[indexBtn];
+                                            } else {
+                                              isSelected[indexBtn] = false;
+                                            }
+                                          }
+                                        });
+                                      },
+                                      child: Ink(
+                                        decoration: BoxDecoration(
+                                          color: isSelected[index]
+                                              ? Color(0xffD6EAF8)
+                                              : Colors.white,
+                                          border: Border.all(color: Colors.red),
+                                        ),
+                                        child: Container(
+                                          width: _width * 0.21,
+                                          height: 42,
+                                          decoration: BoxDecoration(
+                                              boxShadow: [
+                                                BoxShadow(
+                                                    color: Colors.black
+                                                        .withOpacity(0.25),
+                                                    offset: Offset(2, 2))
+                                              ],
+                                              border: Border.all(
+                                                  width:
+                                                      isSelected[index] ? 2 : 1,
+                                                  color: isSelected[index]
+                                                      ? primaryColor
+                                                      : grey),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              color: white),
+                                          alignment: Alignment.center,
+                                          child: Image.asset(
+                                            iconList[index],
+                                            width: 20,
+                                          ),
+                                        ),
+                                      ));
+                                }),
+                              ),
                             ),
                           ),
                           Column(
@@ -579,7 +662,10 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                                 ],
                               ),
                               TextButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  pin();
+                                  if (pinned) addInfo();
+                                },
                                 child: Center(
                                   child: Container(
                                     alignment: Alignment.center,
@@ -601,9 +687,13 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                                             Radius.circular(10)),
                                         boxShadow: [
                                           BoxShadow(
-                                              offset: Offset(0, 4),
-                                              color: Colors.black
-                                                  .withOpacity(0.25))
+                                              offset: pinned
+                                                  ? Offset(0, 0)
+                                                  : Offset(0, 4),
+                                              color: pinned
+                                                  ? Colors.transparent
+                                                  : Colors.black
+                                                      .withOpacity(0.25))
                                         ]),
                                     width: _width * 0.263,
                                     height: 78,
@@ -614,6 +704,23 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                           )
                         ]),
                       ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          IconButton(
+                              icon: Icon(Icons.refresh_sharp,
+                                  color: grey.withOpacity(opReload)),
+                              onPressed: () {
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            super.widget));
+                                pressReload();
+                                pressRel = false;
+                              })
+                        ],
+                      )
                     ],
                   )),
                 ),
@@ -635,7 +742,9 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                       Padding(
                         padding: const EdgeInsets.only(left: 8.0),
                         child: Text(
-                          '$mapCity',
+                          mapCity.isEmpty
+                              ? '${cityGlobal.toString()}'
+                              : '$mapCity',
                           style: TextStyle(
                               fontSize: 20,
                               decoration: TextDecoration.underline),
@@ -656,23 +765,173 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
               ));
   }
 
-  List<Map> _cities = [
-    {'id': '0', 'title': 'Алматы', "lat": '43.2567', 'lng': '76.9286'},
-    {'id': '1', 'title': 'Нур-Султан', "lat": '51.1801', 'lng': '71.44598'},
-    {'id': '2', 'title': 'Шымкент', "lat": '43.34168', 'lng': '69.5901'},
-    {'id': '3', 'title': 'Актобе', "lat": '', 'lng': ''},
-    {'id': '4', 'title': 'Караганда', "lat": '', 'lng': ''},
-    {'id': '5', 'title': 'Тараз', "lat": '', 'lng': ''},
-    {'id': '6', 'title': 'Павлодар', "lat": '', 'lng': ''},
-    {'id': '7', 'title': 'Усть-Каменгорск', "lat": '', 'lng': ''},
-    {'id': '8', 'title': 'Семей', "lat": '', 'lng': ''},
-    {'id': '9', 'title': 'Атырау', "lat": '', 'lng': ''},
-    {'id': '10', 'title': 'Костанай', "lat": '', 'lng': ''},
-    {'id': '11', 'title': 'Кызылорда', "lat": '', 'lng': ''},
-    {'id': '12', 'title': 'Уральск', "lat": '', 'lng': ''},
-    {'id': '13', 'title': 'Актау', "lat": '', 'lng': ''},
-    {'id': '14', 'title': 'Туркестан', "lat": '', 'lng': ''},
-    {'id': '15', 'title': 'Кокшетау', "lat": '', 'lng': ''},
-    {'id': '16', 'title': 'Талдыкорган', "lat": '', 'lng': ''},
-  ];
+  ///handle pining
+
+  handleTap(LatLng tappedPoint) {
+    setState(() {
+      tempId = tappedPoint.toString();
+
+      if (selected) {
+        markers.add(Marker(
+            markerId: MarkerId(tappedPoint.toString()),
+            position: tappedPoint,
+            draggable: draggablePin,
+            icon: markerPin,
+            infoWindow: pintitle.isNotEmpty ? pinInfo : InfoWindow.noText,
+            onDragEnd: (dragendPosition) {
+              if (pinned) {
+                draggablePin = false;
+              }
+            }));
+      } else
+        Fluttertoast.showToast(
+          msg: "Select type of problem",
+        );
+    });
+  }
+
+  void addInfo() {
+    cancelButton(BuildContext context) {
+      return TextButton(
+        child: Container(
+          width: 72,
+          height: 24,
+          color: Color.fromRGBO(246, 242, 242, 1),
+          alignment: Alignment.center,
+          child: Text(
+            'Отмена',
+            style: TextStyle(
+              fontSize: 13,
+              color: grey,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+        ),
+        onPressed: () {
+          Navigator.of(context).pop();
+          markers.remove(tempId);
+        },
+      );
+    }
+
+    okButton(BuildContext context) {
+      return TextButton(
+        child: Container(
+          width: 72,
+          height: 24,
+          color: primaryColor.withOpacity(0.6),
+          alignment: Alignment.center,
+          child: Text(
+            'OK',
+            style: TextStyle(
+              fontSize: 13,
+              color: black,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+        onPressed: () {
+          Navigator.of(context).pop();
+          pinInfo = InfoWindow(title: pintitle, snippet: pindesc.text);
+          pin();
+          selectProblem();
+        },
+      );
+    }
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+              child: Container(
+            width: MediaQuery.of(context).size.width * 0.9,
+            height: image != null ? 450 : 320,
+            decoration: BoxDecoration(
+                color: white,
+                borderRadius: BorderRadius.all(Radius.circular(15))),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Мәселеңіздін толығырақ \nашып жазыңыз',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+                    )
+                  ],
+                ),
+                SizedBox(
+                  height: 25,
+                ),
+                Form(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        height: 55,
+                        width: MediaQuery.of(context).size.width * 0.74,
+                        child: TextFormField(
+                          onSaved: (newValue) => pindesc.text = newValue!,
+                          decoration: InputDecoration(
+                              hintText: 'Мәселе сипаты/детальдер',
+                              border: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: grey, width: 1))),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      image != null
+                          ? Image.file(image!,
+                              width: MediaQuery.of(context).size.width * 0.74,
+                              height: 100,
+                              fit: BoxFit.cover)
+                          : DottedBorder(
+                              child: Container(
+                                  height: 50,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.74,
+                                  decoration: BoxDecoration(
+                                      color: grey.withOpacity(0.7)),
+                                  child: IconButton(
+                                      onPressed: () {
+                                        pickImage();
+                                      },
+                                      icon: Icon(Icons.add_a_photo))),
+                            )
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 25,
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.76,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Row(
+                        children: [
+                          cancelButton(context),
+                          SizedBox(
+                            width: 18,
+                          ),
+                          okButton(context)
+                        ],
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ));
+        });
+  }
+
+  dont(LatLng tappedPoint) {}
 }

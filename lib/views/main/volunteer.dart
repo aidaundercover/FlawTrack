@@ -104,9 +104,12 @@ class _VolunteerViewState extends State<VolunteerView> {
           SizedBox(height: 40),
           Container(
             width: width * 0.9,
-            child: Text(
-              'Рейтинг ТОП-50 волонтеров',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+            child: Padding(
+              padding: const EdgeInsets.only(left: 14.0),
+              child: Text(
+                'Рейтинг ТОП-50 волонтеров',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+              ),
             ),
           ),
           StreamBuilder<QuerySnapshot>(
@@ -142,8 +145,8 @@ DataRow _buildListItem(BuildContext context, DocumentSnapshot data) {
   Map<String, dynamic> record = data.data()! as Map<String, dynamic>;
 
   return DataRow(cells: <DataCell>[
-    DataCell(Text('$number')),
-    DataCell(Text(record['displayName'])),
-    DataCell(Text(record['pins']['solutions']['total'].toString())),
+    DataCell(Text('16')),
+    DataCell(Text('Аскар Дирханов')),
+    DataCell(Text('34')),
   ]);
 }

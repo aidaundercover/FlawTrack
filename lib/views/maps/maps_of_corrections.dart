@@ -1,11 +1,8 @@
-import 'dart:convert';
-import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flawtrack/const.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:path_provider/path_provider.dart';
 
 class MapsOfCorrections extends StatefulWidget {
   const MapsOfCorrections({Key? key}) : super(key: key);
@@ -18,69 +15,79 @@ class _MapsOfCorrectionsState extends State<MapsOfCorrections> {
   Set<Marker> _markers = {};
   late BitmapDescriptor mapMarker;
   bool _toggled = false;
+  var currentLocation;
 
-  @override
+  bool clientsToggle = false;
+  bool resetToggle = false;
+
+  var clients = [];
+
+  var currentClient;
+  var currentBearing;
+
+  late GoogleMapController mapController;
+
+ @override
   void initState() {
     super.initState();
-    dropDown();
-  
+    Geolocator.getCurrentPosition().then((currloc) {
+      setState(() {
+        dropDown();
+        currentLocation = currloc;
+      });
+    });
   }
+
+
+
+
+ 
+ 
 
   void setCustomMaker() async {
     mapMarker = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(), 'assets/pins/fixed.png');
-  }
-
-  void _showcontent() {
-    showDialog(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return new AlertDialog(
-          title: new Text('Выберете город'),
-          content: new SingleChildScrollView(
-            child: new ListBody(
-              children: [
-                ListTile(
-                  title: Text('Аксу'),
-                ),
-                ListTile(
-                  title: Text('Алматы'),
-                ),
-                ListTile(
-                  title: Text('Петропавлск'),
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              child: Text('Ok'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
+        ImageConfiguration(size: Size(50, 50)), 'assets/pins/fixed.png');
   }
 
   void _onMapCreated(GoogleMapController controller) {
-    CollectionReference collectionReference =
-        FirebaseFirestore.instance.collection('problems');
-
-    setState(() {
-      for (int i = 0; i <= collectionReference.id.length; i++) {
-        _markers.add(Marker(
-            markerId: MarkerId(collectionReference.id),
-            position: LatLng(52.2999988, 76.9499962),
-            infoWindow: InfoWindow(
-              title: '',
-              snippet: 'very very bad(in Indian accent)',
-            )));
-      }
-    });
+    _markers.add(
+      Marker(
+          icon: mapMarker,
+          markerId: MarkerId('id-1'),
+          position: LatLng(52.2537144, 76.9424712),
+          infoWindow: InfoWindow(
+            title: 'Мусор в неположенном месте',
+            snippet: 'Пластиковые и бытовые отходы',
+          )),
+    );
+    _markers.add(
+      Marker(
+          icon: mapMarker,
+          markerId: MarkerId('id-2'),
+          position: LatLng(52.2498763, 76.9514241),
+          infoWindow: InfoWindow(
+            title: 'Асфальтовая яма',
+            snippet: 'тратуар сломан',
+          )),
+    );
+    _markers.add(
+      Marker(
+          icon: mapMarker,
+          markerId: MarkerId('id-3'),
+          position: LatLng(52.2537144, 76.9424712),
+          infoWindow: InfoWindow(
+            title: 'Түзетілді',
+            snippet: 'Түзетілді',
+          )),
+    );
+    _markers.add(Marker(
+        icon: mapMarker,
+        markerId: MarkerId('id-4'),
+        position: LatLng(52.2504187, 76.9546327),
+        infoWindow: InfoWindow(
+          title: 'Түзетілді',
+          snippet: 'Түзетілді',
+        )));
   }
 
   void dropDown() {
@@ -93,73 +100,197 @@ class _MapsOfCorrectionsState extends State<MapsOfCorrections> {
   Widget build(BuildContext context) {
     var _width = MediaQuery.of(context).size.width;
 
-    return Stack(
-      children: [ 
-        Scaffold(
-          appBar: AppBar(
-            toolbarHeight: 60,
-            backgroundColor: primaryColor,
-            title: Text(
-              "Карта исправлений",
-              style: TextStyle(
-                  fontSize: 25, fontWeight: FontWeight.bold, color: black),
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        backgroundColor: primaryColor,
+        child: const Icon(Icons.add, color: white),
+      ),
+      body: Stack(
+        children: [
+          Scaffold(
+            appBar: AppBar(
+              toolbarHeight: 60,
+              backgroundColor: primaryColor,
+              title: Text(
+                "Түзетулер картасы",
+                style: TextStyle(
+                    fontSize: 25, fontWeight: FontWeight.bold, color: black),
+              ),
+              centerTitle: true,
+              leading: Builder(
+                builder: (context) => IconButton(
+                    icon: Icon(Icons.chevron_left_outlined,
+                        size: 35, color: black),
+                    onPressed: () => Navigator.pop(context)),
+              ),
+              actions: [
+                IconButton(
+                    icon: Icon(Icons.more_vert_outlined,
+                        size: 27, color: Colors.black),
+                    onPressed: () {
+                      dropDown();
+                    }),
+              ],
             ),
-            centerTitle: true,
-            leading: Builder(
-              builder: (context) => IconButton(
-                  icon: Icon(Icons.chevron_left_outlined, size: 35, color: black),
-                  onPressed: () => Navigator.pop(context)),
-            ),
-            actions: [
-              IconButton(
-                  icon: Icon(Icons.more_vert_outlined,
-                      size: 27, color: Colors.black),
-                  onPressed: () {
-                    dropDown();
-                  }),
-            ],
-          ),
-          body: GoogleMap(
-              initialCameraPosition:
-                  CameraPosition(target: LatLng(lat, long), zoom: 12, bearing: 30, tilt: 80),
-              zoomControlsEnabled: true,
-              minMaxZoomPreference: MinMaxZoomPreference(15, 22),
-              onMapCreated: _onMapCreated,
-              markers: _markers,
-              myLocationButtonEnabled: true,
-            ),),
-        Positioned(
-          top: 40,
-          right: 30,
-          child:_toggled ? 
-          Container(
-            width: 324,
-            height: 400,
-            decoration: BoxDecoration(
-              color: white,
-              borderRadius: BorderRadius.circular(10),
-              boxShadow: [
-                BoxShadow(
-                  color: black.withOpacity(0.25),
-                  offset: Offset(0,4)
-                )
-              ]
-            ),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Center(child: Text('История исправлений',style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold))),
-                    IconButton(onPressed: () {
-                        dropDown();
-                    }, 
-                    icon: Icon(Icons.close, size: 25, color:black))
-                  ],
+            body: GoogleMap(
+                initialCameraPosition: CameraPosition(
+                    target: LatLng(lat, long), zoom: 12, bearing: 30, tilt: 80),
+                zoomControlsEnabled: true,
+                minMaxZoomPreference: MinMaxZoomPreference(15, 22),
+                onMapCreated: _onMapCreated,
+                markers: _markers,
+                myLocationButtonEnabled: true,
                 ),
-                Text('Сегодня', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold))
-            ],),
-          ) : Container())
-      ],
+          ),
+          Positioned(
+              top: 40,
+              right: 10,
+              child: _toggled
+                  ? Container(
+                      width: 324,
+                      height: 200,
+                      decoration: BoxDecoration(
+                          color: white,
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                                color: black.withOpacity(0.25),
+                                offset: Offset(0, 4),
+                                blurRadius: 10)
+                          ]),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Center(
+                                  child: Text('Түзетуліер тарихы',
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold))),
+                              IconButton(
+                                  onPressed: () {
+                                    dropDown();
+                                  },
+                                  icon:
+                                      Icon(Icons.close, size: 25, color: black))
+                            ],
+                          ),
+                          SingleChildScrollView(
+                              child: Column(
+                            children: [
+                              Text('Бүгін',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold)),
+                              Row(
+                                children: [
+                                  Image.asset('assets/pins/dog.png', height: 10.0,),
+                                  Text('ул.Абая 14 исправлено Айдана Аркантар',
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500)),
+                                  Text(
+                                    '06:33',
+                                    style: TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w500,
+                                        color: grey),
+                                  )
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Image.asset('assets/pins/trashcan.png', height: 10.0,),
+                                  Text(
+                                      'ул.Астана 124 исправлено Каракат Мугриса',
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500)),
+                                  Text(
+                                    '06:33',
+                                    style: TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w500,
+                                        color: grey),
+                                  )
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Image.asset('assets/pins/dog.png', height: 10.0,),
+                                  Text('ул.Eстая 256 исправлено Шырын Досжан',
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500)),
+                                  Text(
+                                    '07:13',
+                                    style: TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w500,
+                                        color: grey),
+                                  )
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Image.asset('assets/pins/dog.png', height: 10.0,),
+                                  Text('ул.Гагарина 49 исправлено Наталья Ким',
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500)),
+                                  Text(
+                                    '07:22',
+                                    style: TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w500,
+                                        color: grey),
+                                  )
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Image.asset('assets/pins/dog.png', height: 10.0,),
+                                  Text('ул.Абая 14 исправлено Айдана Аркантар',
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500)),
+                                  Text(
+                                    '06:33',
+                                    style: TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w500,
+                                        color: grey),
+                                  )
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Image.asset('assets/pins/dog.png', height: 10.0,),
+                                  Text('ул.Абая 14 исправлено Айдана Аркантар',
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500)),
+                                  Text(
+                                    '06:33',
+                                    style: TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w500,
+                                        color: grey),
+                                  )
+                                ],
+                              ),
+                            ],
+                          ))
+                        ],
+                      ),
+                    )
+                  : Container())
+        ],
+      ),
     );
   }
+
+ 
 }

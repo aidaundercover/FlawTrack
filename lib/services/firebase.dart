@@ -5,9 +5,9 @@ import 'package:flawtrack/widgets/provider_widget.dart';
 class FirebaseService {
 
   static Future<Event> getNextTrip(context) async {
-    final uid = Provider.of(context).auth.getCurrentUID();
+    final uid = ProviderMain.of(context).auth.getCurrentUID();
     var snapshot = await FirebaseFirestore.instance
-        .collection('userData')
+        .collection('user')
         .doc(uid)
         .collection('events')
         .orderBy('startDate')
@@ -17,9 +17,9 @@ class FirebaseService {
   }
 
   static void addToLedger(context, documentId, item) async {
-    await Provider.of(context).db
+    await ProviderMain.of(context).db
         .collection('userData')
-        .doc(Provider.of(context).auth.getCurrentUID())
+        .doc(ProviderMain.of(context).auth.getCurrentUID())
         .collection('events')
         .doc(documentId)
         .update(item);

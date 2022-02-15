@@ -1,6 +1,8 @@
 import 'package:flawtrack/services/auth_service.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:email_validator/email_validator.dart';
 import '../../const.dart';
 import '../../routes.dart';
 
@@ -35,35 +37,33 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       bottomSheet: GestureDetector(
         onTap: () async {
-                await Navigator.of(context).pushReplacementNamed(AppRoutes.signUp);
-              },
+          await Navigator.of(context).pushReplacementNamed(AppRoutes.signUp);
+        },
         child: Container(
-                    width: _width,
-                    decoration: BoxDecoration(gradient: LinearGradient(colors: [
-                      primaryColor.withOpacity(0.6),
-                      primaryColor,
-                      yellow,
-                      primaryColor
-                    ],
-                    begin: Alignment.topLeft
-                    )),
-                    height: 48,
-                    alignment: Alignment.center,
-                    child: Text('ЗАРЕГИСТРИРОВАТЬСЯ',
-                        style: TextStyle(
-                            fontSize: 13, fontWeight: FontWeight.bold, color: white)),
-                  ),
+          width: _width,
+          decoration: BoxDecoration(
+              gradient: LinearGradient(colors: [
+            primaryColor.withOpacity(0.6),
+            primaryColor,
+            yellow,
+            primaryColor
+          ], begin: Alignment.topLeft)),
+          height: 48,
+          alignment: Alignment.center,
+          child: Text(AppLocalizations.of(context).signup,
+              style: TextStyle(
+                  fontSize: 13, fontWeight: FontWeight.bold, color: white)),
+        ),
       ),
-          
       backgroundColor: lightYellow,
       body: SingleChildScrollView(
         child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: <
+              Widget>[
             SizedBox(
               height: 50,
             ),
-            Text('ДОБРО ПОЖАЛОВАТЬ!',
+            Text(AppLocalizations.of(context).welcome,
                 style: TextStyle(
                   fontSize: 25,
                   fontWeight: FontWeight.bold,
@@ -77,7 +77,7 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Text('Вход',
+                    Text(AppLocalizations.of(context).signin,
                         style: TextStyle(
                           fontSize: 21,
                           fontWeight: FontWeight.bold,
@@ -98,11 +98,18 @@ class _LoginPageState extends State<LoginPage> {
                                   ),
                                   onSaved: (input) =>
                                       _emailController.text = input!,
-                                  validator: (input) {
-                                    EmailValidator.validate(input);
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter some text';
+                                    }
+                                    if (!EmailValidator.validate(value)) {
+                                      return "Please enter a valid email address";
+                                    }
+                                    return null;
                                   },
                                   decoration: InputDecoration(
-                                    hintText: 'E-mail',
+                                    hintText:
+                                        AppLocalizations.of(context).email,
                                     hintStyle: TextStyle(
                                         color: grey,
                                         fontFamily: 'Arial',
@@ -132,8 +139,11 @@ class _LoginPageState extends State<LoginPage> {
                                     color: Colors.black,
                                     fontSize: 14,
                                   ),
-                                  validator: (input) {
-                                    PasswordValidator.validate(input);
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter some text';
+                                    }
+                                    return null;
                                   },
                                   onSaved: (input) =>
                                       _passwordController.text = input!,
@@ -147,7 +157,8 @@ class _LoginPageState extends State<LoginPage> {
                                       color: Color.fromRGBO(168, 168, 168, 1.0),
                                       onPressed: _toggle,
                                     ),
-                                    hintText: 'Пароль',
+                                    hintText:
+                                        AppLocalizations.of(context).password,
                                     hintStyle: TextStyle(
                                         color: grey,
                                         fontFamily: 'Arial',
@@ -180,7 +191,7 @@ class _LoginPageState extends State<LoginPage> {
                   Navigator.of(context).pushNamed(AppRoutes.forgotPassword);
                 },
                 child: Text(
-                  'Забыли свой пароль?',
+                  AppLocalizations.of(context).forgotpass,
                   style: TextStyle(
                     color: grey.withOpacity(0.6),
                     fontSize: 13,
@@ -192,14 +203,16 @@ class _LoginPageState extends State<LoginPage> {
             SizedBox(height: 20),
             TextButton(
               onPressed: () async {
-                try {
-                  await AuthService.signInWithEmail(
-                      email: _emailController.text,
-                      password: _passwordController.text, context: context).then((value) => {
-                      });
-                  
-                } catch (e) {
-                  print(e);
+                if (_formKey.currentState!.validate()) {
+                  try {
+                    await AuthService.signInWithEmail(
+                            email: _emailController.text,
+                            password: _passwordController.text,
+                            context: context)
+                        .then((value) => {});
+                  } catch (e) {
+                    Fluttertoast.showToast(msg: e.toString());
+                  }
                 }
               },
               child: Container(
@@ -211,7 +224,7 @@ class _LoginPageState extends State<LoginPage> {
                 height: 43,
                 alignment: Alignment.center,
                 child: Text(
-                  'ПРОДОЛЖИТЬ',
+                  AppLocalizations.of(context).conti,
                   style: TextStyle(
                     color: white,
                     fontSize: 12,
@@ -222,7 +235,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.15),
             Container(
-              width: _width*0.8,
+              width: _width * 0.8,
               alignment: Alignment.center,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -267,10 +280,10 @@ class _LoginPageState extends State<LoginPage> {
                 ],
               ),
             ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.07),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.05),
             GestureDetector(
               onTap: () {},
-              child: Text("Еще нет аккаунта?",
+              child: Text(AppLocalizations.of(context).donthaveyet,
                   style: TextStyle(
                     color: grey,
                     fontSize: 13,
@@ -282,5 +295,4 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
-
 }

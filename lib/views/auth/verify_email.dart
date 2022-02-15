@@ -39,8 +39,10 @@ class _VerifyScreenState extends State<VerifyScreen> {
       backgroundColor: lightYellow,
       body: Center(
         child: Container(
-          width: 300,
+          width: MediaQuery.of(context).size.width*0.7,
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text('Было отправлено письмо для потвереждения почты на адрес', textAlign: TextAlign.center,),
               Text('${user!.email}', style: TextStyle(fontWeight: FontWeight.bold), ),

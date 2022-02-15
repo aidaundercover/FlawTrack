@@ -1,4 +1,6 @@
+import 'package:flawtrack/const.dart';
 import 'package:flawtrack/widgets/home_view/become_volunteer_widget.dart';
+import 'package:flawtrack/widgets/home_view/create_event_widget.dart';
 import 'package:flawtrack/widgets/home_view/events_widget.dart';
 import 'package:flawtrack/widgets/home_view/fund_widget.dart';
 import 'package:flawtrack/widgets/home_view/location_view.dart';
@@ -16,12 +18,16 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-
-
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    NewsTile();
+  }
 
   @override
   Widget build(BuildContext context) {
-    var width = MediaQuery.of(context).size.width*0.88;
+    var width = MediaQuery.of(context).size.width * 0.88;
 
     return Scaffold(
       appBar: AppBar(
@@ -60,13 +66,11 @@ class _HomeViewState extends State<HomeView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              locationView(width/0.88),
+              locationView(width / 0.88),
               NewsTile(),
-              Text('Главная',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold
-                ),
+              Text(
+                'Басты бет',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               eventsWidget(context, width),
               Container(
@@ -74,18 +78,18 @@ class _HomeViewState extends State<HomeView> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Column(
-                      children:[
-                        usingAdvice(context, width*0.4768),
-                        becomeVolunteer(context, width*0.4768)
-                      ]
-                    ),
-                    fund(context, width*0.4768)
+                    Column(children: [
+                      volunteer ? createEventWidget(context, width * 0.4768) : usingAdvice(context, width * 0.4768),
+                      becomeVolunteer(context, width * 0.4768)
+                    ]),
+                    fund(context, width * 0.4768)
                   ],
                 ),
               ),
               weather(width),
-              SizedBox(height: 50,)
+              SizedBox(
+                height: 50,
+              )
             ],
           ),
         ),

@@ -3,15 +3,17 @@ import 'package:flawtrack/routes.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class WelcomeEng extends StatefulWidget {
-  const WelcomeEng({ Key? key }) : super(key: key);
+
+class Welcome extends StatefulWidget {
+  const Welcome({ Key? key }) : super(key: key);
 
   @override
-  _WelcomeEngState createState() => _WelcomeEngState();
+  _WelcomeState createState() => _WelcomeState();
 }
 
-class _WelcomeEngState extends State<WelcomeEng> {
+class _WelcomeState extends State<Welcome> {
 
   final introKey = GlobalKey<IntroductionScreenState>();
 
@@ -50,21 +52,21 @@ class _WelcomeEngState extends State<WelcomeEng> {
       globalBackgroundColor: Colors.white,
       pages: [
         PageViewModel(
-          title: "Pin the problems of your city\non the map",
+          title: AppLocalizations.of(context).weltitle1,
           image: _buildImage('welone.png'),
-          body: 'You have the opportunity to mark problems of different categories on the general map and attach additional documents',
+          body: AppLocalizations.of(context).weldesc1,
           decoration: pageDecoration,
         ),
         PageViewModel(
-          title: "Stay in touch with the residents of your area",
+          title: AppLocalizations.of(context).weltitle2,
           image: _buildImage('weltwo.png'),
-          body: 'Join the chats of the residential complexes of interest and solve social problems together',
+          body: AppLocalizations.of(context).weldesc2,
           decoration: pageDecoration,
         ),
         PageViewModel(
-          title: "Get points for\n achievements",
+          title: AppLocalizations.of(context).weltitle3,
           image: _buildImage('welthree.png'),
-          body: 'For filling out the card with problems or corrections, you will receive points that give advantages in the application',
+          body: AppLocalizations.of(context).weldesc3,
           decoration: pageDecoration,
         ),
       ],
@@ -73,7 +75,7 @@ class _WelcomeEngState extends State<WelcomeEng> {
       skipFlex: 0,
       nextFlex: 0,
       showDoneButton: true,
-      skip: const Text('Skip', style: TextStyle(color: grey, fontSize: 16,)),
+      skip: Text( AppLocalizations.of(context).skip, style: TextStyle(color: grey, fontSize: 15,)),
       done: Container(
         width: 68,
         height: 68,
@@ -97,9 +99,9 @@ class _WelcomeEngState extends State<WelcomeEng> {
         child: Align(
           alignment: Alignment.center,
           child: Text(
-            'Done',
+            AppLocalizations.of(context).done,
             style: TextStyle(
-              fontSize: 20,
+              fontSize: 15,
               fontWeight: FontWeight.bold,
               foreground: Paint()..shader = linearGradient,
             ),

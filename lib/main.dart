@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flawtrack/const.dart';
 import 'package:flawtrack/services/custom_colors.dart';
+import 'package:flawtrack/splash.dart';
 import 'package:flawtrack/views/error/smth_went_wrong.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
@@ -9,20 +11,23 @@ import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flawtrack/widgets/provider_widget.dart';
 import 'package:flawtrack/services/auth_service.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'l10n/l10n.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flawtrack/services/locale_provider.dart';
+import 'package:provider/provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   FlutterError.onError = (FlutterErrorDetails details) {
     FlutterError.dumpErrorToConsole(details);
     if (kReleaseMode) exit(1);
   };
 
-  /// STEP 2. Pass your root widget (MyApp) along with Catcher configuration:
-  ///
   runApp(MyApp());
 }
 
@@ -76,19 +81,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         lat = position.latitude;
         long = position.longitude;
 
-        String translate(String code) {
-          switch (code) {
-            case 'Nursultan':
-              return 'Нур-Султан';
-            case 'Pavlodar':
-              return 'Павлодар';
-            case 'Aktau':
-              return 'Актау';
-            default:
-              return 'Калифорния';
-          }
-        }
-
         cityGlobal = translate(currentLocality);
         addressGlobal = translate(currentLocality) + ', Казахстан';
       });
@@ -97,39 +89,81 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     }
   }
 
+  late User user;
+
   @override
   void initState() {
     super.initState();
     determinePosition();
   }
 
+  onRefresh(userCred) {
+    setState(() {
+      user = userCred;
+    });
+  }
+
   @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: _initialization,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return SomethingWentWrong();
-          }
+  Widget build(BuildContext context) => ChangeNotifierProvider(
+      create: (context) => LocaleProvider(),
+      builder: (context, child) {
+        final provider = Provider.of<LocaleProvider>(context);
 
-          // Once complete, show your application
-          if (snapshot.connectionState == ConnectionState.done) {
-            return Provider(
-              auth: AuthService(),
-              db: FirebaseFirestore.instance,
-              child: MaterialApp(
-                debugShowCheckedModeBanner: false,
-                home: AuthService().handleAuth(),
-                routes: AppRoutes.define(),
-              ),
-            );
-          }
+        return FutureBuilder(
+            future: _initialization,
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return SomethingWentWrong();
+              }
 
-          // Otherwise, show something whilst waiting for initialization to complete
-          return SpinKitPouringHourGlass(
-            color: primaryColor,
-            size: 50.0,
-          );
-        });
+              // Once complete, show your application
+              if (!snapshot.hasData ||
+                  snapshot.connectionState == ConnectionState.done) {
+                return ProviderMain(
+                  auth: AuthService(),
+                  db: FirebaseFirestore.instance,
+                  child: MaterialApp(
+                    locale: provider.locale,
+                    debugShowCheckedModeBanner: false,
+                    home: AuthService().handleAuth(),
+                    routes: AppRoutes.define(),
+                    supportedLocales: L10n.all,
+                    localizationsDelegates: [
+                      AppLocalizations.delegate,
+                      GlobalMaterialLocalizations.delegate,
+                      GlobalCupertinoLocalizations.delegate,
+                      GlobalWidgetsLocalizations.delegate,
+                    ],
+                  ),
+                );
+              }
+
+              // Otherwise, show something whilst waiting for initialization to complete
+              return SplashScreen();
+            });
+      });
+}
+
+String translate(String code) {
+  print(code);
+  switch (code) {
+    case 'Nur-Sultan':
+      return 'Нур-Султан';
+    case 'Astana':
+      return 'Нур-Султан';
+    case 'Pavlodar':
+      return 'Павлодар';
+    case 'Aktau':
+      return 'Актау';
+    case 'Shymkent':
+      return 'Шымкент';
+    case 'Almaty':
+      return 'Алматы';
+    case 'Aktau':
+      return 'Актау';
+    case 'Aktau':
+      return 'Актау';
+    default:
+      return 'Павлодар';
   }
 }

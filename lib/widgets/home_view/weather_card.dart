@@ -26,15 +26,15 @@ Widget weather(double width) {
       child: Row(
         children: [
           Expanded(
-            flex:1,
+            flex:7,
             child: Container(
-              height: 96,
+              height: 100,
               child: Column(
                 children: [
                   Center(
                     child: Row(children: [
                       Icon(Icons.wb_cloudy, size: 45, color: white,),
-                      Text('1' + '°',
+                      Text('-5' + '°',
                         style: TextStyle(color: white, fontSize: 35),
                       )
                     ],),
@@ -48,17 +48,17 @@ Widget weather(double width) {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Text('Погода',
+                      Text('Ауа-райы',
                       style: TextStyle(
                         color: white, 
                         fontSize: 26,
                         fontWeight: FontWeight.w500
                         ),
                       ),
-                      Text('Вт'+', '+'2 ноября',
+                      Text('Жм'+', '+'3 желтоқсан',
                       style: TextStyle(
                         color: white, 
-                        fontSize: 9,
+                        fontSize: 7,
                         fontWeight: FontWeight.w500
                         ),
                       )
@@ -68,15 +68,15 @@ Widget weather(double width) {
                 ),
             )),
           Expanded(
-            flex:1,
+            flex:8,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                weatherOftheDay('Среда', width, 10, Icons.wb_cloudy_rounded, '-8', '-13'),
-                weatherOftheDay('Четверг', width, 10, Icons.wb_cloudy_rounded, '-4', '-14'),
-                weatherOftheDay('Пятница', width, 10, Icons.wb_sunny, '1', '-8'),
-                weatherOftheDay('Суббота', width, 10, Icons.wb_cloudy_rounded, '2', '-6'),
-                weatherOftheDay('Воскресенье', width, 10, Icons.wb_cloudy_rounded, '6', '-3'),
+                weatherOftheDay('Сенбі', width*0.25, 10, Icons.wb_cloudy_rounded, '-8', '-13'),
+                weatherOftheDay('Жексенбі', width*0.25, 10, Icons.wb_cloudy_rounded, '-4', '-14'),
+                weatherOftheDay('Дүйсенбі', width*0.25, 10, Icons.wb_sunny, '1', '-8'),
+                weatherOftheDay('Сейсенбі', width*0.25, 10, Icons.wb_cloudy_rounded, '2', '-6'),
+                weatherOftheDay('Сәрсенбі', width*0.25, 10, Icons.wb_cloudy_rounded, '6', '-3'),
               ],
               ))
         ],),

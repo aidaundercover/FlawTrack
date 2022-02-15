@@ -17,7 +17,7 @@ class _ConversationListState extends State<ConversationList> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) => Chat()));
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => Kenesary()));
         },
       child: Container(
         padding: EdgeInsets.only(left: 16,right: 16,top: 10,bottom: 10),

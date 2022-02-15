@@ -38,15 +38,15 @@ class _HomeVolunteerState extends State<HomeVolunteer> {
           items: [
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
-              label: "Главная",
+              label: "Басты бет",
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.map_sharp),
-              label: "Карты",
+              label: "Карталар",
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.volunteer_activism),
-              label: "Волонтеры",
+              label: "Волонтерлар",
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.speaker_notes),

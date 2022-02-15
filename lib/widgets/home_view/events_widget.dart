@@ -31,7 +31,7 @@ Widget eventsWidget(BuildContext context, double width) {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset('assets/home/home_event_icon.png', height: 80),
-            Text('События', 
+            Text('Іс-шаралар', 
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 14

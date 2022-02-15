@@ -25,12 +25,15 @@ class FundOpening extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children:[
-            Text('Сделай свой\nгород лучше!',
-                style: TextStyle(
-                  fontSize: 38,
-                  fontWeight: FontWeight.bold
+            Center(
+              child: Text('Өз қаланы жақсарутға\n үлес қос',
+              textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 36,
+                    fontWeight: FontWeight.bold
+                  ),
                 ),
-              ),
+            ),
             Image.asset('assets/fund_welcome.png', height: width*0.65,),
             ElevatedButton(
               onPressed: () {
@@ -50,7 +53,7 @@ class FundOpening extends StatelessWidget {
               child: Container(
                 alignment: Alignment.center,
                 child: Text(
-                  'Помочь',
+                  'Көмектесу',
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,

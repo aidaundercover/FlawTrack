@@ -16,7 +16,7 @@ class UsingRules extends StatelessWidget {
         toolbarHeight: 60,
         centerTitle: true,
         title: Text(
-          'Правила использования',
+          'Қолдану ережелері',
           style: TextStyle(
               color: black,
               fontSize: 24,
@@ -39,7 +39,7 @@ class UsingRules extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(left: 30.0),
                 child: Text(
-                  'Разметка карты: ',
+                  'Шартты белгілер: ',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize:20,
@@ -55,27 +55,27 @@ class UsingRules extends StatelessWidget {
                   children: [  
                       TableRow( children: [  
                         Container(height: 50, child: Column(children:[ImageIcon(AssetImage('assets/pins/trashcan.png'), size: 24, color: black)])),  
-                        Container(height: 50, child: Column(children:[Text('Мусор в неположенном месте', style: TextStyle(fontSize: 15.0))])),  
+                        Container(height: 50, child: Column(children:[Text('Орынды емес қоқыс', style: TextStyle(fontSize: 15.0))])),  
                       ]),  
                       TableRow( children: [  
                         Column(children:[ImageIcon(AssetImage('assets/pins/road.png'), size: 24, color: black)]),  
-                        Column(children:[Text('Дорога/тратуар разбита', style: TextStyle(fontSize: 15.0),)]),  
+                        Column(children:[Text('Жол/тратуар сынған', style: TextStyle(fontSize: 15.0),)]),  
                       ]),
                       TableRow(  children: [  
                         Column(children:[ImageIcon(AssetImage('assets/pins/dog.png'), size: 24, color: black)]),  
-                        Column(children:[Text('Бездомная/потерявшаяся собака', style: TextStyle(fontSize: 15.0))]),  
+                        Column(children:[Text('Үйсіз/жоғалған ит', style: TextStyle(fontSize: 15.0))]),  
                       ]),
                       TableRow( children: [  
                         Column(children:[ImageIcon(AssetImage('assets/pins/cat.png'), size: 24, color: black)]),  
-                        Column(children:[Text('Бездомный/потерявшийся кот', style: TextStyle(fontSize: 15.0))]),  
+                        Column(children:[Text('Үйсіз/жоғалған мысық', style: TextStyle(fontSize: 15.0))]),  
                       ]),  
                       TableRow( children: [  
                         Column(children:[ImageIcon(AssetImage('assets/pins/trash.png'), size: 24, color: black)]),  
-                        Column(children:[Text('Свалка в неположенном месте', style: TextStyle(fontSize: 15.0))]),  
+                        Column(children:[Text('Орынды емес свалка', style: TextStyle(fontSize: 15.0))]),  
                       ]),
                       TableRow( children: [  
                         Column(children:[ImageIcon(AssetImage('assets/pins/drown.png'), size: 24, color: black)]),  
-                        Column(children:[Text('Затопление', style: TextStyle(fontSize: 15.0))]),  
+                        Column(children:[Text('Су басылуы', style: TextStyle(fontSize: 15.0))]),  
                       ]),
                       TableRow( children: [  
                         Column(children:[ImageIcon(AssetImage('assets/pins/homeless.png'), size: 24, color: black)]),  
@@ -87,7 +87,7 @@ class UsingRules extends StatelessWidget {
                       ]),
                       TableRow( children: [  
                         Column(children:[ImageIcon(AssetImage('assets/pins/fixed.png'), size: 24, color: black)]),  
-                        Column(children:[Text('Исправлено', style: TextStyle(fontSize: 15.0))]),  
+                        Column(children:[Text('Түзетілді', style: TextStyle(fontSize: 15.0))]),  
                       ]),
                     ],  
               ),

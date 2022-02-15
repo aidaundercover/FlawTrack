@@ -1,20 +1,15 @@
 import 'dart:io';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flawtrack/home_widget_citizen.dart';
 import 'package:flawtrack/home_widget_volunteer.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flawtrack/models/FlawtrackUser.dart';
-import 'package:flawtrack/views/auth/sign_in.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flawtrack/views/first_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:core';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:firebase_core/firebase_core.dart' as firebase_core;
@@ -22,7 +17,6 @@ import 'package:firebase_core/firebase_core.dart' as firebase_core;
 class AuthService {
   static FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   static FirebaseFirestore _db = FirebaseFirestore.instance;
-  static GoogleSignIn googleSignIn = GoogleSignIn();
 
   Stream<String> get onAuthStateChanged => _firebaseAuth.userChanges().map(
         (user) {
@@ -36,11 +30,11 @@ class AuthService {
   }
 
   // GET CURRENT USER
-  Future<FlawtrackUser> getCurrentUser() async {
-    var firebaseUser = _firebaseAuth.currentUser;
-    return FlawtrackUser(
-        firebaseUser!.uid, firebaseUser.email, firebaseUser.displayName);
-  }
+  //Future<FlawtrackUser> getCurrentUser() async {
+  //var firebaseUser = _firebaseAuth.currentUser;
+  //return FlawtrackUser(
+  //firebaseUser!.uid, firebaseUser.email, firebaseUser.name,firebaseUser.volunteer);
+  //}
 
   Future<void> uploadFile(String filePath) async {
     File file = File(filePath);
@@ -62,33 +56,7 @@ class AuthService {
   }
 
 //Sign Up with Email
-  static Future<void> signupWithEmail(
-      {required String email,
-      required String password,
-      String? name,
-      bool isVolunteer = false}) async {
-    try {
-      UserCredential res = await _firebaseAuth.createUserWithEmailAndPassword(
-          email: email, password: password);
-      final user = res.user;
-
-      Map<String, dynamic> userData = {
-        "username": "$name",
-        "email": "$email",
-        "volunteer": isVolunteer
-      };
-
-      CollectionReference collectionReference = _db.collection('users');
-      collectionReference.add(userData);
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email');
-      }
-    } catch (e) {
-      print(e.toString());
-    }
-  }
-
+  
   // Sign In with Email
   static Future<void> signInWithEmail(
       {required String email,
@@ -101,15 +69,6 @@ class AuthService {
   }
 
   //Sign In with third party
-
-  Future signInWithGoogle() async {
-    final acc = await googleSignIn.signIn();
-    final auth = await acc!.authentication;
-    final credential = GoogleAuthProvider.credential(
-        accessToken: auth.accessToken, idToken: auth.idToken);
-    final res = await _firebaseAuth.signInWithCredential(credential);
-    return res.user;
-  }
 
   Future<UserCredential> signInWithFacebook() async {
     final LoginResult loginResult = await FacebookAuth.instance.login();
@@ -186,37 +145,4 @@ class AuthService {
   }
 
 // Update the usern
-}
-
-mixin NameValidator {
-  static String? validate(String? value) {
-    if (value!.isEmpty) {
-      return "Поле Имя не может быть пустым";
-    }
-    if (value.length < 2) {
-      return "Имя должно содержать минимум 2 символа";
-    }
-    if (value.length > 50) {
-      return "Имя не может быть длинее 50-ти символов";
-    }
-    return null;
-  }
-}
-
-mixin EmailValidator {
-  static String? validate(String? value) {
-    if (value!.isEmpty) {
-      return "Поле Email не может быть пустым";
-    }
-    return null;
-  }
-}
-
-mixin PasswordValidator {
-  static String? validate(String? value) {
-    if (value!.isEmpty) {
-      return "Пожалуйста введите пароль";
-    }
-    return null;
-  }
 }

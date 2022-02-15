@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 
 class ChatUsers {
   String text;
@@ -6,5 +5,5 @@ class ChatUsers {
   String image;
   String time;
   ChatUsers(
-      { required String this.text, required String this.secondaryText, required String this.image, required String this.time});
+      { required this.text, required  this.secondaryText, required  this.image, required  this.time});
 }

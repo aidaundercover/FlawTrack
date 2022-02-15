@@ -29,8 +29,8 @@ Widget createEventWidget(BuildContext context, double width) {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-              Image.asset('assets/home_cloud_icon.png', width: 78,),
-              Text('Организовать\n мероприятие', 
+              Image.asset('assets/home/home_cloud_icon.png', width: 78,),
+              Text('Іс-шара\n ұйымдастыру', 
                 textAlign: TextAlign.center,
                 style: TextStyle(
                 fontWeight: FontWeight.bold,

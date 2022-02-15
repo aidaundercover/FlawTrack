@@ -1,17 +1,17 @@
 import 'package:flawtrack/services/auth_service.dart';
 import 'package:flutter/material.dart';
 
-class Provider extends InheritedWidget {
+class ProviderMain extends InheritedWidget {
   final AuthService auth;
   final db;
 
-  Provider({key, required Widget child, required this.auth, this.db}) : super(key: key, child: child);
+  ProviderMain({key, required Widget child, required this.auth, this.db}) : super(key: key, child: child);
 
   @override
   bool updateShouldNotify(InheritedWidget oldWidget) {
     return true;
   }
 
-  static Provider of(BuildContext context) =>
-      (context.dependOnInheritedWidgetOfExactType<Provider>() as Provider);
+  static ProviderMain of(BuildContext context) =>
+      (context.dependOnInheritedWidgetOfExactType<ProviderMain>() as ProviderMain);
 }

@@ -1,4 +1,5 @@
 import 'package:flawtrack/views/auth/sign_in.dart';
+import 'package:flawtrack/views/settings/settings_main.dart';
 import 'package:flutter/material.dart';
 import 'package:flawtrack/views/auth/signup.dart';
 import 'package:flawtrack/views/auth/forgotpassword.dart';
@@ -15,6 +16,7 @@ class AppRoutes {
   static const String homeVolunteer = '/home_volunteer';
   static const String forgotPassword = '/forgot-password';
   static const String convertUser = '/convertUser';
+  static const String settings = '/settings';
 
   
 
@@ -26,6 +28,7 @@ class AppRoutes {
       homeCitizen: (context) => HomeCitizen(),
       homeVolunteer: (context) => HomeVolunteer(),
       forgotPassword: (context) => ForgotPassword(),
+      settings: (context) => SettingsMainPage()
     };
   }
 }

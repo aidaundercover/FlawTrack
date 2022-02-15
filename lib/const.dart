@@ -13,12 +13,15 @@ const darkBlue = Color.fromRGBO(63, 61, 86, 1);
 
 var widthGlobal;
 
-late bool volunteer;
+bool visibleV = false;
 
-var points;
+bool volunteer=false;
+
+var points = 0;
 var name;
 var email;
 
+String mapCity = "";
 var addressGlobal;
 var cityGlobal = 'Павлодар';
 var lat = 52.2535496;

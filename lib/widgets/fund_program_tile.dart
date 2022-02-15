@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutter/material.dart';
 
 import '../const.dart';
 
-Widget FundTile(String name, int neededMoney, String img, int percent) {
+Widget fundTile(String name, int neededMoney, String img, int percent) {
   return Column(
     children: [
       Container(

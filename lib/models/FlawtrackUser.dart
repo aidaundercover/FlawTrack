@@ -1,27 +1,34 @@
-import 'package:flawtrack/models/Event.dart';
-
 class FlawtrackUser {
   String? uid;
   String? email;
-  String? displayName;
+  String? name;
   late String city;
+  late String organization;
   late int pins;
   late int coins;
   late String photo;
-  late String role;
-  late Event events;
+  bool? volunteer;
 
-  FlawtrackUser(this.uid, this.email, this.displayName);
+  FlawtrackUser({this.uid, this.email, this.name, this.volunteer});
 
-  Map<String, dynamic> toJson() => {
+  factory FlawtrackUser.fromMap(map) {
+    return FlawtrackUser(
+      uid: map['uid'], 
+      email: map['email'], 
+      name : map['name'], 
+      volunteer : map[false]
+    );
+  }
+
+  Map<String, dynamic> toMap() => {
         'uid': uid,
         'city': city,
-        'volunteer': role,
-        'name': displayName,
+        'volunteer': volunteer,
+        'name': name,
         'coins': coins,
         'pins': pins,
         'email': email,
         'photo': photo,
-        'events' : events
+        'oragnization' : organization
       };
 }

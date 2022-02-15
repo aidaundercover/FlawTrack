@@ -1,9 +1,14 @@
+
 import 'package:flawtrack/const.dart';
+import 'package:flawtrack/l10n/l10n.dart';
 import 'package:flawtrack/routes.dart';
-import 'package:flawtrack/views/welcome/welcomeeng.dart';
-import 'package:flawtrack/views/welcome/welcomekz.dart';
-import 'package:flawtrack/views/welcome/welcomerus.dart';
+import 'package:flawtrack/services/locale_provider.dart';
+import 'package:flawtrack/welcome.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+  
+
 
 class FirstView extends StatefulWidget {
   const FirstView({Key? key}) : super(key: key);
@@ -13,17 +18,18 @@ class FirstView extends StatefulWidget {
 }
 
 class _FirstViewState extends State<FirstView> {
+
+
+  @override
+  void initState() {
+    super.initState();
+
+  }
+
   @override
   Widget build(BuildContext context) {
     final _width = MediaQuery.of(context).size.width;
     final _height = MediaQuery.of(context).size.height;
-    String _selected = '0';
-    // ignore: unused_local_variable
-    List<Map> _myJson = [
-      {'id': '0', 'image': 'assets/welcome/russia.png', 'title': 'Русский'},
-      {'id': '1', 'image': 'assets/welcome/kazakh.png', 'title': 'Қазақша'},
-      {'id': '2', 'image': 'assets/welcome/usa.png', 'title': 'English'},
-    ];
 
     return Scaffold(
       body: Column(
@@ -75,65 +81,9 @@ class _FirstViewState extends State<FirstView> {
                 offset: Offset(0, -2),
               )
             ]),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Expanded(
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton<String>(
-                        hint: Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: Text('Select Language'),
-                        ),
-                        iconEnabledColor: darkBlue,
-                        iconDisabledColor: grey,
-                        itemHeight: 55,
-                        value: _selected,
-                        style: TextStyle(
-                            fontSize: 21,
-                            fontWeight: FontWeight.w600,
-                            color: black),
-                        icon: const Icon(
-                          Icons.arrow_drop_down_outlined,
-                          size: 30,
-                        ),
-                        onChanged: (newValue) {
-                          setState(() {
-                            _selected = newValue!;
-
-                            print(_selected);
-                          });
-                        },
-                        items: _myJson.map((Map map) {
-                          return DropdownMenuItem(
-                            value: map["id"].toString(),
-                            child: Container(
-                              child: Row(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 15.0),
-                                    child: Image.asset(
-                                      map['image'],
-                                      width: 42,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 15.0),
-                                    child: Text(
-                                      map['title'].toString(),
-                                      style: TextStyle(
-                                          fontSize: 19,
-                                          fontWeight: FontWeight.w600),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          );
-                        }).toList()),
-                  ),
-                ),
-              ],
+            child: Padding(
+              padding: const EdgeInsets.only(left: 15.0),
+              child: MyStatefulWidget(),
             ),
           ),
           SizedBox(
@@ -163,18 +113,8 @@ class _FirstViewState extends State<FirstView> {
               ),
             ),
             onPressed: () {
-            
-                if (_selected == '0') {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => WelcomeRu()));
-              } else if (_selected == '1') {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => WelcomeKz()));
-              } else {
                 Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => WelcomeEng()));
-              }
-        
+                    MaterialPageRoute(builder: (context) => Welcome()));
             },
           ),
           SizedBox(height: _height * 0.05),
@@ -199,6 +139,76 @@ class _FirstViewState extends State<FirstView> {
           )
         ],
       ),
+    );
+  }
+}
+
+class MyStatefulWidget extends StatefulWidget {
+  const MyStatefulWidget({Key? key}) : super(key: key);
+
+  @override
+  State<MyStatefulWidget> createState() => _MyStatefulWidgetState();
+}
+
+class _MyStatefulWidgetState extends State<MyStatefulWidget> {
+
+
+
+
+  @override
+  Widget build(BuildContext context) {
+
+    final provider = Provider.of<LocaleProvider>(context);
+    var locale = provider.locale ?? Locale('en');
+    final _width = MediaQuery.of(context).size.width;
+
+    return DropdownButton<Locale>(
+      iconEnabledColor: darkBlue,
+      iconDisabledColor: grey,
+      itemHeight: 55,
+      value: locale,
+      onTap: () {
+      final provider =
+                    Provider.of<LocaleProvider>(context, listen: false);
+
+      provider.setLocale(locale);
+      },
+      style: TextStyle(
+        fontSize: 21,
+        fontWeight: FontWeight.w600,
+        color: black),
+      icon: Padding(
+        padding: EdgeInsets.only(left: _width*0.35),
+        child: const Icon(
+          Icons.arrow_drop_down_outlined,
+          size: 30,
+        ),
+      ),
+      iconSize: 30,
+      onChanged: (Locale? newValue) {
+        setState(() {
+          locale = newValue!;
+        });
+      },
+      items: L10n.all.map(
+          (locale) {
+            final flag = L10n.getFlag(locale.languageCode);
+
+            return DropdownMenuItem(
+                child: Text(
+                  flag,
+                  style: TextStyle(fontSize: 22),
+                ),
+              value: locale,
+              onTap: () {
+                final provider =
+                    Provider.of<LocaleProvider>(context, listen: false);
+
+                provider.setLocale(locale);
+              },
+            );
+          },
+        ).toList(),
     );
   }
 }

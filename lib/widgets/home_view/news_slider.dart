@@ -3,24 +3,29 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:flawtrack/const.dart';
 import 'package:flutter/material.dart';
 
-class NewsTile extends StatelessWidget {
+class NewsTile extends StatefulWidget {
+  @override
+  State<NewsTile> createState() => _NewsTileState();
+}
+
+class _NewsTileState extends State<NewsTile> {
   @override
   Widget build(BuildContext context) {
-    String _img = 'assets/home/news3.jpeg';
-    String _title = 'Казахстан получил доступ к внутренней системе Facebook';
+    String _img = 'assets/home/news5.jpeg';
+    String _title = 'Асем Нусупова покинула пост вице-министра здравоохранения';
+    const _url =
+          'https://tengrinews.kz/kazakhstan_news/asem-nusupova-pokinula-post-vitse-ministra-zdravoohraneniya-461895/';
 
-    _launchURLApp() async {
-      const url =
-          'https://tengrinews.kz/kazakhstan_news/kazahstan-poluchil-dostup-k-vnutrenney-sisteme-facebook-452720/';
-      if (await canLaunch(url)) {
-        await launch(url, forceSafariVC: true, forceWebView: true);
-      } else {
-        throw 'Could not launch $url';
-      }
-    }
-
+    void _launchURLApp() async =>
+    await canLaunch(_url) ? await launch(_url) : throw 'Could not launch $_url';
+    
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        setState(() {
+            _img = 'assets/home/news3.jpeg';
+                        _title = 'Скончался Темирхан Досмухамбетов';
+        });
+      },
       child: Padding(
         padding: const EdgeInsets.only(bottom: 27.0),
         child: Container(
@@ -129,8 +134,10 @@ class NewsTile extends StatelessWidget {
                   flex: 1,
                   child: GestureDetector(
                     onTap: () {
-                      _img = 'assets/home/news4.jpeg';
-                      _title = 'Скончался Темирхан Досмухамбетов';
+                      setState(() {
+                        _img = 'assets/home/news4.jpeg';
+                        _title = 'Скончался Темирхан Досмухамбетов';
+                      });
                     },
                     child: Container(
                         height: 184,

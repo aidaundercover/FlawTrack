@@ -1,0 +1,197 @@
+{
+   "skip" : "Skip",
+   "@skip" : {
+      "description" : "electronic mail"
+   },
+   "done" : "Done",
+   "@done" : {
+      "description" : "electronic mail"
+   },
+   "language" : "English",
+   "@language": {
+      "description": "The current language"
+   },
+   "welcome" : "Welcome!",
+   "@welcome" : {
+      "description" : "greeting"
+   },
+   "signin" : "Sign In",
+   "@signin" : {
+      "description" : "greeting"
+   },
+   "email" : "Email",
+   "@email" : {
+      "description" : "electronic mail"
+   },
+   "password" : "Password",
+   "@password" : {
+      "description" : "secret array of symbols"
+   },
+   "forgotpass" : "Forgot password?",
+   "@forgotpass" : {
+      "description" : "forgotpass forgotpass"
+   },
+   "conti" : "Continue",
+   "@conti" : {
+      "description" : "word for continue the actions"
+   },
+   "donthaveyet" : "Do not have an account yet?",
+   "@donthaveyet" : {
+      "description" : "Do not have an account yet?"
+   },
+   "signup" : "Sign Up",
+   "@signup" : {
+      "description" : "signupsignup"
+   },
+   "createacc" : "Create an account",
+   "@createacc" : {
+      "description" : "createacc createacc createacc"
+   },
+   "name" : "Name",
+   "@name" : {
+      "description" : "namenamenamename"
+   },
+   "volunteertf" : "Are you a volunteer?",
+   "@volunteertf" : {
+      "description" : "volunteertf volunteertf volunteertf"
+   },
+   "alreadyhave" : "Already have an account?",
+   "@alreadyhave" : {
+      "description" : "alreadyhavealreadyhavealreadyhavealreadyhave"
+   },
+   "termsofpolitics" : "By creating an account, you agree to our Privacy Policy",
+   "@termsofpolitics" : {
+      "description" : "termsofpolitics termsofpolitics termsofpolitics"
+   },
+   "weltitle1" : "Pin the problems of your city\non the map",
+   "@weltitle1" : {
+      "description" : "nnn"
+   },
+   "weldesc1" : "You have the opportunity to mark problems of different categories on the general map and attach additional documents",
+   "@weldesc1" : {
+      "description" : "nnn"
+   },
+   "weltitle2" : "Stay in touch with the residents of your area",
+   "@weltitle2" : {
+      "description" : "jjj"
+   },
+   "weldesc2" : "Join the chats of the residential complexes of interest and solve social problems together",
+   "@weldesc2" : {
+      "description" : "nnn"
+   },
+   "weltitle3" : "Get points for\n achievements",
+   "@weltitle3" : {
+      "description" : "jjj"
+   },
+   "weldesc3" : "For filling out the card with problems or corrections, you will receive points that give advantages in the application",
+   "@weldesc3" : {
+      "description" : "nnn"
+   },
+   "yes" : "Yes",
+   "@yes" : {
+      "description" : "namenamenamename"
+   },
+   "no" : "No",
+   "@yes" : {
+      "description" : "namenamenamename"
+   },
+
+
+   "fond" : "Fond",
+   "@fond" : {
+      "description" : "namenamenamename"
+   },
+   "mainpage" : "Main page",
+   "@mainpage" : {
+      "description" : "namenamenamename"
+   },
+   "events" : "Events",
+   "@events" : {
+      "description" : "namenamenamename"
+   },
+   "advises" : "User's guiedline",
+   "@yes" : {
+      "description" : "namenamenamename"
+   },
+   "weather" : "Weather",
+   "@weather" : {
+      "description" : "namenamenamename"
+   },
+   "mon" : "Monday",
+   "@mon" : {
+      "description" : "namenamenamename"
+   },
+   "maps" : "Maps",
+   "@maps" : {
+      "description" : "namenamenamename"
+   },
+   "forum" : "Forum",
+   "@forum" : {
+      "description" : "namenamenamename"
+   },
+   "profile" : "Profile",
+   "@profile" : {
+      "description" : "namenamenamename"
+   },
+
+   "mapsp" : "Maps of problems",
+   "@weather" : {
+      "description" : "namenamenamename"
+   },
+   "mapsc" : "Mpas of corrections",
+   "@weather" : {
+      "description" : "namenamenamename"
+   },
+   "mapsv" : "Maps of volunteers",
+   "@weather" : {
+      "description" : "namenamenamename"
+   },
+   
+
+
+
+   "warn1" : "Please enter some text",
+   "@warn1" : {
+      "description" : "namenamenamename"
+   },
+   "warn2" : "Please enter email address",
+   "@name" : {
+      "description" : "namenamenamename"
+   },
+   "warn3" : "Name should at least consists from 2 characters",
+   "@name" : {
+      "description" : "namenamenamename"
+   },
+   "warn4" : "Password should at least consists from 8 characters",
+   "@name" : {
+      "description" : "namenamenamename"
+   },
+   "maininfo" : "Main Info",
+   "@maininfo" : {
+      "description" : "namenamenamename"
+   },
+   "forums" : "Forums",
+   "@forums" : {
+      "description" : "namenamenamename"
+   },
+   "historyco" : "History of corrections",
+   "@historyco" : {
+      "description" : "namenamenamename"
+   },
+   "emailwassend" : "Link to email confirmation was send to you",
+   "@emailwassend" : {
+      "description" : "namenamenamename"
+   },
+   "help" : "Help",
+   "@help" : {
+      "description" : "namenamenamename"
+   },
+   "helptothecity" : "Help upgrade your city",
+   "@helptothecity" : {
+      "description" : "namenamenamename"
+   },
+   "fundofinvests" : "Fund of Invests",
+   "@fundofinvests" : {
+      "description" : "namenamenamename"
+   }
+}

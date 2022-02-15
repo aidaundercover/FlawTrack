@@ -1,10 +1,21 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flawtrack/models/FlawtrackUser.dart';
 import 'package:flawtrack/services/auth_service.dart';
 import 'package:flawtrack/views/auth/verify_email.dart';
 import 'package:flawtrack/views/terms_of_policy.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import '../../const.dart';
 import '../../routes.dart';
+import 'package:email_validator/email_validator.dart';
+
+late TextEditingController _nameController;
+late TextEditingController _emailController;
+late TextEditingController _passwordController;
+late TextEditingController _passwordCheckController;
+String dropdownValue = 'Нет';
 
 class SignUp extends StatefulWidget {
   const SignUp({Key? key}) : super(key: key);
@@ -22,10 +33,6 @@ class _SignUpState extends State<SignUp> {
     });
   }
 
-  late TextEditingController _nameController;
-  late TextEditingController _emailController;
-  late TextEditingController _passwordController;
-  late TextEditingController _passwordCheckController;
   String dropdownValue = 'Нет';
   Color textColor = grey.withOpacity(0.7);
 
@@ -56,7 +63,7 @@ class _SignUpState extends State<SignUp> {
           ], begin: Alignment.topLeft)),
           height: 48,
           alignment: Alignment.center,
-          child: Text('ВОЙТИ',
+          child: Text(AppLocalizations.of(context).signin,
               style: TextStyle(
                   fontSize: 13, fontWeight: FontWeight.bold, color: white)),
         ),
@@ -76,7 +83,7 @@ class _SignUpState extends State<SignUp> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Text('Создать аккаунт',
+                  Text(AppLocalizations.of(context).createacc,
                       style: TextStyle(
                         fontSize: 21,
                         fontWeight: FontWeight.bold,
@@ -96,11 +103,17 @@ class _SignUpState extends State<SignUp> {
                                 ),
                                 onSaved: (input) =>
                                     _nameController.text = input!,
-                                validator: (input) {
-                                  NameValidator.validate(input);
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter some text';
+                                  }
+                                  if (value.length < 3) {
+                                    return 'Name should at least consists from 2 characters';
+                                  }
+                                  return null;
                                 },
                                 decoration: InputDecoration(
-                                  hintText: 'Имя',
+                                  hintText: AppLocalizations.of(context).name,
                                   hintStyle: TextStyle(
                                       color: textColor,
                                       fontFamily: 'Arial',
@@ -133,11 +146,17 @@ class _SignUpState extends State<SignUp> {
                                 ),
                                 onSaved: (input) =>
                                     _emailController.text = input!,
-                                validator: (input) {
-                                  EmailValidator.validate(input);
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter some text';
+                                  }
+                                  if (!EmailValidator.validate(value)) {
+                                    return 'Please enter email address';
+                                  }
+                                  return null;
                                 },
                                 decoration: InputDecoration(
-                                  hintText: 'E-mail',
+                                  hintText: AppLocalizations.of(context).email,
                                   hintStyle: TextStyle(
                                       color: grey,
                                       fontFamily: 'Arial',
@@ -166,37 +185,38 @@ class _SignUpState extends State<SignUp> {
                                 color: white,
                                 border: Border.all(color: grey, width: 1)),
                             child: Center(
-                              child: DropdownButton<String>(
-                                value: dropdownValue,
-                                iconSize: 30,
-                                elevation: 16,
-                                hint: Text(
-                                  'Волонетер ли вы?',
-                                  style:
-                                      TextStyle(fontSize: 14, color: textColor),
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton<String>(
+                                  value: dropdownValue,
+                                  iconSize: 30,
+                                  elevation: 16,
+                                  hint: Text(
+                                    AppLocalizations.of(context).volunteertf,
+                                    style: TextStyle(
+                                        fontSize: 14, color: textColor),
+                                  ),
+                                  style: const TextStyle(color: grey),
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      dropdownValue = newValue!;
+                                      if (dropdownValue == 'Нет') {
+                                        volunteer = false;
+                                      } else if (dropdownValue == 'Да') {
+                                        volunteer = true;
+                                      }
+                                    });
+                                  },
+                                  items: <String>['Нет', 'Да']
+                                      .map<DropdownMenuItem<String>>(
+                                          (String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Container(
+                                          width: _width * 0.60,
+                                          child: Text(value)),
+                                    );
+                                  }).toList(),
                                 ),
-                                style: const TextStyle(color: grey),
-                                onChanged: (String? newValue) {
-                                  setState(() {
-                                    dropdownValue = newValue!;
-                                    if (dropdownValue == 'Нет') {
-                                      volunteer = false;
-                                    } else if (dropdownValue == 'Да') {
-                                      volunteer = true;
-                                    }
-                                  });
-                                },
-                                items: <String>[
-                                  'Нет',
-                                  'Да'
-                                ].map<DropdownMenuItem<String>>((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Container(
-                                      width: _width * 0.60,
-                                      child: Text(value)),
-                                  );
-                                }).toList(),
                               ),
                             ),
                           ),
@@ -209,8 +229,14 @@ class _SignUpState extends State<SignUp> {
                                   color: grey,
                                   fontSize: 14,
                                 ),
-                                validator: (input) {
-                                  PasswordValidator.validate(input);
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter some text';
+                                  }
+                                  if (value.length < 8) {
+                                    return 'Password should at least consists from 8 characters';
+                                  }
+                                  return null;
                                 },
                                 onSaved: (input) =>
                                     _passwordController.text = input!,
@@ -224,7 +250,8 @@ class _SignUpState extends State<SignUp> {
                                     color: Color.fromRGBO(168, 168, 168, 1.0),
                                     onPressed: _toggle,
                                   ),
-                                  hintText: 'Пароль',
+                                  hintText:
+                                      AppLocalizations.of(context).password,
                                   hintStyle: TextStyle(
                                       color: textColor,
                                       fontFamily: 'Arial',
@@ -303,39 +330,44 @@ class _SignUpState extends State<SignUp> {
                   SizedBox(
                     height: 30,
                   ),
-                  InkWell(
-                    onTap: () {
-                      Navigator.pop(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => TermsOfPolicy()));
-                    },
-                    child: Text(
-                      'Создавая учетную запись, вы соглашаетесь с нашей\nПолитикой конфиденциальности',
-                      style: TextStyle(
-                        color: primaryColor,
-                        fontSize: 10,
+                  Container(
+                    width: _width * 0.73,
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.pop(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => TermsOfPolicy()));
+                      },
+                      child: Text(
+                        AppLocalizations.of(context).termsofpolitics,
+                        style: TextStyle(
+                          color: primaryColor,
+                          fontSize: 10,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
                     ),
                   )
                 ],
               )),
-          SizedBox(height: 20),
+          SizedBox(height: 10),
           TextButton(
             onPressed: () async {
-              try {
-                await AuthService.signupWithEmail(
-                        email: _emailController.text,
-                        password: _passwordController.text,
-                        name: _nameController.text,
-                        isVolunteer: volunteer)
-                    .then((_) {
-                  Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (context) => VerifyScreen()));
-                });
-              } catch (e) {
-                print(e);
+              if (_formKey.currentState!.validate()) {
+                try {
+                  await signupWithEmail(
+                          email: _emailController.text,
+                          password: _passwordController.text,
+                          name: _nameController.text,
+                          isVolunteer: volunteer)
+                      .then((_) {
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        builder: (context) => VerifyScreen()));
+                  });
+                } catch (e) {
+                  print(e);
+                }
               }
             },
             child: Container(
@@ -347,7 +379,7 @@ class _SignUpState extends State<SignUp> {
               height: 43,
               alignment: Alignment.center,
               child: Text(
-                'ПРОДОЛЖИТЬ',
+                AppLocalizations.of(context).conti,
                 style: TextStyle(
                   color: white,
                   fontSize: 12,
@@ -356,7 +388,7 @@ class _SignUpState extends State<SignUp> {
               ),
             ),
           ),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.15),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.05),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -399,18 +431,43 @@ class _SignUpState extends State<SignUp> {
               )
             ],
           ),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.1),
+          SizedBox(height: MediaQuery.of(context).size.width * 0.0),
           GestureDetector(
             onTap: () {},
-            child: Text("Еще нет аккаунта?",
+            child: Text(AppLocalizations.of(context).donthaveyet,
                 style: TextStyle(
                   color: grey,
                   fontSize: 13,
                   fontWeight: FontWeight.bold,
                 )),
           ),
+          SizedBox(height: MediaQuery.of(context).size.width * 0.05),
         ]),
       ),
     );
+  }
+
+  static Future<void> signupWithEmail(
+      {required String email,
+      required String password,
+      String? name,
+      bool isVolunteer = false}) async {
+    await FirebaseAuth.instance
+        .createUserWithEmailAndPassword(email: email, password: password)
+        .then((value) => {postDetailsToFirestore()})
+        .catchError((e) {
+      Fluttertoast.showToast(msg: e.toString());
+    });
+  }
+
+  static postDetailsToFirestore() async {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    await FirebaseFirestore.instance.collection('users').add({
+      'email': _emailController.text,
+      'uid': user!.uid.toString(),
+      'volunteer': volunteer,
+      'name': _nameController.text
+    });
   }
 }

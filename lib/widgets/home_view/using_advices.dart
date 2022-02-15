@@ -30,7 +30,7 @@ Widget usingAdvice(BuildContext context, double width) {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
               Image.asset('assets/home/home_bulb_icon.png', height: 48, width: 48,),
-              Text('Советы по\n использованию', 
+              Text('Қолдану бойынша\n кеңестер', 
                 textAlign: TextAlign.center,
                 style: TextStyle(
                 fontWeight: FontWeight.bold,
