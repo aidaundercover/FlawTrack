@@ -125,8 +125,6 @@ flutter:
     - assets/welcome/
     - assets/pins/
     - assets/arrow.png
-    - assets/bike_icon.png
-    - assets/broom.png
     - assets/coin.png
     - assets/etiquet.png
     - assets/find_volunteer.png
@@ -135,8 +133,6 @@ flutter:
     - assets/news.png
     - assets/volunteer.png
     - assets/weather_bc.png
-    - assets/woman.png
-    - assets/theme.png
 
 
     # An image asset can refer to one or more resolution-specific "variants", see

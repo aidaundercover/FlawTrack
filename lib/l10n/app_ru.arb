@@ -39,16 +39,19 @@
    "warn2" : "Пожалуйста введите email",
    "warn3" : "Имя должно состоять из минимум 2 символов",
    "warn4" : "Имя должно состоять из минимум 8 символов",
-   "maininfo" : "Негізгі ақпарат",
+   "maininfo" : "Основная информация",
    "forums" : "Форумдар",
-   "historyco" : "Түзетілер тарихы",
-   "emailwassend" : "Link to email confirmation was send to you",
-   "help" : "Help",
-   "@help" : {
-      "description" : "namenamenamename"
-   },
-   "helptothecity" : "Help upgrade your city",
-   "@helptothecity" : {
-      "description" : "namenamenamename"
-   }
+   "historyco" : "История исправлений",
+   "emailwassend" : "Ссылка для потвеждения email была отправлена на вашу почту",
+   "help" : "Помощь",
+   "helptothecity" : "Помоги в улучшении своего города",
+   "fundofinvests" : "Фонд инвестиций",
+   "choosethecity" : "Выберите город",
+   "coordinates" : "Кооординаты",
+   "accesswasdenied" : "Доступ к камере был отклонен",
+   "becomevolunteer" : "Стать волонтером",
+   "camera" : "Камера",
+   "gallery" : "Галлерея",
+   "selecttypeofproblem" : "Вид проблемы не был выбран",
+   "descproblem" : "Опишите проблему подробнее"
 }

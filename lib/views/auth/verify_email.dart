@@ -39,15 +39,21 @@ class _VerifyScreenState extends State<VerifyScreen> {
       backgroundColor: lightYellow,
       body: Center(
         child: Container(
-          width: MediaQuery.of(context).size.width*0.7,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text('Было отправлено письмо для потвереждения почты на адрес', textAlign: TextAlign.center,),
-              Text('${user!.email}', style: TextStyle(fontWeight: FontWeight.bold), ),
-            ],
-          )),
+            width: MediaQuery.of(context).size.width * 0.7,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  'Было отправлено письмо для \n потвереждения почты на адрес',
+                  textAlign: TextAlign.center,
+                ),
+                Text(
+                  '${user!.email}',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ],
+            )),
       ),
     );
   }
@@ -57,8 +63,9 @@ class _VerifyScreenState extends State<VerifyScreen> {
     await auth.currentUser!.reload();
     if (auth.currentUser!.emailVerified) {
       timer.cancel();
-      Navigator.pushReplacementNamed(
-        context, AppRoutes.homeVolunteer);
+      Navigator.pushReplacementNamed(context, AppRoutes.homeVolunteer);
+    } else {
+      user!.delete();
       
     }
   }

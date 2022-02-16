@@ -193,5 +193,41 @@
    "fundofinvests" : "Fund of Invests",
    "@fundofinvests" : {
       "description" : "namenamenamename"
+   },
+
+   "choosethecity" : "Choose the city",
+   "@choosethecity" : {
+      "description" : "namenamenamename"
+   },
+
+   "coordinates" : "Coordinates",
+   "@coordinates" : {
+      "description" : "namenamenamename"
+   },
+   "accesswasdenied" : "Access to camera was denied",
+   "@accesswasdenied" : {
+      "description" : "namenamenamename"
+   },
+   "becomevolunteer" : "Become a volunteer",
+   "@becomevolunteer" : {
+      "description" : "namenamenamename"
+   },
+   "camera" : "Camera",
+   "@camera" : {
+      "description" : "namenamenamename"
+   },
+   "gallery" : "Gallery",
+   "@gallery" : {
+      "description" : "namenamenamename"
+   },
+   "selecttypeofproblem" : "Select type of problem",
+   "@selecttypeofproblem" : {
+      "description" : "namenamenamename"
+   },
+   "descproblem" : "Describe the deatails of the problem",
+   "@descproblem" : {
+      "description" : "namenamenamename"
    }
+   
+   
 }

@@ -1,12 +1,10 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flawtrack/const.dart';
-import 'package:flawtrack/views/maps/takephoto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flawtrack/widgets/maps/maps.dart';
-import 'package:flawtrack/widgets/maps/problembutton.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
@@ -26,7 +24,7 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
   String _mapLat = lat.toString();
   String _mapLong = long.toString();
   bool pinned = false;
-  late BitmapDescriptor markerPin;
+  BitmapDescriptor markerPin = mapMarker1;
   late int indexg;
   bool draggablePin = true;
   late String tempId;
@@ -36,7 +34,7 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
   late String? imagePath;
 
   late InfoWindow pinInfo;
-
+  bool selected = false;
   late String pintitle;
   late TextEditingController pindesc;
 
@@ -54,9 +52,9 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
 
   File? image;
 
-  Future pickImage() async {
+  Future pickImage(ImageSource source) async {
     try {
-      final image = await ImagePicker().pickImage(source: ImageSource.camera);
+      final image = await ImagePicker().pickImage(source: source);
       if (image == null) return;
 
       final temporaryImage = File(image.path);
@@ -69,12 +67,31 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
     }
   }
 
+  Future<ImageSource?> showImageSource(BuildContext context) async {
+    return showModalBottomSheet(
+        context: context,
+        builder: (context) => Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  leading: Icon(Icons.camera_alt),
+                  title: Text('Camera'),
+                  onTap: () => pickImage(ImageSource.camera),
+                ),
+                ListTile(
+                  leading: Icon(Icons.image),
+                  title: Text('Gallery'),
+                  onTap: () => pickImage(ImageSource.gallery),
+                )
+              ],
+            ));
+  }
+
   @override
   void initState() {
     super.initState();
     setCustomMaker();
     dropDown();
-    selectProblem();
     pin();
   }
 
@@ -93,12 +110,6 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
   void pin() {
     setState(() {
       pinned = !pinned;
-    });
-  }
-
-  void selectProblem() {
-    setState(() {
-      selected = !selected;
     });
   }
 
@@ -427,7 +438,7 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                 onMapCreated: _onMapCreated,
                 markers: markers,
                 myLocationButtonEnabled: true,
-                onTap: handleTap),
+                onTap: selected ? handleTap : dont),
           ),
           Positioned(top: 60, left: 0, right: 0, child: Container())
         ]),
@@ -501,53 +512,56 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                                           primaryColor, //the default splashColor is grey
                                       onTap: () {
                                         setState(() {
-                                          selected = !selected;
+                                          switch (index) {
+                                            case 1:
+                                              {
+                                                markerPin = mapMarker6;
+                                                pintitle = 'Үйсз ит';
+                                                print('1');
+                                              }
+                                              break;
+                                            case 2:
+                                              {
+                                                markerPin = mapMarker1;
+                                                pintitle = 'Үйсз ит';
+                                                print('2');
+                                              }
+                                              break;
+                                            case 3:
+                                              {
+                                                markerPin = mapMarker4;
+                                                pintitle = 'Үйсз ит';
+                                                print('3');
+                                              }
+                                              break;
+                                            case 4:
+                                              {
+                                                markerPin = mapMarker5;
+                                                pintitle = 'Үйсз ит';
+                                                print('4');
+                                              }
+                                              break;
+                                            case 5:
+                                              {
+                                                markerPin = mapMarker3;
+                                                pintitle = 'Үйсз ит';
+                                                print('5');
+                                              }
+                                              break;
+                                            case 0:
+                                              {
+                                                markerPin = mapMarker2;
+                                                pintitle = 'Үйсз ит';
+                                                print('0');
+                                              }
+                                              break;
+                                          }
+
                                           for (int indexBtn = 0;
                                               indexBtn < isSelected.length;
                                               indexBtn++) {
-                                            switch (index) {
-                                              case 1:
-                                                {
-                                                  markerPin = mapMarker2;
-                                                  pintitle = 'Үйсз ит';
-                                                  print('1');
-                                                }
-                                                break;
-                                              case 2:
-                                                {
-                                                  markerPin = mapMarker6;
-                                                  pintitle = 'Үйсз ит';
-                                                  print('2');
-                                                }
-                                                break;
-                                              case 3:
-                                                {
-                                                  markerPin = mapMarker1;
-                                                  pintitle = 'Үйсз ит';
-                                                }
-                                                break;
-                                              case 4:
-                                                {
-                                                  markerPin = mapMarker4;
-                                                  pintitle = 'Үйсз ит';
-                                                }
-                                                break;
-                                              case 5:
-                                                {
-                                                  markerPin = mapMarker5;
-                                                  pintitle = 'Үйсз ит';
-                                                }
-                                                break;
-                                              case 0:
-                                                {
-                                                  markerPin = mapMarker6;
-                                                  pintitle = 'Үйсз ит';
-                                                }
-                                                break;
-                                            }
-
                                             if (indexBtn == index) {
-                                              isSelected[indexBtn] =
+                                              selected = isSelected[indexBtn] =
                                                   !isSelected[indexBtn];
                                             } else {
                                               isSelected[indexBtn] = false;
@@ -663,8 +677,8 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                               ),
                               TextButton(
                                 onPressed: () {
-                                  pin();
-                                  if (pinned) addInfo();
+                                  pinned = true;
+                                  if (selected) addInfo();
                                 },
                                 child: Center(
                                   child: Container(
@@ -767,26 +781,34 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
 
   ///handle pining
 
+  // handleTap(LatLng tappedPoint) {
+  //   setState(() {
+  //     tempId = tappedPoint.toString();
+  //     if (selected) {
+  //       markers.add(Marker(
+  //         onTap: () {},
+  //         markerId: MarkerId(tappedPoint.toString()),
+  //         position: tappedPoint,
+  //         icon: markerPin,
+  //         infoWindow: pintitle.isNotEmpty ? pinInfo : InfoWindow.noText,
+  //       ));
+  //     } else
+  //       Fluttertoast.showToast(
+  //         msg: "Select type of problem",
+  //       );
+  //   });
+  // }
+
   handleTap(LatLng tappedPoint) {
     setState(() {
       tempId = tappedPoint.toString();
-
-      if (selected) {
-        markers.add(Marker(
-            markerId: MarkerId(tappedPoint.toString()),
-            position: tappedPoint,
-            draggable: draggablePin,
-            icon: markerPin,
-            infoWindow: pintitle.isNotEmpty ? pinInfo : InfoWindow.noText,
-            onDragEnd: (dragendPosition) {
-              if (pinned) {
-                draggablePin = false;
-              }
-            }));
-      } else
-        Fluttertoast.showToast(
-          msg: "Select type of problem",
-        );
+      markers.add(Marker(
+        icon: markerPin,
+        onTap: () {},
+        markerId: MarkerId(tappedPoint.toString()),
+        position: tappedPoint,
+        // infoWindow: pintitle.isNotEmpty ? pinInfo : InfoWindow.noText,
+      ));
     });
   }
 
@@ -834,7 +856,7 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
           Navigator.of(context).pop();
           pinInfo = InfoWindow(title: pintitle, snippet: pindesc.text);
           pin();
-          selectProblem();
+          selected = false;
         },
       );
     }
@@ -888,19 +910,19 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                       ),
                       image != null
                           ? Image.file(image!,
-                              width: MediaQuery.of(context).size.width * 0.74,
-                              height: 100,
+                              width: widthGlobal*0.74,
+                              height: 80,
                               fit: BoxFit.cover)
                           : DottedBorder(
                               child: Container(
                                   height: 50,
                                   width:
-                                      MediaQuery.of(context).size.width * 0.74,
+                                    widthGlobal*0.74,
                                   decoration: BoxDecoration(
                                       color: grey.withOpacity(0.7)),
                                   child: IconButton(
                                       onPressed: () {
-                                        pickImage();
+                                        showImageSource(context);
                                       },
                                       icon: Icon(Icons.add_a_photo))),
                             )
@@ -933,5 +955,9 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
         });
   }
 
-  dont(LatLng tappedPoint) {}
+  dont(LatLng tappedPoint) {
+    Fluttertoast.showToast(
+      msg: "Select type of problem",
+    );
+  }
 }

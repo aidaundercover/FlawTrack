@@ -28,42 +28,42 @@ class _ForumViewState extends State<ForumView>
       ChatUsers(
           text: "ЖК Кенесары",
           secondaryText: "И что вы думаете?",
-          image: "assets/forum_images/chat/useravatar.png",
+          image: "assets/forum_images/useravatar.png",
           time: "Сейчас"),
       ChatUsers(
           text: "Улица Амангельды",
           secondaryText: "Да, сегодня в шатре",
-          image:"assets/forum_images/chat/useravatar.png",
+          image:"assets/forum_images/useravatar.png",
           time: "Вчера"),
       ChatUsers(
           text: "Улица Пушкинская",
           secondaryText: "ахахахаххаха",
-          image:"assets/forum_images/chat/useravatar.png",
+          image:"assets/forum_images/useravatar.png",
           time: "31 Сен"),
       ChatUsers(
           text: "Аягуль Арамова",
           secondaryText: "Предусмотрительно",
-          image: "assets/forum_images/chat/useravatar.png",
+          image: "assets/forum_images/useravatar.png",
           time: "28 Mar"),
       ChatUsers(
           text: "Алим Женисов",
           secondaryText: "Состояние потока - лучшее",
-          image: "assets/forum_images/chat/useravatar.png",
+          image: "assets/forum_images/useravatar.png",
           time: "23 Mar"),
       ChatUsers(
           text: "Jacob Pena",
           secondaryText: "will update you in evening",
-          image: "assets/forum_images/chat/useravatar.png",
+          image: "assets/forum_images/useravatar.png",
           time: "17 Mar"),
       ChatUsers(
           text: "Andrey Jones",
           secondaryText: "Can you please share the file?",
-          image: "assets/forum_images/chat/useravatar.png",
+          image: "assets/forum_images/useravatar.png",
           time: "24 Feb"),
       ChatUsers(
           text: "John Wick",
           secondaryText: "How are you?",
-          image: "assets/forum_images/chat/useravatar.png",
+          image: "assets/forum_images/useravatar.png",
           time: "18 Feb"),
     ];
 

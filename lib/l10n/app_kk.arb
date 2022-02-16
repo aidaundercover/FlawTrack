@@ -35,21 +35,24 @@
    "mapsp" : "Мәселелер картасы",
    "mapsc" : "Түзетілер картасы",
    "mapsv" : "Волонтерлар картасы",
-   "warn1" : "Please enter some text",
-   "warn2" : "Please enter email address",
-   "warn3" : "Name should at least consists from 2 characters",
-   "warn4" : "Password should at least consists from 8 characters",
+   "warn1" : "Мәтінді енгізіңіз",
+   "warn2" : "Email толтырылмаған",
+   "warn3" : "Есім кем дегенде екі символдан құрылу қажет",
+   "warn4" : "Құпиясөз кем дегенде 8 символдан кұрылу кажет",
    "maininfo" : "Негізгі ақпарат",
    "forums" : "Форумдар",
-   "historyco" : "Түзетілер тарихы",
-   "emailwassend" : "Link to email confirmation was send to you",
-   "help" : "Help",
-   "@help" : {
-      "description" : "namenamenamename"
-   },
-   "helptothecity" : "Help upgrade your city",
-   "@helptothecity" : {
-      "description" : "namenamenamename"
-   }
+   "historyco" : "Түзетулер тарихы",
+   "emailwassend" : "Email-ды растайтын сілтеме поштаға жіберілген",
+   "help" : "Көмек",
+   "helptothecity" : "Қаланы  жетілдеруде көмек қос",
+   "fundofinvests" : "Фонд инвестициялары",
+   "choosethecity" : "Қаланы таңданыз",
+   "coordinates" : "Координаталар",
+   "accesswasdenied" : "Камераны қолдануда тыйым салынған",
+   "becomevolunteer" : "Волонтер болу",
+   "camera" : "Камера",
+   "gallery" : "Галлерея",
+   "selecttypeofproblem" : "Мәселе түрі таңдалмаған",
+   "descproblem" : "Мәселені толығырақ сиппатаңыз"
 
 }

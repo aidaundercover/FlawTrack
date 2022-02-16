@@ -35,25 +35,23 @@ class _ProfuleCardState extends State<ProfuleCard> {
 
   Future<ImageSource?> showImageSource(BuildContext context) async {
     return showModalBottomSheet(
-      context: context, 
-      builder: (context) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-        ListTile(
-          leading: Icon(Icons.camera_alt),
-          title: Text('Camera'),
-          onTap: () => pickImage(ImageSource.camera),
-        ),
-        ListTile(
-          leading: Icon(Icons.image),
-          title: Text('Gallery'),
-          onTap: () => pickImage(ImageSource.gallery),
-        )
-        ],
-                              )
-                              );
-  } 
-  
+        context: context,
+        builder: (context) => Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  leading: Icon(Icons.camera_alt),
+                  title: Text('Camera'),
+                  onTap: () => pickImage(ImageSource.camera),
+                ),
+                ListTile(
+                  leading: Icon(Icons.image),
+                  title: Text('Gallery'),
+                  onTap: () => pickImage(ImageSource.gallery),
+                )
+              ],
+            ));
+  }
 
   @override
   void initState() {
@@ -72,11 +70,7 @@ class _ProfuleCardState extends State<ProfuleCard> {
               padding: const EdgeInsets.all(8.0),
               child: Stack(children: [
                 image != null
-                    ? Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: Image.file(image!))
+                    ? Image.file(image!, width: width * 0.28,height: width * 0.28, fit: BoxFit.cover,)
                     : Positioned(
                         child: Container(
                             height: width * 0.28,
@@ -94,7 +88,7 @@ class _ProfuleCardState extends State<ProfuleCard> {
                     bottom: 4,
                     child: IconButton(
                         onPressed: () {
-                          
+                          showImageSource(context);
                         },
                         icon: Icon(Icons.add_a_photo,
                             size: 30, color: Colors.orange[700])))
