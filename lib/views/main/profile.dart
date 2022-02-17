@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flawtrack/models/FlawtrackUser.dart';
 import 'package:flawtrack/views/chat/pushkin.dart';
+import 'package:flawtrack/views/error/smth_went_wrong.dart';
 import 'package:flawtrack/widgets/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flawtrack/widgets/profile_widget.dart';
@@ -17,23 +18,32 @@ class ProfileView extends StatefulWidget {
 
 class _ProfileViewState extends State<ProfileView> {
   User? user = FirebaseAuth.instance.currentUser;
-  FlawtrackUser log = FlawtrackUser();
+
+  CollectionReference users = FirebaseFirestore.instance.collection('users');
+
 
   @override
   void initState() {
     super.initState();
-    FirebaseFirestore.instance
-        .collection('users')
-        .doc(user!.uid)
-        .get()
-        .then((value) => {this.log = FlawtrackUser.fromMap(value.data())});
   }
 
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
 
-    return Scaffold(
+     return FutureBuilder<DocumentSnapshot>(
+      future: users.doc(user!.uid).get(),
+      builder:
+          (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+
+        if (snapshot.hasError) {
+          return SomethingWentWrong();
+        }
+
+        if (!snapshot.hasData || snapshot.connectionState == ConnectionState.done) {
+          Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
+
+              return Scaffold(
         appBar: AppBar(
           elevation: 0,
           toolbarHeight: 60,
@@ -135,13 +145,13 @@ class _ProfileViewState extends State<ProfileView> {
                           width: 10,
                         ),
                         Text(
-                          '${log.email}',
+                          '${data['email']}',
                           style: TextStyle(color: black, fontSize: 18),
                         )
                       ],
                     ),
                     SizedBox(height: 10),
-                    Row(
+                    volunteer ? Row(
                       children: [
                         Icon(
                           Icons.self_improvement,
@@ -156,7 +166,7 @@ class _ProfileViewState extends State<ProfileView> {
                           style: TextStyle(color: black, fontSize: 18),
                         )
                       ],
-                    ),
+                    ) : Row(),
                     SizedBox(height: 30),
                     Text(
                       'Форумы',
@@ -247,5 +257,14 @@ class _ProfileViewState extends State<ProfileView> {
             ],
           ),
         ));
+        }
+
+        return Text("loading");
+      },
+    );
+
+
   }
+
+ 
 }

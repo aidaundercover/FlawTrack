@@ -1,8 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flawtrack/const.dart';
+import 'package:flawtrack/splash.dart';
+import 'package:flawtrack/views/error/smth_went_wrong.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flawtrack/widgets/maps/maps.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -20,11 +24,13 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
   Set<Marker> markers = {};
   Set<Polyline> polylines = {};
 
+  String searchAddr = "";
+
   bool popped = true;
   String _mapLat = lat.toString();
   String _mapLong = long.toString();
   bool pinned = false;
-  BitmapDescriptor markerPin = mapMarker1;
+  late BitmapDescriptor markerPin;
   late int indexg;
   bool draggablePin = true;
   late String tempId;
@@ -38,17 +44,12 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
   late String pintitle;
   late TextEditingController pindesc;
 
-  List<bool> isSelected = [false, false, false, false, false, false];
-  List<String> iconList = [
-    'assets/pins/trashcan.png',
-    'assets/pins/cat.png',
-    'assets/pins/road.png',
-    'assets/pins/dog.png',
-    'assets/pins/trash.png',
-    'assets/pins/drown.png'
-  ];
+  late String descTitle;
+  late String descSnippet;
 
-  List<String> _images = [];
+  bool descVis = false;
+
+  List<bool> isSelected = [false, false, false, false, false, false];
 
   File? image;
 
@@ -63,7 +64,7 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
         this.image = temporaryImage;
       });
     } on PlatformException catch (e) {
-      Fluttertoast.showToast(msg: 'Access to camera was denied');
+      Fluttertoast.showToast(msg: AppLocalizations.of(context).accesswasdenied);
     }
   }
 
@@ -75,12 +76,12 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
               children: [
                 ListTile(
                   leading: Icon(Icons.camera_alt),
-                  title: Text('Camera'),
+                  title: Text(AppLocalizations.of(context).camera),
                   onTap: () => pickImage(ImageSource.camera),
                 ),
                 ListTile(
                   leading: Icon(Icons.image),
-                  title: Text('Gallery'),
+                  title: Text(AppLocalizations.of(context).gallery),
                   onTap: () => pickImage(ImageSource.gallery),
                 )
               ],
@@ -110,6 +111,12 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
   void pin() {
     setState(() {
       pinned = !pinned;
+    });
+  }
+
+  void descriptionVisible() {
+    setState(() {
+      descVis = !descVis;
     });
   }
 
@@ -325,8 +332,6 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
     );
   }
 
-  void _showPhoto() {}
-
   void _onMapCreated(GoogleMapController controller) {
     markers.add(
       Marker(
@@ -408,9 +413,52 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
         )));
   }
 
+  setMarkers() {
+    return markers;
+  }
+
+  Widget loadMap(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance.collection('problems').snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.hasError) {
+          return SomethingWentWrong();
+        }
+
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return SplashScreen();
+        }
+
+        for (int i = 0; i < snapshot.data!.docs.length; i++) {
+          markers.add(Marker(
+              position: LatLng(snapshot.data!.docs[i]['geolocation'].latitude,
+                  snapshot.data!.docs[i]['geolocation'].longtitude),
+              markerId: MarkerId(snapshot.data!.docs[i].toString()),
+              infoWindow: InfoWindow(
+                title: markerType(snapshot.data!.docs[i]['mapMarker'], context),
+                snippet: snapshot.data!.docs[i]['details']['description'],
+              ),
+              icon: mapMarker(snapshot.data!.docs[i]['mapMarker']),
+              onTap: () {
+                descriptionVisible();
+              }));
+        }
+        return GoogleMap(
+            initialCameraPosition: CameraPosition(
+                target: LatLng(lat, long), zoom: 12, bearing: 30, tilt: 80),
+            zoomControlsEnabled: true,
+            minMaxZoomPreference: MinMaxZoomPreference(15, 22),
+            onMapCreated: _onMapCreated,
+            markers: setMarkers(),
+            myLocationButtonEnabled: true,
+            onTap: selected ? handleTap : dont);
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    var _width = MediaQuery.of(context).size.width;
+    widthGlobal = MediaQuery.of(context).size.width;
 
     return Scaffold(
         appBar: AppBar(
@@ -429,22 +477,65 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
           ),
         ),
         body: Stack(children: [
-          Positioned.fill(
-            child: GoogleMap(
-                initialCameraPosition: CameraPosition(
-                    target: LatLng(lat, long), zoom: 12, bearing: 30, tilt: 80),
-                zoomControlsEnabled: true,
-                minMaxZoomPreference: MinMaxZoomPreference(15, 22),
-                onMapCreated: _onMapCreated,
-                markers: markers,
-                myLocationButtonEnabled: true,
-                onTap: selected ? handleTap : dont),
+          GoogleMap(
+              initialCameraPosition: CameraPosition(
+                  target: LatLng(lat, long), zoom: 12, bearing: 30, tilt: 80),
+              zoomControlsEnabled: true,
+              minMaxZoomPreference: MinMaxZoomPreference(15, 22),
+              onMapCreated: _onMapCreated,
+              markers: markers,
+              myLocationButtonEnabled: true,
+              onTap: selected ? handleTap : dont),
+          Positioned(
+            top: 30.0,
+            right: 15.0,
+            left: 15.0,
+            child: Column(
+              children: [
+                Container(
+                  height: 50.0,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.0),
+                      color: Colors.white),
+                  child: TextField(
+                    decoration: InputDecoration(
+                        hintText: 'Enter Address',
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.only(left: 15.0, top: 15.0),
+                        suffixIcon: IconButton(
+                            icon: Icon(Icons.search),
+                            onPressed: searchandNavigate,
+                            iconSize: 30.0)),
+                    onChanged: (val) {
+                      setState(() {
+                        searchAddr = val;
+                      });
+                    },
+                  ),
+                ),
+                descVis
+                    ? TextButton(
+                        onPressed: () {},
+                        child: Container(
+                            width: 50,
+                            height: 20,
+                            child: Text('More',
+                                style: TextStyle(
+                                  color: white,
+                                )),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: primaryColor)))
+                    : Container()
+              ],
+            ),
           ),
           Positioned(top: 60, left: 0, right: 0, child: Container())
         ]),
         bottomNavigationBar: popped
             ? Container(
-                width: _width,
+                width: widthGlobal,
                 height: 275,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(
@@ -453,7 +544,7 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                   color: white,
                 ),
                 child: Container(
-                  width: _width * 0.898,
+                  width: widthGlobal * 0.898,
                   child: Center(
                       child: Column(
                     children: [
@@ -497,7 +588,7 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                         height: 173,
                         child: Row(children: [
                           Container(
-                            width: _width * 0.572,
+                            width: widthGlobal * 0.572,
                             child: Ink(
                               color: Colors.white,
                               child: GridView.count(
@@ -516,42 +607,54 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                                             case 1:
                                               {
                                                 markerPin = mapMarker6;
-                                                pintitle = 'Үйсз ит';
-                                                print('1');
+                                                pintitle =
+                                                    AppLocalizations.of(context)
+                                                        .cat;
+                                                print('');
                                               }
                                               break;
                                             case 2:
                                               {
                                                 markerPin = mapMarker1;
-                                                pintitle = 'Үйсз ит';
+                                                pintitle =
+                                                    AppLocalizations.of(context)
+                                                        .road;
                                                 print('2');
                                               }
                                               break;
                                             case 3:
                                               {
                                                 markerPin = mapMarker4;
-                                                pintitle = 'Үйсз ит';
+                                                pintitle =
+                                                    AppLocalizations.of(context)
+                                                        .dog;
                                                 print('3');
                                               }
                                               break;
                                             case 4:
                                               {
                                                 markerPin = mapMarker5;
-                                                pintitle = 'Үйсз ит';
+                                                pintitle =
+                                                    AppLocalizations.of(context)
+                                                        .trash;
                                                 print('4');
                                               }
                                               break;
                                             case 5:
                                               {
                                                 markerPin = mapMarker3;
-                                                pintitle = 'Үйсз ит';
+                                                pintitle =
+                                                    AppLocalizations.of(context)
+                                                        .drown;
                                                 print('5');
                                               }
                                               break;
                                             case 0:
                                               {
                                                 markerPin = mapMarker2;
-                                                pintitle = 'Үйсз ит';
+                                                pintitle =
+                                                    AppLocalizations.of(context)
+                                                        .trashcan;
                                                 print('0');
                                               }
                                               break;
@@ -577,7 +680,7 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                                           border: Border.all(color: Colors.red),
                                         ),
                                         child: Container(
-                                          width: _width * 0.21,
+                                          width: widthGlobal * 0.21,
                                           height: 42,
                                           decoration: BoxDecoration(
                                               boxShadow: [
@@ -609,7 +712,7 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                           Column(
                             children: [
                               Text(
-                                'Координаты',
+                                AppLocalizations.of(context).coordinates,
                                 style: TextStyle(fontSize: 15),
                               ),
                               Column(
@@ -678,7 +781,13 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                               TextButton(
                                 onPressed: () {
                                   pinned = true;
-                                  if (selected) addInfo();
+                                  if (selected)
+                                    addInfo();
+                                  else {
+                                    Fluttertoast.showToast(
+                                      msg: "Select type of problem",
+                                    );
+                                  }
                                 },
                                 child: Center(
                                   child: Container(
@@ -709,7 +818,7 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                                                   : Colors.black
                                                       .withOpacity(0.25))
                                         ]),
-                                    width: _width * 0.263,
+                                    width: widthGlobal * 0.263,
                                     height: 78,
                                   ),
                                 ),
@@ -740,7 +849,7 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                 ),
               )
             : Container(
-                width: _width,
+                width: widthGlobal,
                 height: 52,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(
@@ -749,7 +858,7 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                   color: white,
                 ),
                 child: Container(
-                  width: _width * 0.898,
+                  width: widthGlobal * 0.898,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -779,38 +888,33 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
               ));
   }
 
-  ///handle pining
-
-  // handleTap(LatLng tappedPoint) {
-  //   setState(() {
-  //     tempId = tappedPoint.toString();
-  //     if (selected) {
-  //       markers.add(Marker(
-  //         onTap: () {},
-  //         markerId: MarkerId(tappedPoint.toString()),
-  //         position: tappedPoint,
-  //         icon: markerPin,
-  //         infoWindow: pintitle.isNotEmpty ? pinInfo : InfoWindow.noText,
-  //       ));
-  //     } else
-  //       Fluttertoast.showToast(
-  //         msg: "Select type of problem",
-  //       );
-  //   });
-  // }
-
+ 
   handleTap(LatLng tappedPoint) {
     setState(() {
       tempId = tappedPoint.toString();
-      markers.add(Marker(
-        icon: markerPin,
-        onTap: () {},
-        markerId: MarkerId(tappedPoint.toString()),
-        position: tappedPoint,
-        // infoWindow: pintitle.isNotEmpty ? pinInfo : InfoWindow.noText,
-      ));
+      markers.add(
+        Marker(
+            icon: markerPin,
+            onTap: () {},
+            markerId: MarkerId(tempId),
+            position: tappedPoint,
+            infoWindow: pindesc == null
+                ? InfoWindow(title: pintitle)
+                : InfoWindow(title: pintitle, snippet: pindesc.text)),
+      );
+
+      Future.delayed(const Duration(seconds: 3), () {
+          if (pinned) {
+          } else
+            timeExpired(MediaQuery.of(context).size.width, addInfo(), context);
+      
+      });
     });
   }
+
+  searchandNavigate() {}
+
+
 
   void addInfo() {
     cancelButton(BuildContext context) {
@@ -853,7 +957,8 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
           ),
         ),
         onPressed: () {
-          Navigator.of(context).pop();
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (context) => MapsOfProblems()));
           pinInfo = InfoWindow(title: pintitle, snippet: pindesc.text);
           pin();
           selected = false;
@@ -910,14 +1015,13 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                       ),
                       image != null
                           ? Image.file(image!,
-                              width: widthGlobal*0.74,
-                              height: 80,
+                              width: widthGlobal * 0.74,
+                              height: 150,
                               fit: BoxFit.cover)
                           : DottedBorder(
                               child: Container(
                                   height: 50,
-                                  width:
-                                    widthGlobal*0.74,
+                                  width: widthGlobal * 0.74,
                                   decoration: BoxDecoration(
                                       color: grey.withOpacity(0.7)),
                                   child: IconButton(

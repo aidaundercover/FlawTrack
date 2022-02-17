@@ -227,7 +227,54 @@
    "descproblem" : "Describe the deatails of the problem",
    "@descproblem" : {
       "description" : "namenamenamename"
+   },
+   "chat" : "CHAT",
+   "@chat" : {
+      "description" : "namenamenamename"
+   },
+   "find" : "FIND",
+   "@find" : {
+      "description" : "namenamenamename"
+   },
+    "enteraddress" : "Enter adress",
+   "@enteraddress" : {
+      "description" : "namenamenamename"
+   },
+   "trashcan" : "Full trashcan",
+   "@trashcan" : {
+      "description" : "namenamenamename"
+   },
+   "cat" : "Homeless cat",
+   "@cat" : {
+      "description" : "namenamenamename"
+   },
+    "dog" : "Homeless dog",
+   "@dog" : {
+      "description" : "namenamenamename"
+   },
+   "drown" : "Drown",
+   "@drown" : {
+      "description" : "namenamenamename"
+   },
+   "road" : "Broken road",
+   "@road" : {
+      "description" : "namenamenamename"
+   },
+   "trash" : "Trash",
+   "@trash" : {
+      "description" : "namenamenamename"
+   },
+   "homeless" : "Homeless person",
+   "@homeless" : {
+      "description" : "namenamenamename"
+   },
+   "fixed" : "Problem fixed",
+   "@fixed" : {
+      "description" : "namenamenamename"
+   },
+   "volunteer" : "Volunteer",
+   "@volunteer" : {
+      "description" : "namenamenamename"
    }
-   
    
 }

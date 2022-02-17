@@ -3,7 +3,7 @@ import 'package:flawtrack/models/chatTile.dart';
 import 'package:flawtrack/views/chat/kenesary.dart';
 import 'package:flawtrack/widgets/drawer.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../const.dart';
 
 class ForumView extends StatefulWidget {

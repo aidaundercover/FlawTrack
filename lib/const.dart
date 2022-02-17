@@ -12,10 +12,11 @@ const divider = Color.fromRGBO(232, 232, 232, 1);
 const darkBlue = Color.fromRGBO(63, 61, 86, 1);
 
 var widthGlobal;
+String lang = "";
 
 bool visibleV = false;
 
-bool volunteer=false;
+bool volunteer = false;
 
 var points = 0;
 var name;

@@ -52,6 +52,12 @@ class _VerifyScreenState extends State<VerifyScreen> {
                   '${user!.email}',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
+                SizedBox(height: 20),
+                TextButton(onPressed: () {}, child: Text('Изменить email')),
+                SizedBox(height: 10),
+                TextButton(onPressed: () {}, child: Text('Переотправить ссылку')),
+                SizedBox(height: 20),
+                InkWell(onTap: () {}, child: Text('Ссылка так и не пришла на почту. Что делать?'))
               ],
             )),
       ),

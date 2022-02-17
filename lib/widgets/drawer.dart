@@ -3,6 +3,8 @@ import 'package:flawtrack/views/first_view.dart';
 import 'package:flawtrack/views/settings/settings_main.dart';
 import 'package:flutter/material.dart';
 import 'package:flawtrack/const.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class DrawerCustom extends StatefulWidget {
   @override
@@ -300,22 +302,72 @@ class _DrawerCustomState extends State<DrawerCustom> {
               ),
               Flexible(
                   flex: 1,
-                  child: Row(children: [
-                    SizedBox(width: 20),
-                    Icon(Icons.exit_to_app, size: 23, color: Colors.black),
-                    SizedBox(width: 15),
-                    InkWell(
-                        child: Text('Sign Out',
-                            style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.normal,
-                                color: Colors.black)),
-                        onTap: () {
-                          AuthService.logOut();
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => FirstView()));
-                        }),
-                  ]))
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Flexible(
+                            child: TextButton(
+                              onPressed: () {}, 
+                            child: Container(
+                              child: Text('рус'),
+                              width: 40,
+                              height: 20,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(width: 2, color: primaryColor)
+                              )
+                            ),
+                            ),
+                          ),
+                          Flexible(
+                            child: TextButton(
+                              onPressed: () {}, 
+                            child: Container(
+                              child: Text('қаз'),
+                              width: 40,
+                              height: 20,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(width: 2, color: primaryColor)
+                              )
+                            ),
+                            ),
+                          ),
+                          Flexible(
+                            child: TextButton(
+                              onPressed: () {}, 
+                            child: Container(
+                              child: Text('eng'),
+                              width: 40,
+                              height: 20,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(width: 2, color: primaryColor)
+                              )
+                            ),
+                            ),
+                          )
+                        ],
+                      ),
+                      Row(children: [
+                        SizedBox(width: 20),
+                        Icon(Icons.exit_to_app, size: 23, color: Colors.black),
+                        SizedBox(width: 15),
+                        InkWell(
+                            child: Text('Sign Out',
+                                style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.normal,
+                                    color: Colors.black)),
+                            onTap: () {
+                              AuthService.logOut();
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => FirstView()));
+                            }),
+                      ]),
+                    ],
+                  ))
             ],
           )),
     );
