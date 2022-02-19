@@ -1,6 +1,5 @@
 import 'package:flawtrack/models/ChatUser.dart';
 import 'package:flawtrack/models/chatTile.dart';
-import 'package:flawtrack/views/chat/kenesary.dart';
 import 'package:flawtrack/widgets/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -15,14 +14,15 @@ class ForumView extends StatefulWidget {
 
 class _ForumViewState extends State<ForumView>
     with SingleTickerProviderStateMixin {
-  static const List<Tab> tabs = <Tab>[
-    Tab(text: 'ЧАТ'),
-    Tab(text: 'ІЗДЕУ'),
-  ];
+  
 
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
+      List<Tab> tabs = <Tab>[
+    Tab(text: AppLocalizations.of(context).chat),
+    Tab(text: AppLocalizations.of(context).find)
+  ];
 
     List<ChatUsers> chatUsers = [
       ChatUsers(
@@ -77,7 +77,7 @@ class _ForumViewState extends State<ForumView>
               toolbarHeight: 60,
               backgroundColor: yellow,
               title: Text(
-                "Форум",
+                AppLocalizations.of(context).forum,
                 style: TextStyle(
                     fontSize: 25, fontWeight: FontWeight.bold, color: black),
               ),
@@ -145,7 +145,7 @@ class _ForumViewState extends State<ForumView>
                                 cursorColor: black,
                                 style: TextStyle(fontSize: 18),
                                 decoration: InputDecoration(
-                                  hintText: 'Район',
+                                  hintText: AppLocalizations.of(context).region,
                                   labelStyle: TextStyle(fontSize: 18),
                                   contentPadding: EdgeInsets.only(left: 17),
                                   enabledBorder: InputBorder.none,
@@ -188,7 +188,7 @@ class _ForumViewState extends State<ForumView>
                                 child: Align(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
-                                    'Жанында',
+                                    AppLocalizations.of(context).nearby,
                                     style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.w700,
@@ -272,7 +272,7 @@ class _ForumViewState extends State<ForumView>
                                 child: Align(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
-                                    'Таралған',
+                                    AppLocalization.of(context).popular,
                                     textAlign: TextAlign.start,
                                     style: TextStyle(
                                       fontSize: 18,

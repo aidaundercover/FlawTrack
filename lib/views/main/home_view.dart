@@ -9,6 +9,8 @@ import 'package:flawtrack/widgets/home_view/using_advices.dart';
 import 'package:flawtrack/widgets/home_view/weather_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flawtrack/widgets/drawer.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);
@@ -27,6 +29,7 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
+
     var width = MediaQuery.of(context).size.width * 0.88;
 
     return Scaffold(
@@ -69,7 +72,7 @@ class _HomeViewState extends State<HomeView> {
               locationView(width / 0.88),
               NewsTile(),
               Text(
-                'Басты бет',
+                AppLocalizations.of(context).mainpage,
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               eventsWidget(context, width),

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flawtrack/const.dart';
+import 'package:flawtrack/pages.dart';
 import 'package:flawtrack/splash.dart';
 import 'package:flawtrack/views/error/smth_went_wrong.dart';
 import 'package:flutter/material.dart';
@@ -21,9 +22,8 @@ class MapsOfProblems extends StatefulWidget {
 }
 
 class _MapsOfProblemsState extends State<MapsOfProblems> {
-  Set<Marker> markers = {};
-  Set<Polyline> polylines = {};
-
+  Set<Marker> markers = <Marker>{};
+  late GoogleMapController controller;
   String searchAddr = "";
 
   bool popped = true;
@@ -46,6 +46,14 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
 
   late String descTitle;
   late String descSnippet;
+
+  // temporary//
+
+  late String tempTitleDesc;
+  late String tempDescDesc;
+  late File tempImgDesc;
+
+  // temporary//
 
   bool descVis = false;
 
@@ -90,10 +98,13 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
 
   @override
   void initState() {
-    super.initState();
     setCustomMaker();
     dropDown();
     pin();
+    pressReload();
+    loadMap(context);
+    setMarkers();
+    super.initState();
   }
 
   void dropDown() {
@@ -187,8 +198,8 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
               onPressed: () {
                 setState(() {
                   mapCity = 'Көкшетау';
-                  lat = 43.2290871;
-                  long = 76.9137495;
+                  lat = 53.2981896;
+                  long = 69.3380369;
                 });
                 Navigator.pop(context);
               },
@@ -198,8 +209,8 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
               onPressed: () {
                 setState(() {
                   mapCity = 'Қызылорда';
-                  lat = 43.2290871;
-                  long = 76.9137495;
+                  lat = 44.8281817;
+                  long = 65.4350109;
                 });
                 Navigator.pop(context);
               },
@@ -209,8 +220,8 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
               onPressed: () {
                 setState(() {
                   mapCity = 'Қостанай';
-                  lat = 43.2290871;
-                  long = 76.9137495;
+                  lat = 53.2055331;
+                  long = 63.5517867;
                 });
                 Navigator.pop(context);
               },
@@ -220,8 +231,8 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
               onPressed: () {
                 setState(() {
                   mapCity = 'Нур-султан';
-                  lat = 43.2290871;
-                  long = 76.9137495;
+                  lat = 51.1480774;
+                  long = 71.339307;
                 });
                 Navigator.pop(context);
               },
@@ -231,8 +242,8 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
               onPressed: () {
                 setState(() {
                   mapCity = 'Семей';
-                  lat = 43.2290871;
-                  long = 76.9137495;
+                  lat = 50.4130211;
+                  long = 80.2054882;
                 });
                 Navigator.pop(context);
               },
@@ -242,8 +253,8 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
               onPressed: () {
                 setState(() {
                   mapCity = 'Талдықорған';
-                  lat = 43.2290871;
-                  long = 76.9137495;
+                  lat = 45.0106102;
+                  long = 78.354835;
                 });
                 Navigator.pop(context);
               },
@@ -253,7 +264,7 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
               onPressed: () {
                 setState(() {
                   mapCity = 'Тараз';
-                  lat = 43.2290871;
+                  lat = 42.8962377;
                   long = 76.9137495;
                 });
                 Navigator.pop(context);
@@ -319,8 +330,8 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
               onPressed: () {
                 setState(() {
                   mapCity = 'Шымкент';
-                  lat = 43.2290871;
-                  long = 76.9137495;
+                  lat = 42.3361304;
+                  long = 69.5108012;
                 });
                 Navigator.pop(context);
               },
@@ -332,89 +343,12 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
     );
   }
 
-  void _onMapCreated(GoogleMapController controller) {
-    markers.add(
-      Marker(
-          icon: mapMarker2,
-          markerId: MarkerId('id-1'),
-          position: LatLng(52.2537144, 76.9424712),
-          infoWindow: InfoWindow(
-            title: 'Орынды емес қоқыс',
-            snippet: 'Пластикалық және тұрмыстық қалдықтар',
-          ),
-          onTap: () {}),
-    );
-    markers.add(
-      Marker(
-          icon: mapMarker1,
-          markerId: MarkerId('id-2'),
-          position: LatLng(52.2498763, 76.9514241),
-          infoWindow: InfoWindow(
-            title: 'Асфальт шұңқыры',
-            snippet: 'тратуар сынған',
-          )),
-    );
-    markers.add(
-      Marker(
-          icon: mapMarker3,
-          markerId: MarkerId('id-3'),
-          position: LatLng(52.2537144, 76.9424712),
-          infoWindow: InfoWindow(
-            title: 'Су тасқыны',
-            snippet: 'потоп',
-          )),
-    );
-    markers.add(Marker(
-        icon: mapMarker4,
-        markerId: MarkerId('id-4'),
-        position: LatLng(52.2504187, 76.9546327),
-        infoWindow: InfoWindow(
-          title: 'Жоғалған ит',
-          snippet: 'нашар көреді және сыбырлайды',
-        )));
-
-    markers.add(
-      Marker(
-          icon: mapMarker5,
-          markerId: MarkerId('id-3'),
-          position: LatLng(52.2537144, 76.9424712),
-          infoWindow: InfoWindow(
-            title: 'Су тасқыны',
-            snippet: 'потоп',
-          )),
-    );
-    markers.add(
-      Marker(
-          icon: mapMarker6,
-          markerId: MarkerId('id-4'),
-          position: LatLng(52.2484178, 76.9475304),
-          infoWindow: InfoWindow(
-            title: 'Үйсіз мысық',
-            snippet: 'плохо видит и скулит',
-          )),
-    );
-    markers.add(
-      Marker(
-          icon: mapMarker5,
-          markerId: MarkerId('id-3'),
-          position: LatLng(52.2502872, 76.9505888),
-          infoWindow: InfoWindow(
-            title: 'Свалка',
-            snippet: 'после ветра ранесло',
-          )),
-    );
-    markers.add(Marker(
-        icon: mapMarker4,
-        markerId: MarkerId('id-8'),
-        position: LatLng(52.2507743, 76.9449725),
-        infoWindow: InfoWindow(
-          title: 'Үйсіз ит',
-          snippet: 'аш және жаралған',
-        )));
-  }
-
   setMarkers() {
     return markers;
+  }
+
+  void _onMapCreated(GoogleMapController controller) {
+    controller = controller;
   }
 
   Widget loadMap(BuildContext context) {
@@ -431,16 +365,18 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
 
         for (int i = 0; i < snapshot.data!.docs.length; i++) {
           markers.add(Marker(
-              position: LatLng(snapshot.data!.docs[i]['geolocation'].latitude,
-                  snapshot.data!.docs[i]['geolocation'].longtitude),
+              position: LatLng(snapshot.data!.docs[i]['lat'],
+                  snapshot.data!.docs[i]['long']),
               markerId: MarkerId(snapshot.data!.docs[i].toString()),
-              infoWindow: InfoWindow(
-                title: markerType(snapshot.data!.docs[i]['mapMarker'], context),
-                snippet: snapshot.data!.docs[i]['details']['description'],
-              ),
               icon: mapMarker(snapshot.data!.docs[i]['mapMarker']),
               onTap: () {
-                descriptionVisible();
+                setState(() {
+                    descCardShow(
+                    markerType(snapshot.data!.docs[i]['mapMarker'], context),
+                    snapshot.data!.docs[i]['details']['description'],
+                    context);
+                });
+
               }));
         }
         return GoogleMap(
@@ -449,7 +385,7 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
             zoomControlsEnabled: true,
             minMaxZoomPreference: MinMaxZoomPreference(15, 22),
             onMapCreated: _onMapCreated,
-            markers: setMarkers(),
+            markers: markers,
             myLocationButtonEnabled: true,
             onTap: selected ? handleTap : dont);
       },
@@ -473,19 +409,12 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
           leading: Builder(
             builder: (context) => IconButton(
                 icon: Icon(Icons.chevron_left_outlined, size: 35, color: black),
-                onPressed: () => Navigator.pop(context)),
+                onPressed: () => Navigator.pushReplacement(
+                    context, MaterialPageRoute(builder: (context) => Maps()))),
           ),
         ),
         body: Stack(children: [
-          GoogleMap(
-              initialCameraPosition: CameraPosition(
-                  target: LatLng(lat, long), zoom: 12, bearing: 30, tilt: 80),
-              zoomControlsEnabled: true,
-              minMaxZoomPreference: MinMaxZoomPreference(15, 22),
-              onMapCreated: _onMapCreated,
-              markers: markers,
-              myLocationButtonEnabled: true,
-              onTap: selected ? handleTap : dont),
+          loadMap(context),
           Positioned(
             top: 30.0,
             right: 15.0,
@@ -500,7 +429,7 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                       color: Colors.white),
                   child: TextField(
                     decoration: InputDecoration(
-                        hintText: 'Enter Address',
+                        hintText: AppLocalizations.of(context).enteraddress,
                         border: InputBorder.none,
                         contentPadding: EdgeInsets.only(left: 15.0, top: 15.0),
                         suffixIcon: IconButton(
@@ -514,20 +443,6 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                     },
                   ),
                 ),
-                descVis
-                    ? TextButton(
-                        onPressed: () {},
-                        child: Container(
-                            width: 50,
-                            height: 20,
-                            child: Text('More',
-                                style: TextStyle(
-                                  color: white,
-                                )),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                color: primaryColor)))
-                    : Container()
               ],
             ),
           ),
@@ -888,33 +803,29 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
               ));
   }
 
- 
   handleTap(LatLng tappedPoint) {
     setState(() {
       tempId = tappedPoint.toString();
       markers.add(
         Marker(
-            icon: markerPin,
-            onTap: () {},
-            markerId: MarkerId(tempId),
-            position: tappedPoint,
-            infoWindow: pindesc == null
-                ? InfoWindow(title: pintitle)
-                : InfoWindow(title: pintitle, snippet: pindesc.text)),
+          icon: markerPin,
+          onTap: () {
+            descCardShow(pintitle, '', context);
+          },
+          markerId: MarkerId(tempId),
+          position: tappedPoint,
+        ),
       );
 
-      Future.delayed(const Duration(seconds: 3), () {
-          if (pinned) {
-          } else
-            timeExpired(MediaQuery.of(context).size.width, addInfo(), context);
-      
+      Future.delayed(const Duration(seconds: 7), () {
+        if (pinned) {
+        } else
+          timeExpired(MediaQuery.of(context).size.width, addInfo(), context);
       });
     });
   }
 
   searchandNavigate() {}
-
-
 
   void addInfo() {
     cancelButton(BuildContext context) {
@@ -948,7 +859,7 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
           color: primaryColor.withOpacity(0.6),
           alignment: Alignment.center,
           child: Text(
-            'OK',
+            'PIN',
             style: TextStyle(
               fontSize: 13,
               color: black,
@@ -1065,3 +976,29 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
     );
   }
 }
+
+
+// getMarkerData() async {
+//     FirebaseFirestore.instance.collection('problems').get().then((myMarkers) {
+//       if (myMarkers.docs.isNotEmpty) {
+//         for (int i = 0; i < myMarkers.docs.length; i++) {
+//           initMarker(myMarkers.docs[i].data, myMarkers.docs[i].id);
+//         }
+//       }
+//     });
+//   }
+
+//   void initMarker(specify, specifyId) async {
+//     var markerIdVal = specifyId;
+//     final MarkerId markerId = MarkerId(markerIdVal);
+//     final Marker marker = Marker(
+//         markerId: markerId,
+//         position: LatLng(specify['lat'], specify['long']),
+//         onTap: () {
+//           descCardShow(markerType(specify['mapMarker'], context),
+//               specify['details']['description'], context);
+//         });
+//     setState(() {
+//       markers[markerId] = marker;
+//     });
+//   }

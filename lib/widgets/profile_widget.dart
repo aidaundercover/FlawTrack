@@ -1,15 +1,17 @@
 import 'dart:io';
-
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flawtrack/views/profile/activity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../const.dart';
 
 class ProfuleCard extends StatefulWidget {
-  const ProfuleCard({Key? key}) : super(key: key);
+  final String name;
+  const ProfuleCard({required this.name});
 
   @override
   _ProfuleCardState createState() => _ProfuleCardState();
@@ -17,6 +19,9 @@ class ProfuleCard extends StatefulWidget {
 
 class _ProfuleCardState extends State<ProfuleCard> {
   File? image;
+  String imageUrl = "";
+
+  final _storage = FirebaseStorage.instance;
 
   Future pickImage(ImageSource source) async {
     try {
@@ -25,12 +30,36 @@ class _ProfuleCardState extends State<ProfuleCard> {
 
       final temporaryImage = File(image.path);
 
+      final _storage = FirebaseStorage.instance;
+
+      var snapshot = await _storage
+          .ref()
+          .child('users/${FirebaseAuth.instance.currentUser!.uid}')
+          .putFile(temporaryImage);
+
+      var downloadUrl = await snapshot.ref.getDownloadURL();
+
+      setState(() {
+        imageUrl = downloadUrl;
+      });
+
       setState(() {
         this.image = temporaryImage;
       });
     } on PlatformException catch (e) {
       Fluttertoast.showToast(msg: 'Access to camera was denied');
     }
+  }
+
+  Future<void> downloadURLExample() async {
+    String downloadURL = await _storage
+        .ref('users/${FirebaseAuth.instance.currentUser!.uid}.jpeg')
+        .getDownloadURL();
+
+    imageUrl = downloadURL;
+
+    // Within your widgets:
+    // Image.network(downloadURL);
   }
 
   Future<ImageSource?> showImageSource(BuildContext context) async {
@@ -41,12 +70,12 @@ class _ProfuleCardState extends State<ProfuleCard> {
               children: [
                 ListTile(
                   leading: Icon(Icons.camera_alt),
-                  title: Text('Camera'),
+                  title: Text(AppLocalizations.of(context).camera),
                   onTap: () => pickImage(ImageSource.camera),
                 ),
                 ListTile(
                   leading: Icon(Icons.image),
-                  title: Text('Gallery'),
+                  title: Text(AppLocalizations.of(context).gallery),
                   onTap: () => pickImage(ImageSource.gallery),
                 )
               ],
@@ -70,7 +99,12 @@ class _ProfuleCardState extends State<ProfuleCard> {
               padding: const EdgeInsets.all(8.0),
               child: Stack(children: [
                 image != null
-                    ? Image.file(image!, width: width * 0.28,height: width * 0.28, fit: BoxFit.cover,)
+                    ? Image.file(
+                        image!,
+                        width: width * 0.28,
+                        height: width * 0.28,
+                        fit: BoxFit.cover,
+                      )
                     : Positioned(
                         child: Container(
                             height: width * 0.28,
@@ -101,7 +135,7 @@ class _ProfuleCardState extends State<ProfuleCard> {
                   Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text('Aida Abkenova',
+                      Text(widget.name,
                           textAlign: TextAlign.left,
                           style: TextStyle(
                               color: primaryColor,
@@ -110,7 +144,10 @@ class _ProfuleCardState extends State<ProfuleCard> {
                       SizedBox(
                         height: 2,
                       ),
-                      Text('тұрғын',
+                      Text(
+                          volunteer
+                              ? AppLocalizations.of(context).volunteer
+                              : AppLocalizations.of(context).citizen,
                           style: TextStyle(
                               color: Color.fromRGBO(154, 154, 154, 1),
                               fontWeight: FontWeight.w500,

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 const primaryColor = Color.fromRGBO(244, 146, 2, 1.0);
@@ -17,10 +19,12 @@ String lang = "";
 bool visibleV = false;
 
 bool volunteer = false;
+String nameGlobal = "";
+String email = "";
+late File imgProfile;
 
 var points = 0;
 var name;
-var email;
 
 String mapCity = "";
 var addressGlobal;

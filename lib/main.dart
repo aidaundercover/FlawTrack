@@ -83,9 +83,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
         cityGlobal = translate(currentLocality);
         addressGlobal = translate(currentLocality) + ', Казахстан';
-        FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).set({
-          'city' : cityGlobal
-        });
+        
       });
     } catch (e) {
       print(e);
@@ -114,7 +112,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
         return FutureBuilder(
             future: _initialization,
-            builder: (context, snapshot) {
+            builder: (BuildContext context, snapshot) {
               if (snapshot.hasError) {
                 return SomethingWentWrong();
               }

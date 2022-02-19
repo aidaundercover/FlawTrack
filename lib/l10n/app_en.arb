@@ -154,7 +154,7 @@
    "@warn1" : {
       "description" : "namenamenamename"
    },
-   "warn2" : "Please enter email address",
+   "warn2" : "Please enter a valid email address",
    "@name" : {
       "description" : "namenamenamename"
    },
@@ -272,9 +272,47 @@
    "@fixed" : {
       "description" : "namenamenamename"
    },
-   "volunteer" : "Volunteer",
+   "volunteer" : "volunteer",
    "@volunteer" : {
       "description" : "namenamenamename"
-   }
-   
+   },
+   "citizen" : "citizen",
+   "@citizen" : {
+      "description" : "namenamenamename", 
+   },
+   "cancel" : "Cancel",
+   "@cancel" : {
+      "description" : "namenamenamename",
+      
+   },
+   "changeemail" : "Change E-mail",
+   "@changeemail" : {
+      "description" : "namenamenamename",
+      
+   },
+   "resendlink" : "Resend the link",
+   "@resendlink" : {
+      "description" : "namenamenamename",
+      
+   },
+    "linkwasnsent" : "The link hasn't been send. What shoud I do?",
+   "@linkwasnsent" : {
+      "description" : "namenamenamename",
+      
+   },
+   "region" : "Region",
+   "@region" : {
+      "description" : "namenamenamename",
+      
+   },
+   "nearby" : "Nearby",
+   "@nearby" : {
+      "description" : "namenamenamename",
+      
+   },
+   "popular" : "Popular",
+   "@popular" : {
+      "description" : "namenamenamename",
+      
+   },
 }

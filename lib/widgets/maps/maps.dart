@@ -90,91 +90,105 @@ markerType(int n, BuildContext context) {
       }
     case 2:
       {
-        return AppLocalizations.of(context).road;
+        return AppLocalizations.of(context).trashcan;
       }
     case 3:
       {
-        return AppLocalizations.of(context).road;
+        return AppLocalizations.of(context).drown;
       }
     case 4:
-      return AppLocalizations.of(context).road;
+      return AppLocalizations.of(context).dog;
     case 5:
-      return AppLocalizations.of(context).road;
+      return AppLocalizations.of(context).trash;
     case 6:
-      return AppLocalizations.of(context).road;
+      return AppLocalizations.of(context).cat;
     case 7:
-      return AppLocalizations.of(context).road;
+      return AppLocalizations.of(context).homeless;
   }
 }
 
 timeExpired(double width, void func, BuildContext context) {
-  return Dialog(
-    child: Container(
-      width: width * 0.8,
-      height: 300,
-      child: Column(
-        children: [
-          Text('Your time for pinning details of problem is expired'),
-          Container(
-            width: width * 0.76,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+  showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: Container(
+            width: width * 0.8,
+            height: 300,
+            child: Column(
               children: [
-                Row(
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        func;
-                      },
-                      child: Text('Add'),
-                    ),
-                    SizedBox(
-                      width: 18,
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        markers.remove(tempId);
-                        Navigator.of(context).pop();
-                      },
-                      child: Text('OK'),
-                    ),
-                  ],
-                ),
+                Text('Your time for pinning details of problem is expired'),
+                Container(
+                  width: width * 0.76,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Row(
+                        children: [
+                          TextButton(
+                            onPressed: () {
+                              func;
+                            },
+                            child: Text('Add'),
+                          ),
+                          SizedBox(
+                            width: 18,
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              markers.remove(tempId);
+                              Navigator.of(context).pop();
+                            },
+                            child: Text('OK'),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                )
               ],
             ),
-          )
-        ],
-      ),
-    ),
-  );
+          ),
+        );
+      });
 }
 
-descCardShow(String title, String desc, File img, BuildContext context) {
-  return Dialog(
-    child: Container(
-      width: widthGlobal * 0.8,
-      height: 300,
-      child: Column(
-        children: [
-          Text(title),
-          Text(desc),
-          Container(child: Image.file(img)),
-          Container(
-            width: widthGlobal * 0.76,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                IconButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  icon: Icon(Icons.close),
-                ),
-              ],
+void descCardShow(String title, String desc, BuildContext context) {
+  showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: Container(
+            width: widthGlobal * 0.8,
+            height: 300,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: IconButton(
+                            onPressed: () {
+                              Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                      builder: (context) => MapsOfProblems()));
+                            },
+                            icon: Icon(Icons.close, color: grey)),
+                      )
+                    ],
+                  ),
+                  Text(title, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20,)),
+                  SizedBox(height: 10),
+                  Text(desc, style: TextStyle(fontSize: 15,)),
+                  // Container(child: Image.file(img) ??),
+                  
+                ],
+              ),
             ),
-          )
-        ],
-      ),
-    ),
-  );
+          ),
+        );
+      });
 }

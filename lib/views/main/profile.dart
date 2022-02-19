@@ -1,11 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flawtrack/models/FlawtrackUser.dart';
+import 'package:flawtrack/services/auth_service.dart';
+import 'package:flawtrack/splash.dart';
 import 'package:flawtrack/views/chat/pushkin.dart';
 import 'package:flawtrack/views/error/smth_went_wrong.dart';
 import 'package:flawtrack/widgets/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flawtrack/widgets/profile_widget.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../const.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -17,33 +21,37 @@ class ProfileView extends StatefulWidget {
 }
 
 class _ProfileViewState extends State<ProfileView> {
-  User? user = FirebaseAuth.instance.currentUser;
-
-  CollectionReference users = FirebaseFirestore.instance.collection('users');
-
-
   @override
   void initState() {
+    getCurrentUserData();
     super.initState();
+    
+  }
+
+  static FirebaseFirestore _db = FirebaseFirestore.instance;
+
+
+  Future getCurrentUserData() async {
+    try {
+      DocumentSnapshot ds = await _db
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .get();
+      setState(() {
+        nameGlobal = ds.get('name')?? 'Loading';
+        volunteer = ds.get('volunteer') ??'Loading';
+      });
+      } catch (e) {
+      print(e.toString());
+      return SomethingWentWrong();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
 
-     return FutureBuilder<DocumentSnapshot>(
-      future: users.doc(user!.uid).get(),
-      builder:
-          (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-
-        if (snapshot.hasError) {
-          return SomethingWentWrong();
-        }
-
-        if (!snapshot.hasData || snapshot.connectionState == ConnectionState.done) {
-          Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
-
-              return Scaffold(
+    return Scaffold(
         appBar: AppBar(
           elevation: 0,
           toolbarHeight: 60,
@@ -96,7 +104,9 @@ class _ProfileViewState extends State<ProfileView> {
                             offset: Offset(0, 6), // changes position of shadow
                           ),
                         ]),
-                    child: ProfuleCard(),
+                    child: ProfuleCard(
+                      name: nameGlobal,
+                    ),
                   ),
                 )
               ]),
@@ -145,28 +155,30 @@ class _ProfileViewState extends State<ProfileView> {
                           width: 10,
                         ),
                         Text(
-                          '${data['email']}',
+                          '${FirebaseAuth.instance.currentUser!.email.toString()}',
                           style: TextStyle(color: black, fontSize: 18),
                         )
                       ],
                     ),
                     SizedBox(height: 10),
-                    volunteer ? Row(
-                      children: [
-                        Icon(
-                          Icons.self_improvement,
-                          size: 27,
-                          color: black,
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Text(
-                          'Имя организации',
-                          style: TextStyle(color: black, fontSize: 18),
-                        )
-                      ],
-                    ) : Row(),
+                    volunteer
+                        ? Row(
+                            children: [
+                              Icon(
+                                Icons.self_improvement,
+                                size: 27,
+                                color: black,
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                'Имя организации',
+                                style: TextStyle(color: black, fontSize: 18),
+                              )
+                            ],
+                          )
+                        : Row(),
                     SizedBox(height: 30),
                     Text(
                       'Форумы',
@@ -191,7 +203,8 @@ class _ProfileViewState extends State<ProfileView> {
                           GestureDetector(
                             onTap: () {
                               Navigator.of(context).pushReplacement(
-                                  MaterialPageRoute(builder: (context) => Pushkin()));
+                                  MaterialPageRoute(
+                                      builder: (context) => Pushkin()));
                             },
                             child: Container(
                               width: 162,
@@ -257,14 +270,5 @@ class _ProfileViewState extends State<ProfileView> {
             ],
           ),
         ));
-        }
-
-        return Text("loading");
-      },
-    );
-
-
   }
-
- 
 }

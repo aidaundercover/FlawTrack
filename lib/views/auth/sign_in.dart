@@ -100,10 +100,10 @@ class _LoginPageState extends State<LoginPage> {
                                       _emailController.text = input!,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
-                                      return 'Please enter some text';
+                                      return  AppLocalizations.of(context).warn1;
                                     }
                                     if (!EmailValidator.validate(value)) {
-                                      return "Please enter a valid email address";
+                                      return  AppLocalizations.of(context).warn2;
                                     }
                                     return null;
                                   },
@@ -141,7 +141,7 @@ class _LoginPageState extends State<LoginPage> {
                                   ),
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
-                                      return 'Please enter some text';
+                                      return  AppLocalizations.of(context).warn1;
                                     }
                                     return null;
                                   },

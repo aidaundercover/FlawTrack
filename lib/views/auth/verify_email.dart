@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flawtrack/routes.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../const.dart';
 
 class VerifyScreen extends StatefulWidget {
@@ -21,7 +21,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
     user = auth.currentUser;
     auth.currentUser!.sendEmailVerification();
 
-    timer = Timer.periodic(Duration(seconds: 5), (timer) {
+    timer = Timer.periodic(Duration(seconds: 50), (timer) {
       checkEmailVerified();
     });
     super.initState();
@@ -45,7 +45,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
-                  'Было отправлено письмо для \n потвереждения почты на адрес',
+                  AppLocalizations.of(context).emailwassend,
                   textAlign: TextAlign.center,
                 ),
                 Text(
@@ -53,11 +53,15 @@ class _VerifyScreenState extends State<VerifyScreen> {
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 20),
-                TextButton(onPressed: () {}, child: Text('Изменить email')),
+                TextButton(onPressed: () {}, child: Text(AppLocalizations.of(context).changeemail,)),
                 SizedBox(height: 10),
-                TextButton(onPressed: () {}, child: Text('Переотправить ссылку')),
+                TextButton(onPressed: () {}, child: Text(AppLocalizations.of(context).resendlink)),
                 SizedBox(height: 20),
-                InkWell(onTap: () {}, child: Text('Ссылка так и не пришла на почту. Что делать?'))
+                InkWell(onTap: () {}, child: 
+                Text(
+                  AppLocalizations.of(context).linkwasnsent
+                  )
+                )
               ],
             )),
       ),

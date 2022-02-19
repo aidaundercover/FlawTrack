@@ -4,6 +4,7 @@ import 'package:flawtrack/routes.dart';
 import 'package:flawtrack/services/auth_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+
 var warning;
 
 class ForgotPassword extends StatefulWidget {
@@ -63,7 +64,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(bottom: 5),
-                        child: Align(child: Text('Email', textAlign: TextAlign.left, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),), alignment: Alignment.centerLeft),
+                        child: Align(child: Text(AppLocalizations.of(context).email, textAlign: TextAlign.left, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),), alignment: Alignment.centerLeft),
                       ),
                       Form(
                         key: _key,
@@ -81,7 +82,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                             ),
                             validator: (input) {
                               if (input!.isEmpty) {
-                                return 'Пожалуйста введите ваш e-mail';
+                                return AppLocalizations.of(context).warn2;
                               }
                               return null;
                             },
@@ -106,9 +107,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                           if (_key.currentState!.validate()) {
                               AuthService().passwordReset(_emailController.text);
                           final snackBar = SnackBar(
-                          content: const Text('Ссылка для востановления паролья была отправлена!'),
+                          content: Text(AppLocalizations.of(context).emailwassend),
                           action: SnackBarAction(
-                          label: 'Отмена',
+                          label:  AppLocalizations.of(context).cancel,
                           onPressed: () {
                           },
                           ),

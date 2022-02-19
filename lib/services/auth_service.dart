@@ -1,10 +1,11 @@
 import 'dart:io';
+import 'package:flawtrack/const.dart';
 import 'package:flawtrack/home_widget_citizen.dart';
 import 'package:flawtrack/home_widget_volunteer.dart';
+import 'package:flawtrack/views/error/smth_went_wrong.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-import 'package:flawtrack/models/FlawtrackUser.dart';
 import 'package:flawtrack/views/first_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -29,12 +30,6 @@ class AuthService {
     return _firebaseAuth.currentUser!.uid;
   }
 
-  // GET CURRENT USER
-  //Future<FlawtrackUser> getCurrentUser() async {
-  //var firebaseUser = _firebaseAuth.currentUser;
-  //return FlawtrackUser(
-  //firebaseUser!.uid, firebaseUser.email, firebaseUser.name,firebaseUser.volunteer);
-  //}
 
   Future<void> uploadFile(String filePath) async {
     File file = File(filePath);
@@ -46,14 +41,7 @@ class AuthService {
     } on firebase_core.FirebaseException {}
   }
 
-  getProfileImage() {
-    if (_firebaseAuth.currentUser!.photoURL != null) {
-      return Image.network('${_firebaseAuth.currentUser!.photoURL}',
-          height: 100, width: 100);
-    } else {
-      return Icon(Icons.account_circle, size: 100);
-    }
-  }
+ 
 
 //Sign Up with Email
   
@@ -102,11 +90,7 @@ class AuthService {
     }
   }
 
-  Future updateUserName(name, currentUser) async {
-    await currentUser.updateDisplayName(name);
-    await currentUser.reload();
-  }
-
+  
 // Reset Password
   passwordReset(String email) async {
     try {
@@ -116,22 +100,39 @@ class AuthService {
     }
   }
 
+  Future getCurrentUserData() async{
+    try {
+      DocumentSnapshot ds = await _db.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).get();
+      nameGlobal = ds.get('name');
+      volunteer = ds.get('volunteer');
+      return [nameGlobal,volunteer];
+    }catch(e){
+      print(e.toString());
+      return null;
+    }
+  }
+
+
   Widget handleAuth() {
     return StreamBuilder<User?>(
         stream: FirebaseAuth.instance.userChanges(),
         builder: (BuildContext context, snapshot) {
+          if (snapshot.hasError) {
+                return SomethingWentWrong();
+              }
+              
           if (snapshot.hasData && snapshot.data != null) {
             return StreamBuilder<DocumentSnapshot>(
                 stream: _db
-                    .collection("users")
+                    .collection('users')
                     .doc(snapshot.data!.uid)
                     .snapshots(includeMetadataChanges: true),
                 builder: (BuildContext context,
                     AsyncSnapshot<DocumentSnapshot> snapshot) {
-                  final bool signedIn = snapshot.hasData &&
+                  final bool signedIn = snapshot.data!.exists &&
                       FirebaseAuth.instance.currentUser!.emailVerified;
                   if (signedIn) {
-                    if (snapshot.data!['volunteer']) {
+                    if (snapshot.data!['volunteer'] ?? false) {
                       return HomeVolunteer();
                     } else {
                       return HomeCitizen();
