@@ -1,13 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flawtrack/const.dart';
+import 'package:flawtrack/models/Problem.dart';
 import 'package:flawtrack/pages.dart';
 import 'package:flawtrack/splash.dart';
 import 'package:flawtrack/views/error/smth_went_wrong.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flawtrack/widgets/maps/maps.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -25,7 +27,6 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
   Set<Marker> markers = <Marker>{};
   late GoogleMapController controller;
   String searchAddr = "";
-
   bool popped = true;
   String _mapLat = lat.toString();
   String _mapLong = long.toString();
@@ -38,7 +39,7 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
   bool pressRel = false;
   late Function()? takeaPhoto;
   late String? imagePath;
-
+  Problem problem = Problem();
   late InfoWindow pinInfo;
   bool selected = false;
   late String pintitle;
@@ -60,6 +61,7 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
   List<bool> isSelected = [false, false, false, false, false, false];
 
   File? image;
+  String imageUrl = "";
 
   Future pickImage(ImageSource source) async {
     try {
@@ -67,6 +69,19 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
       if (image == null) return;
 
       final temporaryImage = File(image.path);
+
+      final _storage = FirebaseStorage.instance;
+
+      var snapshot = await _storage
+          .ref()
+          .child('problems/$imageUrl')
+          .putFile(temporaryImage);
+
+      var downloadUrl = await snapshot.ref.getDownloadURL();
+
+      setState(() {
+        imageUrl = downloadUrl;
+      });
 
       setState(() {
         this.image = temporaryImage;
@@ -94,6 +109,34 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                 )
               ],
             ));
+  }
+
+  Map<String, dynamic> dynamicMapToString(Map<dynamic, dynamic> data) {
+    List<dynamic> _convertList(List<dynamic> src) {
+      List<dynamic> dst = [];
+      for (int i = 0; i < src.length; ++i) {
+        if (src[i] is Map<dynamic, dynamic>) {
+          dst.add(dynamicMapToString(src[i]));
+        } else if (src[i] is List<dynamic>) {
+          dst.add(_convertList(src[i]));
+        } else {
+          dst.add(src[i]);
+        }
+      }
+      return dst;
+    }
+
+    Map<String, dynamic> retval = {};
+    for (dynamic key in data.keys) {
+      if (data[key] is Map<dynamic, dynamic>) {
+        retval[key.toString()] = dynamicMapToString(data[key]);
+      } else if (data[key] is List<dynamic>) {
+        retval[key.toString()] = _convertList(data[key]);
+      } else {
+        retval[key.toString()] = data[key];
+      }
+    }
+    return retval;
   }
 
   @override
@@ -371,12 +414,11 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
               icon: mapMarker(snapshot.data!.docs[i]['mapMarker']),
               onTap: () {
                 setState(() {
-                    descCardShow(
-                    markerType(snapshot.data!.docs[i]['mapMarker'], context),
-                    snapshot.data!.docs[i]['details']['description'],
-                    context);
+                  descCardShow(
+                      markerType(snapshot.data!.docs[i]['mapMarker'], context),
+                      snapshot.data!.docs[i]['details']['description'],
+                      context);
                 });
-
               }));
         }
         return GoogleMap(
@@ -696,9 +738,13 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                               TextButton(
                                 onPressed: () {
                                   pinned = true;
-                                  if (selected)
+                                  if (selected) {
                                     addInfo();
-                                  else {
+                                    FirebaseFirestore.instance
+                                        .collection('problems')
+                                        .doc()
+                                        .set(problem.toMap());
+                                  } else {
                                     Fluttertoast.showToast(
                                       msg: "Select type of problem",
                                     );
@@ -806,6 +852,12 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
   handleTap(LatLng tappedPoint) {
     setState(() {
       tempId = tappedPoint.toString();
+      problem = Problem(
+        lat: tappedPoint.latitude,
+        long: tappedPoint.longitude,
+        mapMarker: mapMarkerInverse(markerPin),
+        user: FirebaseAuth.instance.currentUser!.uid,
+      );
       markers.add(
         Marker(
           icon: markerPin,
@@ -847,6 +899,7 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
         onPressed: () {
           Navigator.of(context).pop();
           markers.remove(tempId);
+          pinned = false;
         },
       );
     }
@@ -873,6 +926,7 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
           pinInfo = InfoWindow(title: pintitle, snippet: pindesc.text);
           pin();
           selected = false;
+          pinned = false;
         },
       );
     }
@@ -913,7 +967,10 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                         height: 55,
                         width: MediaQuery.of(context).size.width * 0.74,
                         child: TextFormField(
-                          onSaved: (newValue) => pindesc.text = newValue!,
+                          onSaved: (newValue) {
+                            pindesc.text = newValue!;
+                            problem.details!['desc'] = pindesc.text;
+                          },
                           decoration: InputDecoration(
                               hintText: 'Мәселе сипаты/детальдер',
                               border: OutlineInputBorder(
@@ -938,6 +995,7 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                                   child: IconButton(
                                       onPressed: () {
                                         showImageSource(context);
+                                        problem.details!['img'] = imageUrl;
                                       },
                                       icon: Icon(Icons.add_a_photo))),
                             )

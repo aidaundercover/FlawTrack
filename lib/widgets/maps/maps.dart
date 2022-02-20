@@ -82,6 +82,16 @@ mapMarker(int n) {
   }
 }
 
+mapMarkerInverse(BitmapDescriptor n) {
+  if (n ==  mapMarker1) return 1;
+  if (n ==  mapMarker2) return 2;
+  if (n ==  mapMarker3) return 3;
+  if (n ==  mapMarker4) return 4;
+  if (n ==  mapMarker5) return 5;
+  if (n ==  mapMarker6) return 6;
+  if (n ==  mapMarker7) return 7;
+}
+
 markerType(int n, BuildContext context) {
   switch (n) {
     case 1:
@@ -180,11 +190,17 @@ void descCardShow(String title, String desc, BuildContext context) {
                       )
                     ],
                   ),
-                  Text(title, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20,)),
+                  Text(title,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                      )),
                   SizedBox(height: 10),
-                  Text(desc, style: TextStyle(fontSize: 15,)),
+                  Text(desc,
+                      style: TextStyle(
+                        fontSize: 15,
+                      )),
                   // Container(child: Image.file(img) ??),
-                  
                 ],
               ),
             ),

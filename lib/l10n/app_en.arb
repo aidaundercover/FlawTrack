@@ -278,41 +278,58 @@
    },
    "citizen" : "citizen",
    "@citizen" : {
-      "description" : "namenamenamename", 
+      "description" : "namenamenamename"
    },
    "cancel" : "Cancel",
    "@cancel" : {
-      "description" : "namenamenamename",
-      
+      "description" : "cancel"
    },
-   "changeemail" : "Change E-mail",
+   "changeemail" : "Change E-mai",
    "@changeemail" : {
-      "description" : "namenamenamename",
-      
+      "description" : "namenamenamename"
    },
    "resendlink" : "Resend the link",
    "@resendlink" : {
-      "description" : "namenamenamename",
-      
+      "description" : "namenamenamename"
    },
-    "linkwasnsent" : "The link hasn't been send. What shoud I do?",
+   "linkwasnsent" : "The link hasn't been send. What shoud I do?",
    "@linkwasnsent" : {
-      "description" : "namenamenamename",
-      
+      "description" : "namenamenamename"
    },
    "region" : "Region",
    "@region" : {
-      "description" : "namenamenamename",
-      
+      "description" : "namenamenamename"
    },
    "nearby" : "Nearby",
    "@nearby" : {
-      "description" : "namenamenamename",
-      
+      "description" : "namenamenamename"
    },
    "popular" : "Popular",
    "@popular" : {
-      "description" : "namenamenamename",
-      
+      "description" : "namenamenamename"
    },
+   "organization" : "Organization",
+   "@organization" : {
+      "description" : "cancel"
+   },
+   "volcapital" : "Volunteer",
+   "@volcapital" : {
+      "description" : "namenamenamename"
+   },
+   "namesurname" : "Name-Surname",
+   "@namesurname" : {
+      "description" : "namenamenamename"
+   },
+   "findnearby" : "Find nearby",
+   "@findnearby" : {
+      "description" : "namenamenamename"
+   },
+   "topfiftyv" : "Rating of TOP-50 volunteers",
+   "@topfiftyv" : {
+      "description" : "namenamenamename"
+   },
+   "pins" : "Pins",
+   "@pins" : {
+      "description" : "namenamenamename"
+   }
 }

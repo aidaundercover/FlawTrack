@@ -66,6 +66,18 @@
    "homeless" : "Тұрақты үйсіз адам",
    "fixed" : "Мәселе шешілген",
    "volunteer" : "волонтер",
-   "citizen" : "житель"
-  
+   "citizen" : "тұрғын",
+   "cancel" : "Болдырмау",
+   "changeemail" : "E-mail өзгерту",
+   "resendlink" : "Қайта жіберу",
+   "linkwasnsent" : "Сілтеме поштаға келмеді. Не істеу керек?",
+   "region" : "Район",
+   "nearby" : "Жақында",
+   "popular" : "Таралған",
+   "organization" : "Ұйым атауы",
+   "volcapital" : "Волонтер",
+   "namesurname" : "Аты-жөні",
+   "findnearby" : "Жақында табу",
+   "topfiftyv" : "ҮЗДІК-50 Еріктілер реітингі",
+   "pins" : "Пиндер"
 }

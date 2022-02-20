@@ -66,7 +66,19 @@
    "homeless" : "БОМЖ",
    "fixed" : "Проблема исправлена",
    "volunteer" : "волонтер",
-   "citizen" : "тұрғын"
-
+   "citizen" : "житель",
+   "cancel" : "Отмена",
+   "changeemail" : "Изменить E-mail",
+   "resendlink" : "Переотправить",
+   "linkwasnsent" : "Ссылка не пришла на почту. Что делать?",
+   "region" : "Район",
+   "nearby" : "Рядом",
+   "popular" : "Популярные",
+   "organization" : "Имя организации",
+   "volcapital" : "Волонтер",
+   "namesurname" : "Имя-фамилдия",
+   "findnearby" : "Найи рядом",
+   "topfiftyv" : "Рейтинг ТОП-50 волонтеров",
+   "pins" : "Пины"
   
 }

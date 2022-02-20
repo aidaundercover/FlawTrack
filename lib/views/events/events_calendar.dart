@@ -15,7 +15,7 @@ class _EventsCalendarState extends State<EventsCalendar> {
   @override
   Widget build(BuildContext context) {
     final _width = MediaQuery.of(context).size.width;
-
+      List<bool> isSelected = [false, false, false, false, false, false];
     
     return Scaffold(
       backgroundColor: lightYellow,

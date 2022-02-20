@@ -272,7 +272,7 @@ class _ForumViewState extends State<ForumView>
                                 child: Align(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
-                                    AppLocalization.of(context).popular,
+                                    AppLocalizations.of(context).popular,
                                     textAlign: TextAlign.start,
                                     style: TextStyle(
                                       fontSize: 18,

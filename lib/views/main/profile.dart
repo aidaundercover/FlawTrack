@@ -1,17 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flawtrack/services/auth_service.dart';
-import 'package:flawtrack/splash.dart';
 import 'package:flawtrack/views/chat/pushkin.dart';
 import 'package:flawtrack/views/error/smth_went_wrong.dart';
 import 'package:flawtrack/widgets/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flawtrack/widgets/profile_widget.dart';
-import 'package:image_picker/image_picker.dart';
 import '../../const.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+
+
 
 class ProfileView extends StatefulWidget {
   const ProfileView({Key? key}) : super(key: key);
@@ -172,16 +170,19 @@ class _ProfileViewState extends State<ProfileView> {
                               SizedBox(
                                 width: 10,
                               ),
-                              Text(
-                                'Имя организации',
-                                style: TextStyle(color: black, fontSize: 18),
+                              Visibility(
+                                visible: volunteer,
+                                child: Text(
+                                 AppLocalizations.of(context).organization,
+                                  style: TextStyle(color: black, fontSize: 18),
+                                ),
                               )
                             ],
                           )
                         : Row(),
                     SizedBox(height: 30),
                     Text(
-                      'Форумы',
+                      AppLocalizations.of(context).forums,
                       textAlign: TextAlign.left,
                       style: TextStyle(
                           color: black,

@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flawtrack/views/error/smth_went_wrong.dart';
 import 'package:flawtrack/widgets/drawer.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../const.dart';
 
 class VolunteerView extends StatefulWidget {
@@ -26,7 +26,7 @@ class _VolunteerViewState extends State<VolunteerView> {
         elevation: 4,
         backgroundColor: yellow,
         title: Text(
-          "Волонтеры",
+          AppLocalizations.of(context).volcapital,
           style: TextStyle(
               fontSize: 25, fontWeight: FontWeight.bold, color: black),
         ),
@@ -58,7 +58,7 @@ class _VolunteerViewState extends State<VolunteerView> {
                     cursorColor: black,
                     style: TextStyle(fontSize: 18),
                     decoration: InputDecoration(
-                      hintText: 'Имя-Фамилия',
+                      hintText: AppLocalizations.of(context).namesurname,
                       labelStyle: TextStyle(fontSize: 18),
                       contentPadding: EdgeInsets.only(left: 17),
                       enabledBorder: InputBorder.none,
@@ -95,7 +95,7 @@ class _VolunteerViewState extends State<VolunteerView> {
                   width: width * 0.574,
                 ),
                 Text(
-                  'Найти рядом',
+                  AppLocalizations.of(context).findnearby,
                   style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
                 )
               ],
@@ -107,7 +107,7 @@ class _VolunteerViewState extends State<VolunteerView> {
             child: Padding(
               padding: const EdgeInsets.only(left: 14.0),
               child: Text(
-                'Рейтинг ТОП-50 волонтеров',
+                AppLocalizations.of(context).topfiftyv,
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
               ),
             ),
@@ -123,8 +123,8 @@ class _VolunteerViewState extends State<VolunteerView> {
               }
               return DataTable(columns: [
                 DataColumn(label: Text('№', style: TextStyle(color: primaryColor, fontSize: 22, fontWeight: FontWeight.bold),)),
-                DataColumn(label: Text('Имя', style: TextStyle(color: primaryColor, fontSize: 22, fontWeight: FontWeight.bold))),
-                DataColumn(label: Text('Пины', style: TextStyle(color: primaryColor, fontSize: 22, fontWeight: FontWeight.bold))),
+                DataColumn(label: Text( AppLocalizations.of(context).name, style: TextStyle(color: primaryColor, fontSize: 22, fontWeight: FontWeight.bold))),
+                DataColumn(label: Text( AppLocalizations.of(context).pins, style: TextStyle(color: primaryColor, fontSize: 22, fontWeight: FontWeight.bold))),
               ], rows: _buildList(context, snapshot.data!.docs));
             },
           )

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flawtrack/services/auth_service.dart';
 import 'package:flawtrack/views/first_view.dart';
 import 'package:flawtrack/views/settings/settings_main.dart';
@@ -89,7 +90,7 @@ class _DrawerCustomState extends State<DrawerCustom> {
                                             ),
                                             SizedBox(height: 2),
                                             Text(
-                                              "aida.undercover@gmail.com",
+                                              '${FirebaseAuth.instance.currentUser!.email.toString()}',
                                               style: TextStyle(
                                                   color: Colors.black,
                                                   fontFamily: 'Roboto',
@@ -177,7 +178,7 @@ class _DrawerCustomState extends State<DrawerCustom> {
                                 SizedBox(width: 20),
                                 Icon(Icons.map, size: 23, color: black),
                                 SizedBox(width: 15),
-                                Text('Карта',
+                                Text(AppLocalizations.of(context).maps,
                                     style: TextStyle(
                                         fontSize: 13,
                                         fontWeight: FontWeight.normal,
