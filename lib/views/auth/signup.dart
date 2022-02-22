@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flawtrack/models/FlawtrackUser.dart';
+import 'package:flawtrack/services/auth_service.dart';
 import 'package:flawtrack/views/auth/verify_email.dart';
 import 'package:flawtrack/views/terms_of_policy.dart';
 import 'package:flutter/material.dart';
@@ -9,12 +11,11 @@ import '../../const.dart';
 import '../../routes.dart';
 import 'package:email_validator/email_validator.dart';
 
-
 late TextEditingController _nameController;
 late TextEditingController _emailController;
 late TextEditingController _passwordController;
 late TextEditingController _passwordCheckController;
-String dropdownValue = '';
+String dropdownValue = 'Нет';
 
 class SignUp extends StatefulWidget {
   const SignUp({Key? key}) : super(key: key);
@@ -24,7 +25,6 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
-
   bool _obscureText = true;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   void _toggle() {
@@ -33,6 +33,7 @@ class _SignUpState extends State<SignUp> {
     });
   }
 
+  String dropdownValue = 'Нет';
   Color textColor = grey.withOpacity(0.7);
 
   void initState() {
@@ -46,9 +47,6 @@ class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     var _width = MediaQuery.of(context).size.width;
-
-    String dropdownValue = AppLocalizations.of(context).no;
-
 
     return Scaffold(
       bottomNavigationBar: GestureDetector(
@@ -465,7 +463,7 @@ class _SignUpState extends State<SignUp> {
   static postDetailsToFirestore() async {
     User? user = FirebaseAuth.instance.currentUser;
 
-    await FirebaseFirestore.instance.collection('users').add({
+    await FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).set({
       'email': _emailController.text,
       'uid': user!.uid.toString(),
       'volunteer': volunteer,

@@ -116,6 +116,7 @@ flutter:
   assets:
     - assets/
     - assets/forum_images/
+    - assets/troubles/
     - assets/home/
     - assets/events/
     - assets/fund/

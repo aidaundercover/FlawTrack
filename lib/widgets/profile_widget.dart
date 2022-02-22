@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flawtrack/views/profile/activity.dart';
@@ -19,7 +20,11 @@ class ProfuleCard extends StatefulWidget {
 
 class _ProfuleCardState extends State<ProfuleCard> {
   File? image;
-  String imageUrl = "";
+  String? imageUrl;
+  Future<String> profImg = FirebaseStorage.instance
+      .ref()
+      .child('user/${FirebaseAuth.instance.currentUser!.uid}')
+      .getDownloadURL();
 
   final _storage = FirebaseStorage.instance;
 
@@ -39,6 +44,10 @@ class _ProfuleCardState extends State<ProfuleCard> {
 
       var downloadUrl = await snapshot.ref.getDownloadURL();
 
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .set({'profileImg': downloadUrl});
       setState(() {
         imageUrl = downloadUrl;
       });
@@ -178,7 +187,7 @@ class _ProfuleCardState extends State<ProfuleCard> {
                                     fontSize: 10),
                               ),
                               Text(
-                                '5',
+                                '$pins',
                                 style: TextStyle(
                                     color: black,
                                     fontWeight: FontWeight.w500,
@@ -197,7 +206,7 @@ class _ProfuleCardState extends State<ProfuleCard> {
                                     fontSize: 10),
                               ),
                               Text(
-                                '5',
+                                '$points',
                                 style: TextStyle(
                                     color: black,
                                     fontWeight: FontWeight.w500,

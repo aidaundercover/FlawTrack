@@ -132,7 +132,7 @@ class AuthService {
                   final bool signedIn = snapshot.data!.exists &&
                       FirebaseAuth.instance.currentUser!.emailVerified;
                   if (signedIn) {
-                    if (snapshot.data!['volunteer'] ?? false) {
+                    if (snapshot.data!['volunteer']==false) {
                       return HomeVolunteer();
                     } else {
                       return HomeCitizen();

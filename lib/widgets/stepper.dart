@@ -1,8 +1,9 @@
 import 'package:flawtrack/const.dart';
 import 'package:flutter/material.dart';
 
+
 class StepperW extends StatefulWidget {
-  const StepperW({Key? key,}) : super(key: key);
+  const StepperW({ Key? key }) : super(key: key);
 
   @override
   _StepperWState createState() => _StepperWState();
@@ -20,7 +21,7 @@ class _StepperWState extends State<StepperW> {
         toolbarHeight: 60,
         centerTitle: true,
         title: Text(
-           'Как закреплять проблемы на карте?',
+          'Как закреплять проблемы на карте?',
           style: TextStyle(
               color: black,
               fontSize: 16,
@@ -36,53 +37,55 @@ class _StepperWState extends State<StepperW> {
           ),
         ),
       ),
-      body: Container(
-        child: Theme(
+      body: Theme(
           data: Theme.of(context)
               .copyWith(colorScheme: ColorScheme.light(primary: primaryColor)),
-          child: Stepper(
-            currentStep: _index,
-            onStepCancel: () {
-              if (_index != 0) {
+          child: SizedBox(
+            height:200,
+            child: Stepper(
+              currentStep: _index,
+              onStepCancel: () {
+                if (_index != 0) {
+                  setState(() {
+                    _index--;
+                  });
+                }
+              },
+              onStepContinue: () {
+                if (_index != 2) {
+                  setState(() {
+                    _index++;
+                  });
+                }
+              },
+              onStepTapped: (int index) {
                 setState(() {
-                  _index--;
+                  _index = index;
                 });
-              }
-            },
-            onStepContinue: () {
-              if (_index != 2) {
-                setState(() {
-                  _index++;
-                });
-              }
-            },
-            onStepTapped: (int index) {
-              setState(() {
-                _index = index;
-              });
-            },
-            type: StepperType.horizontal,
-            steps: [
-              Step(
-                isActive: _index >= 0,
-                title: Text('Step 1 title'),
-                content: Text('Content for Step 1'),
-              ),
-              Step(
-                isActive: _index >= 1,
-                title: Text('Step 2 title'),
-                content: Text('Content for Step 2'),
-              ),
-              Step(
-                isActive: _index >= 2,
-                title: const Text('Step 1 title'),
-                content: Container(
-                    alignment: Alignment.centerLeft,
-                    child: const Text('Content for Step 1')),
-              ),
-            ],
+              },
+              type: StepperType.horizontal,
+              steps: [
+                Step(
+                  isActive: _index >= 0,
+                  title: Text('Шаг 1'),
+                  content: Text('Choose the type of problem in the panel below map'),
+                ),
+                Step(
+                  isActive: _index >= 1,
+                  title: Text('Шаг 2'),
+                  content: Text('Content for Step 2'),
+                ),
+                Step(
+                  isActive: _index >= 2,
+                  title:  Text('Шаг 3'),
+                  content: Container(
+                      alignment: Alignment.centerLeft,
+                      child:  Text('Content for Step 1')),
+                ),
+              ],
+            ),
           ),
-        ),
+      
       ),
     );
   }

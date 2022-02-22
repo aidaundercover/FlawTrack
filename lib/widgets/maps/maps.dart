@@ -16,6 +16,8 @@ late BitmapDescriptor mapMarker4;
 late BitmapDescriptor mapMarker5;
 late BitmapDescriptor mapMarker6;
 late BitmapDescriptor mapMarker7;
+late BitmapDescriptor fixedMarker;
+
 
 Set<Marker> markers = {};
 late String tempId;
@@ -48,13 +50,18 @@ void setCustomMaker() async {
   mapMarker3 = await BitmapDescriptor.fromAssetImage(
       ImageConfiguration(size: Size(50, 50)), 'assets/pins/drown.png');
   mapMarker4 = await BitmapDescriptor.fromAssetImage(
-      ImageConfiguration(size: Size(50, 50)), 'assets/pins/dog.png');
+      ImageConfiguration(size: Size(50, 50)), 
+      'assets/pins/dog.png');
   mapMarker5 = await BitmapDescriptor.fromAssetImage(
       ImageConfiguration(size: Size(50, 50)), 'assets/pins/trash.png');
   mapMarker6 = await BitmapDescriptor.fromAssetImage(
       ImageConfiguration(size: Size(50, 50)), 'assets/pins/cat.png');
   mapMarker7 = await BitmapDescriptor.fromAssetImage(
       ImageConfiguration(size: Size(50, 50)), 'assets/pins/homeless.png');
+}
+
+void setFixedMarker() async {
+  fixedMarker = await BitmapDescriptor.fromAssetImage( ImageConfiguration(size: Size(50, 50)),'assets/pins/fixed.png');
 }
 
 mapMarker(int n) {
@@ -83,13 +90,13 @@ mapMarker(int n) {
 }
 
 mapMarkerInverse(BitmapDescriptor n) {
-  if (n ==  mapMarker1) return 1;
-  if (n ==  mapMarker2) return 2;
-  if (n ==  mapMarker3) return 3;
-  if (n ==  mapMarker4) return 4;
-  if (n ==  mapMarker5) return 5;
-  if (n ==  mapMarker6) return 6;
-  if (n ==  mapMarker7) return 7;
+  if (n == mapMarker1) return 1;
+  if (n == mapMarker2) return 2;
+  if (n == mapMarker3) return 3;
+  if (n == mapMarker4) return 4;
+  if (n == mapMarker5) return 5;
+  if (n == mapMarker6) return 6;
+  if (n == mapMarker7) return 7;
 }
 
 markerType(int n, BuildContext context) {
@@ -136,9 +143,7 @@ timeExpired(double width, void func, BuildContext context) {
                       Row(
                         children: [
                           TextButton(
-                            onPressed: () {
-                              func;
-                            },
+                            onPressed: () => func,
                             child: Text('Add'),
                           ),
                           SizedBox(
@@ -163,43 +168,103 @@ timeExpired(double width, void func, BuildContext context) {
       });
 }
 
-void descCardShow(String title, String desc, BuildContext context) {
+void descCardShow(String title, String desc, BuildContext context, String file) {
   showDialog(
       context: context,
       builder: (BuildContext context) {
         return Dialog(
           child: Container(
             width: widthGlobal * 0.8,
-            height: 300,
+            height: 400,
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(4.0),
               child: Column(
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: IconButton(
-                            onPressed: () {
-                              Navigator.of(context).pushReplacement(
-                                  MaterialPageRoute(
-                                      builder: (context) => MapsOfProblems()));
-                            },
-                            icon: Icon(Icons.close, color: grey)),
-                      )
+                      IconButton(
+                          onPressed: () {
+                            Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                    builder: (context) => MapsOfProblems()));
+                          },
+                          icon: Icon(Icons.close, color: grey))
                     ],
                   ),
                   Text(title,
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 20,
                       )),
                   SizedBox(height: 10),
-                  Text(desc,
+                  Container(
+                    width: widthGlobal * 0.7,
+                    child: Text(desc,
+                        style: TextStyle(
+                          fontSize: 15,
+                        )),
+                  ),
+                  SizedBox(height: 10),
+                  Image.asset(
+                    file,
+                    width: widthGlobal * 0.7,
+                    height: 210,
+                    fit: BoxFit.cover)
+                  // Container(child: Image.file(img) ??),
+                ],
+              ),
+            ),
+          ),
+        );
+      });
+}
+
+void descCardShow2(String title, String desc, BuildContext context, File url) {
+  showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: Container(
+            width: widthGlobal * 0.8,
+            height: 400,
+            child: Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      IconButton(
+                          onPressed: () {
+                            Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                    builder: (context) => MapsOfProblems()));
+                          },
+                          icon: Icon(Icons.close, color: grey))
+                    ],
+                  ),
+                  Text(title,
+                      textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
                       )),
+                  SizedBox(height: 10),
+                  Container(
+                    width: widthGlobal * 0.7,
+                    child: Text(desc,
+                        style: TextStyle(
+                          fontSize: 15,
+                        )),
+                  ),
+                  SizedBox(height: 10),
+                  Image.file(
+                    url,
+                    width: widthGlobal * 0.7,
+                    height: 210,
+                    fit: BoxFit.cover)
                   // Container(child: Image.file(img) ??),
                 ],
               ),

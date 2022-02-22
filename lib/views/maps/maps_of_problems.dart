@@ -1,14 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flawtrack/const.dart';
-import 'package:flawtrack/models/Problem.dart';
-import 'package:flawtrack/pages.dart';
 import 'package:flawtrack/splash.dart';
 import 'package:flawtrack/views/error/smth_went_wrong.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import "dart:async";
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flawtrack/widgets/maps/maps.dart';
@@ -24,9 +22,9 @@ class MapsOfProblems extends StatefulWidget {
 }
 
 class _MapsOfProblemsState extends State<MapsOfProblems> {
-  Set<Marker> markers = <Marker>{};
   late GoogleMapController controller;
   String searchAddr = "";
+  Set<Marker> markers = <Marker>{};
   bool popped = true;
   String _mapLat = lat.toString();
   String _mapLong = long.toString();
@@ -39,20 +37,17 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
   bool pressRel = false;
   late Function()? takeaPhoto;
   late String? imagePath;
-  Problem problem = Problem();
+  String imageUrl = "";
   late InfoWindow pinInfo;
   bool selected = false;
   late String pintitle;
   late TextEditingController pindesc;
 
-  late String descTitle;
-  late String descSnippet;
-
   // temporary//
 
-  late String tempTitleDesc;
   late String tempDescDesc;
-  late File tempImgDesc;
+  File? tempImgDesc;
+  late LatLng tempPoinf;
 
   // temporary//
 
@@ -61,30 +56,25 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
   List<bool> isSelected = [false, false, false, false, false, false];
 
   File? image;
-  String imageUrl = "";
 
   Future pickImage(ImageSource source) async {
     try {
       final image = await ImagePicker().pickImage(source: source);
       if (image == null) return;
+      final _storage = FirebaseStorage.instance;
 
       final temporaryImage = File(image.path);
 
-      final _storage = FirebaseStorage.instance;
+      // var snapshot = await _storage
+      //     .ref()
+      //     .child('problems/$temporaryImage')
+      //     .putFile(temporaryImage);
 
-      var snapshot = await _storage
-          .ref()
-          .child('problems/$imageUrl')
-          .putFile(temporaryImage);
-
-      var downloadUrl = await snapshot.ref.getDownloadURL();
-
-      setState(() {
-        imageUrl = downloadUrl;
-      });
+      // var downloadUrl = await snapshot.ref.getDownloadURL();
 
       setState(() {
         this.image = temporaryImage;
+        // imageUrl = downloadUrl;
       });
     } on PlatformException catch (e) {
       Fluttertoast.showToast(msg: AppLocalizations.of(context).accesswasdenied);
@@ -111,41 +101,12 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
             ));
   }
 
-  Map<String, dynamic> dynamicMapToString(Map<dynamic, dynamic> data) {
-    List<dynamic> _convertList(List<dynamic> src) {
-      List<dynamic> dst = [];
-      for (int i = 0; i < src.length; ++i) {
-        if (src[i] is Map<dynamic, dynamic>) {
-          dst.add(dynamicMapToString(src[i]));
-        } else if (src[i] is List<dynamic>) {
-          dst.add(_convertList(src[i]));
-        } else {
-          dst.add(src[i]);
-        }
-      }
-      return dst;
-    }
-
-    Map<String, dynamic> retval = {};
-    for (dynamic key in data.keys) {
-      if (data[key] is Map<dynamic, dynamic>) {
-        retval[key.toString()] = dynamicMapToString(data[key]);
-      } else if (data[key] is List<dynamic>) {
-        retval[key.toString()] = _convertList(data[key]);
-      } else {
-        retval[key.toString()] = data[key];
-      }
-    }
-    return retval;
-  }
-
   @override
   void initState() {
     setCustomMaker();
     dropDown();
     pin();
     pressReload();
-    loadMap(context);
     setMarkers();
     super.initState();
   }
@@ -387,11 +348,186 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
   }
 
   setMarkers() {
+    // FirebaseFirestore.instance
+    //     .collection('problems')
+    //     .get()
+    //     .then((QuerySnapshot querySnapshot) {
+    //   querySnapshot.docs.forEach((doc) {
+    //     setState(() {
+    //       markers.add(Marker(
+    //         position: LatLng(doc['lat'], doc['long']),
+    //         markerId: MarkerId(doc.toString()),
+    //         icon: mapMarker(doc['mapMarker']),
+    //         onTap: () {
+    //             descCardShow(markerType(doc['mapMarker'], context),
+    //                 doc['details']['description'], context);
+
+    //         }));
+    //     });
+
+    //   });
+    // });
+
     return markers;
   }
 
   void _onMapCreated(GoogleMapController controller) {
-    controller = controller;
+    setState(() {
+      controller = controller;
+    });
+
+    setCustomMaker();
+    markers.add(
+      Marker(
+        icon: mapMarker1,
+        markerId: MarkerId('1'),
+        position: LatLng(42.3397099, 69.589761),
+        onTap: () => descCardShow(markerType(1, context), 'Разбитая дорога',
+            context, 'assets/troubles/road1.jpeg'),
+      ),
+    );
+    markers.add(
+      Marker(
+        icon: mapMarker1,
+        markerId: MarkerId('2'),
+        position: LatLng(lat, long),
+        onTap: () => descCardShow(
+            markerType(1, context),
+            'Сплошные ямы на асфальте. Дороги были построены без учета климатических особенностей региона',
+            context,
+            'assets/troubles/road2.jpg'),
+      ),
+    );
+    markers.add(
+      Marker(
+        icon: mapMarker2,
+        markerId: MarkerId('3'),
+        position: LatLng(42.3371909, 69.6018045),
+        onTap: () => descCardShow(
+            markerType(2, context),
+            'Переполненная мусорка. Второй день не убирается',
+            context,
+            'assets/troubles/trashcan1.jpeg'),
+      ),
+    );
+    markers.add(Marker(
+      icon: mapMarker2,
+      markerId: MarkerId('4'),
+      position: LatLng(42.3376039, 69.5673743),
+      onTap: () => descCardShow(markerType(2, context), 'Қоқыс. Ұят қой мынау',
+          context, 'assets/troubles/trashcan2.jpeg'),
+    ));
+
+    markers.add(Marker(
+      icon: mapMarker3,
+      markerId: MarkerId('5'),
+      position: LatLng(52.2504187, 76.9546327),
+      onTap: () => descCardShow(markerType(3, context),
+          'Батпақ жол. Ұят қой мынау', context, 'assets/troubles/drown1.jpeg'),
+    ));
+    markers.add(Marker(
+      icon: mapMarker6,
+      markerId: MarkerId('6'),
+      position: LatLng(52.2504187, 76.9546327),
+      onTap: () => descCardShow(
+          markerType(6, context),
+          'Homeless cat was lonely to death,and squirilling for food',
+          context,
+          'assets/troubles/cat.jpeg'),
+    ));
+    markers.add(Marker(
+      icon: mapMarker2,
+      markerId: MarkerId('7'),
+      position: LatLng(52.2504187, 76.9546327),
+      onTap: () => descCardShow(markerType(3, context),
+          'Батпақ жол. Ұят қой мынау', context, 'assets/troubles/drown1.jpeg'),
+    ));
+    markers.add(Marker(
+        icon: mapMarker4,
+        markerId: MarkerId('8'),
+        position: LatLng(52.2507743, 76.9449725),
+        infoWindow: InfoWindow(
+          title: 'Бездомная собака',
+          snippet: 'скулит',
+        )));
+
+    markers.add(
+      Marker(
+          icon: mapMarker1,
+          markerId: MarkerId('9'),
+          position: LatLng(52.2537144, 76.9424712),
+          infoWindow: InfoWindow(
+            title: 'Мусор в неположенном месте',
+            snippet: 'Пластиковые и бытовые отходы',
+          )),
+    );
+    markers.add(
+      Marker(
+          icon: mapMarker2,
+          markerId: MarkerId('10'),
+          position: LatLng(52.2498763, 76.9514241),
+          infoWindow: InfoWindow(
+            title: 'Асфальтовая яма',
+            snippet: 'тратуар сломан',
+          )),
+    );
+    markers.add(
+      Marker(
+          icon: mapMarker3,
+          markerId: MarkerId('11'),
+          position: LatLng(52.2537144, 76.9424712),
+          infoWindow: InfoWindow(
+            title: 'Потоп',
+            snippet: 'потоп',
+          )),
+    );
+    markers.add(Marker(
+        icon: mapMarker4,
+        markerId: MarkerId('12'),
+        position: LatLng(52.2504187, 76.9546327),
+        infoWindow: InfoWindow(
+          title: 'Бездомная собака',
+          snippet: 'плохо видит и скулит',
+        )));
+
+    markers.add(
+      Marker(
+          icon: mapMarker5,
+          markerId: MarkerId('13'),
+          position: LatLng(52.2537144, 76.9424712),
+          infoWindow: InfoWindow(
+            title: 'Потоп',
+            snippet: 'потоп',
+          )),
+    );
+    markers.add(
+      Marker(
+          icon: mapMarker6,
+          markerId: MarkerId('14'),
+          position: LatLng(52.2484178, 76.9475304),
+          infoWindow: InfoWindow(
+            title: 'Бездомная кошка',
+            snippet: 'плохо видит и скулит',
+          )),
+    );
+    markers.add(
+      Marker(
+          icon: mapMarker5,
+          markerId: MarkerId('15'),
+          position: LatLng(52.2502872, 76.9505888),
+          infoWindow: InfoWindow(
+            title: 'Свалка',
+            snippet: 'после ветра ранесло',
+          )),
+    );
+    markers.add(Marker(
+        icon: mapMarker4,
+        markerId: MarkerId('16'),
+        position: LatLng(52.2507743, 76.9449725),
+        infoWindow: InfoWindow(
+          title: 'Бездомная собака',
+          snippet: 'скулит',
+        )));
   }
 
   Widget loadMap(BuildContext context) {
@@ -406,28 +542,13 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
           return SplashScreen();
         }
 
-        for (int i = 0; i < snapshot.data!.docs.length; i++) {
-          markers.add(Marker(
-              position: LatLng(snapshot.data!.docs[i]['lat'],
-                  snapshot.data!.docs[i]['long']),
-              markerId: MarkerId(snapshot.data!.docs[i].toString()),
-              icon: mapMarker(snapshot.data!.docs[i]['mapMarker']),
-              onTap: () {
-                setState(() {
-                  descCardShow(
-                      markerType(snapshot.data!.docs[i]['mapMarker'], context),
-                      snapshot.data!.docs[i]['details']['description'],
-                      context);
-                });
-              }));
-        }
         return GoogleMap(
             initialCameraPosition: CameraPosition(
                 target: LatLng(lat, long), zoom: 12, bearing: 30, tilt: 80),
             zoomControlsEnabled: true,
             minMaxZoomPreference: MinMaxZoomPreference(15, 22),
             onMapCreated: _onMapCreated,
-            markers: markers,
+            markers: setMarkers(),
             myLocationButtonEnabled: true,
             onTap: selected ? handleTap : dont);
       },
@@ -437,6 +558,18 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
   @override
   Widget build(BuildContext context) {
     widthGlobal = MediaQuery.of(context).size.width;
+
+    // return StreamBuilder<QuerySnapshot>(
+    //     stream: FirebaseFirestore.instance.collection('problems').snapshots(),
+    //     builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+
+    //       if (snapshot.hasError) {
+    //       return SomethingWentWrong();
+    //     }
+
+    //     if (snapshot.connectionState == ConnectionState.waiting) {
+    //       return SplashScreen();
+    //     }
 
     return Scaffold(
         appBar: AppBar(
@@ -451,12 +584,19 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
           leading: Builder(
             builder: (context) => IconButton(
                 icon: Icon(Icons.chevron_left_outlined, size: 35, color: black),
-                onPressed: () => Navigator.pushReplacement(
-                    context, MaterialPageRoute(builder: (context) => Maps()))),
+                onPressed: () => Navigator.of(context).pop()),
           ),
         ),
         body: Stack(children: [
-          loadMap(context),
+          GoogleMap(
+              initialCameraPosition: CameraPosition(
+                  target: LatLng(lat, long), zoom: 12, bearing: 30, tilt: 80),
+              zoomControlsEnabled: true,
+              minMaxZoomPreference: MinMaxZoomPreference(15, 22),
+              onMapCreated: _onMapCreated,
+              markers: setMarkers(),
+              myLocationButtonEnabled: true,
+              onTap: selected ? handleTap : dont),
           Positioned(
             top: 30.0,
             right: 15.0,
@@ -740,10 +880,6 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                                   pinned = true;
                                   if (selected) {
                                     addInfo();
-                                    FirebaseFirestore.instance
-                                        .collection('problems')
-                                        .doc()
-                                        .set(problem.toMap());
                                   } else {
                                     Fluttertoast.showToast(
                                       msg: "Select type of problem",
@@ -847,28 +983,23 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                   ),
                 ),
               ));
+    // });
   }
 
   handleTap(LatLng tappedPoint) {
     setState(() {
+      tempPoinf = tappedPoint;
       tempId = tappedPoint.toString();
-      problem = Problem(
-        lat: tappedPoint.latitude,
-        long: tappedPoint.longitude,
-        mapMarker: mapMarkerInverse(markerPin),
-        user: FirebaseAuth.instance.currentUser!.uid,
-      );
       markers.add(
         Marker(
           icon: markerPin,
-          onTap: () {
-            descCardShow(pintitle, '', context);
-          },
           markerId: MarkerId(tempId),
           position: tappedPoint,
         ),
       );
-
+      Fluttertoast.showToast(
+        msg: "Add details to the problem",
+      );
       Future.delayed(const Duration(seconds: 7), () {
         if (pinned) {
         } else
@@ -899,7 +1030,6 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
         onPressed: () {
           Navigator.of(context).pop();
           markers.remove(tempId);
-          pinned = false;
         },
       );
     }
@@ -923,10 +1053,24 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
         onPressed: () {
           Navigator.of(context)
               .push(MaterialPageRoute(builder: (context) => MapsOfProblems()));
-          pinInfo = InfoWindow(title: pintitle, snippet: pindesc.text);
+          setState(() {
+            tempDescDesc = pindesc.text;
+            tempImgDesc = image;
+          });
+
+          markers.remove(tempPoinf);
+          markers.add(
+            Marker(
+                icon: markerPin,
+                markerId: MarkerId(tempId),
+                position: tempPoinf,
+                onTap: () {
+                  descCardShow2(pintitle, tempDescDesc, context, tempImgDesc!);
+                }),
+          );
+
           pin();
           selected = false;
-          pinned = false;
         },
       );
     }
@@ -967,10 +1111,7 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                         height: 55,
                         width: MediaQuery.of(context).size.width * 0.74,
                         child: TextFormField(
-                          onSaved: (newValue) {
-                            pindesc.text = newValue!;
-                            problem.details!['desc'] = pindesc.text;
-                          },
+                          onSaved: (newValue) => pindesc.text = newValue!,
                           decoration: InputDecoration(
                               hintText: 'Мәселе сипаты/детальдер',
                               border: OutlineInputBorder(
@@ -995,7 +1136,6 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                                   child: IconButton(
                                       onPressed: () {
                                         showImageSource(context);
-                                        problem.details!['img'] = imageUrl;
                                       },
                                       icon: Icon(Icons.add_a_photo))),
                             )

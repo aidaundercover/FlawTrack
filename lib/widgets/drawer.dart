@@ -1,11 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flawtrack/services/auth_service.dart';
+import 'package:flawtrack/services/locale_provider.dart';
 import 'package:flawtrack/views/first_view.dart';
 import 'package:flawtrack/views/settings/settings_main.dart';
 import 'package:flutter/material.dart';
 import 'package:flawtrack/const.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
+import 'package:provider/provider.dart';
 
 class DrawerCustom extends StatefulWidget {
   @override
@@ -18,10 +20,26 @@ class _DrawerCustomState extends State<DrawerCustom> {
   @override
   void initState() {
     super.initState();
+    getCurrentUserData();
+  }
+
+  static FirebaseFirestore _db = FirebaseFirestore.instance;
+
+  Future getCurrentUserData() async {
+    DocumentSnapshot ds = await _db
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get();
+    setState(() {
+      nameGlobal = ds.get('name') ?? 'Loading';
+      volunteer = ds.get('volunteer') ?? 'Loading';
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<LocaleProvider>(context, listen: false);
+
     return Drawer(
       child: Container(
           color: Color.fromRGBO(245, 245, 245, 1.0),
@@ -79,7 +97,7 @@ class _DrawerCustomState extends State<DrawerCustom> {
                                             ),
                                             SizedBox(height: 15),
                                             Text(
-                                              "Aida Abkenova",
+                                              "$nameGlobal",
                                               style: TextStyle(
                                                 color: Colors.black,
                                                 fontFamily: 'Roboto',
@@ -150,7 +168,7 @@ class _DrawerCustomState extends State<DrawerCustom> {
                                     width: 23,
                                     height: 23),
                                 SizedBox(width: 15),
-                                Text('$points'+ ' ' + 'баллов',
+                                Text('$points' + ' ' + 'баллов',
                                     style: TextStyle(
                                         fontSize: 13,
                                         fontFamily: 'Roboto',
@@ -305,51 +323,75 @@ class _DrawerCustomState extends State<DrawerCustom> {
                   flex: 1,
                   child: Column(
                     children: [
-                      Row(
-                        children: [
-                          Flexible(
-                            child: TextButton(
-                              onPressed: () {}, 
-                            child: Container(
-                              child: Text('рус'),
-                              width: 40,
-                              height: 20,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(width: 2, color: primaryColor)
-                              )
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: Row(
+                          children: [
+                            Flexible(
+                              child: TextButton(
+                                onPressed: () {
+                                  setState(() {
+                                    lang = 0;
+                                    provider.setLocale(Locale('ru'));
+                                  });
+                                },
+                                child: Container(
+                                    child: Center(child: Text('рус')),
+                                    width: 45,
+                                    height: 25,
+                                    decoration: BoxDecoration(
+                                        color: lang == 0
+                                            ? primaryColor
+                                            : Colors.transparent,
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(
+                                            width: 2, color: primaryColor))),
+                              ),
                             ),
+                            Flexible(
+                              child: TextButton(
+                                onPressed: () {
+                                  setState(() {
+                                    lang = 1;
+                                    provider.setLocale(Locale('kk'));
+                                  });
+                                },
+                                child: Container(
+                                    child: Center(child: Text('қаз')),
+                                    width: 45,
+                                    height: 25,
+                                    decoration: BoxDecoration(
+                                        color: lang == 1
+                                            ? primaryColor
+                                            : Colors.transparent,
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(
+                                            width: 2, color: primaryColor))),
+                              ),
                             ),
-                          ),
-                          Flexible(
-                            child: TextButton(
-                              onPressed: () {}, 
-                            child: Container(
-                              child: Text('қаз'),
-                              width: 40,
-                              height: 20,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(width: 2, color: primaryColor)
-                              )
-                            ),
-                            ),
-                          ),
-                          Flexible(
-                            child: TextButton(
-                              onPressed: () {}, 
-                            child: Container(
-                              child: Text('eng'),
-                              width: 40,
-                              height: 20,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(width: 2, color: primaryColor)
-                              )
-                            ),
-                            ),
-                          )
-                        ],
+                            Flexible(
+                              child: TextButton(
+                                onPressed: () {
+                                  setState(() {
+                                    lang = 2;
+                                    provider.setLocale(Locale('en'));
+                                  });
+                                },
+                                child: Container(
+                                    child: Center(child: Text('eng')),
+                                    width: 45,
+                                    height: 25,
+                                    decoration: BoxDecoration(
+                                        color: lang == 2
+                                            ? primaryColor
+                                            : Colors.transparent,
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(
+                                            width: 2, color: primaryColor))),
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                       Row(children: [
                         SizedBox(width: 20),

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 const primaryColor = Color.fromRGBO(244, 146, 2, 1.0);
 const white = Color.fromRGBO(255, 255, 255, 1.0);
@@ -14,7 +15,7 @@ const divider = Color.fromRGBO(232, 232, 232, 1);
 const darkBlue = Color.fromRGBO(63, 61, 86, 1);
 
 var widthGlobal;
-String lang = "";
+late int lang;
 
 bool visibleV = false;
 
@@ -24,6 +25,8 @@ String email = "";
 late File imgProfile;
 
 var points = 0;
+var pins = 4;
+
 var name;
 
 String mapCity = "";
@@ -31,3 +34,4 @@ var addressGlobal;
 var cityGlobal = 'Павлодар';
 var lat = 52.2535496;
 var long = 76.940024;
+

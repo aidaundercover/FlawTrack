@@ -19,18 +19,12 @@ class ProfileView extends StatefulWidget {
 }
 
 class _ProfileViewState extends State<ProfileView> {
-  @override
-  void initState() {
-    getCurrentUserData();
-    super.initState();
-    
-  }
-
+ 
   static FirebaseFirestore _db = FirebaseFirestore.instance;
 
 
   Future getCurrentUserData() async {
-    try {
+    
       DocumentSnapshot ds = await _db
           .collection('users')
           .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -39,10 +33,14 @@ class _ProfileViewState extends State<ProfileView> {
         nameGlobal = ds.get('name')?? 'Loading';
         volunteer = ds.get('volunteer') ??'Loading';
       });
-      } catch (e) {
-      print(e.toString());
-      return SomethingWentWrong();
-    }
+      
+  }
+  
+  @override
+  void initState() {
+    getCurrentUserData();
+    super.initState();
+    
   }
 
   @override
@@ -102,7 +100,9 @@ class _ProfileViewState extends State<ProfileView> {
                             offset: Offset(0, 6), // changes position of shadow
                           ),
                         ]),
-                    child: ProfuleCard(
+                      
+                    child: 
+                    ProfuleCard(
                       name: nameGlobal,
                     ),
                   ),

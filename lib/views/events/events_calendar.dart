@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flawtrack/models/Event.dart';
+import 'package:flawtrack/widgets/events/aitmatova.dart';
 import 'package:flawtrack/widgets/events/city_events.dart';
 import 'package:flutter/material.dart';
 import '../../const.dart';
@@ -75,7 +76,11 @@ class _EventsCalendarState extends State<EventsCalendar> {
                     padding: const EdgeInsets.only(left: 5, bottom: 15),
                     child: Text('Бүгінге жоспарланған:', style: TextStyle(color: darkBlue, fontWeight: FontWeight.bold, fontSize: 23)),
                   ),
-                  eventTile(context, 'Субботник на Айтаматова', 'assets/events/broom.png', 'у памятника Абая в 17:00', Color.fromRGBO(255, 162, 141, 1.0), _width),
+                  GestureDetector(
+                    onTap:() {
+                    aitmatova(context, _width);
+                    },
+                    child: eventTile(context, 'Субботник на Айтаматова', 'assets/events/broom.png', 'у памятника Абая в 17:00', Color.fromRGBO(255, 162, 141, 1.0), _width)),
                   eventTile(context, 'Велосипедный марафон', 'assets/events/bike.png', 'Парк Гагарина,у ворот в 9:00', Color.fromRGBO(113, 204, 255, 1.0), _width),
                   eventTile(context, 'Вебинар по переработке мусора', 'assets/events/woman.png', 'в Zoom в 21:00', Color.fromRGBO(185, 141, 255, 1.0), _width)
                   
