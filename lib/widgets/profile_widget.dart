@@ -55,7 +55,7 @@ class _ProfuleCardState extends State<ProfuleCard> {
       setState(() {
         this.image = temporaryImage;
       });
-    } on PlatformException catch (e) {
+    } on PlatformException {
       Fluttertoast.showToast(msg: 'Access to camera was denied');
     }
   }

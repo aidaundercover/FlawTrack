@@ -188,12 +188,13 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       onChanged: (Locale? newValue) {
         setState(() {
           locale = newValue!;
+          
         });
       },
       items: L10n.all.map(
           (locale) {
             final flag = L10n.getFlag(locale.languageCode);
-
+                
             return DropdownMenuItem(
                 child: Text(
                   flag,

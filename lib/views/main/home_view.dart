@@ -32,71 +32,79 @@ class _HomeViewState extends State<HomeView> {
 
     var width = MediaQuery.of(context).size.width * 0.88;
 
-    return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 60,
-        flexibleSpace: Container(
-            decoration: BoxDecoration(
-          gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.topRight,
-              colors: [
-                Color.fromRGBO(255, 152, 0, 1),
-                Color.fromRGBO(255, 206, 49, 1),
-                Color.fromRGBO(255, 248, 226, 1)
-              ]),
-        )),
-        title: Text("FlawTrack",
-            style: TextStyle(
-                fontSize: 25.0,
-                color: Colors.black,
-                fontWeight: FontWeight.bold)),
-        centerTitle: true,
-        leading: Builder(
-          builder: (context) => IconButton(
-              icon: Icon(Icons.menu_rounded, size: 27, color: Colors.black),
-              onPressed: () => Scaffold.of(context).openDrawer()),
+    return RefreshIndicator(
+      onRefresh: _pullRefresh,
+      child: Scaffold(
+        appBar: AppBar(
+          toolbarHeight: 60,
+          flexibleSpace: Container(
+              decoration: BoxDecoration(
+            gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.topRight,
+                colors: [
+                  Color.fromRGBO(255, 152, 0, 1),
+                  Color.fromRGBO(255, 206, 49, 1),
+                  Color.fromRGBO(255, 248, 226, 1)
+                ]),
+          )),
+          title: Text("FlawTrack",
+              style: TextStyle(
+                  fontSize: 25.0,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold)),
+          centerTitle: true,
+          leading: Builder(
+            builder: (context) => IconButton(
+                icon: Icon(Icons.menu_rounded, size: 27, color: Colors.black),
+                onPressed: () => Scaffold.of(context).openDrawer()),
+          ),
+          actions: [
+            IconButton(
+                icon: Icon(Icons.search, size: 27, color: Colors.black),
+                onPressed: () {}),
+          ],
         ),
-        actions: [
-          IconButton(
-              icon: Icon(Icons.search, size: 27, color: Colors.black),
-              onPressed: () {}),
-        ],
-      ),
-      drawer: DrawerCustom(),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              locationView(width / 0.88),
-              NewsTile(),
-              Text(
-                AppLocalizations.of(context).mainpage,
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              eventsWidget(context, width),
-              Container(
-                width: width,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(children: [
-                      volunteer ? createEventWidget(context, width * 0.4768) : usingAdvice(context, width * 0.4768),
-                      becomeVolunteer(context, width * 0.4768)
-                    ]),
-                    fund(context, width * 0.4768)
-                  ],
+        drawer: DrawerCustom(),
+        body: SingleChildScrollView(
+          child: Center(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                locationView(width / 0.88),
+                NewsTile(),
+                Text(
+                  AppLocalizations.of(context).mainpage,
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
-              ),
-              weather(width),
-              SizedBox(
-                height: 50,
-              )
-            ],
+                eventsWidget(context, width),
+                Container(
+                  width: width,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(children: [
+                        volunteer ? createEventWidget(context, width * 0.4768) : usingAdvice(context, width * 0.4768),
+                        becomeVolunteer(context, width * 0.4768)
+                      ]),
+                      fund(context, width * 0.4768)
+                    ],
+                  ),
+                ),
+                weather(width),
+                SizedBox(
+                  height: 50,
+                )
+              ],
+            ),
           ),
         ),
       ),
     );
+  }
+
+  Future<void> _pullRefresh() async {
+    setState(() {
+    });
   }
 }

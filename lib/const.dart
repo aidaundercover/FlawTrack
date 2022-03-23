@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 const primaryColor = Color.fromRGBO(244, 146, 2, 1.0);
 const white = Color.fromRGBO(255, 255, 255, 1.0);

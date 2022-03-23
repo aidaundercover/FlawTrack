@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flawtrack/const.dart';
+import 'package:flawtrack/services/theme_provider.dart';
 import 'package:flawtrack/services/custom_colors.dart';
 import 'package:flawtrack/splash.dart';
 import 'package:flawtrack/views/error/smth_went_wrong.dart';
@@ -23,7 +24,7 @@ import 'package:provider/provider.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  FlutterError.onError= (FlutterErrorDetails details) {
+  FlutterError.onError = (FlutterErrorDetails details) {
     FlutterError.dumpErrorToConsole(details);
     if (kReleaseMode) exit(1);
   };
@@ -81,9 +82,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         lat = position.latitude;
         long = position.longitude;
 
-        cityGlobal = translate(currentLocality);
-        addressGlobal = translate(currentLocality) + ', Казахстан';
-        
+        cityGlobal = translateRus(currentLocality);
+        addressGlobal = translateRus(currentLocality) + ', Казахстан';
       });
     } catch (e) {
       print(e);
@@ -123,19 +123,28 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                 return ProviderMain(
                   auth: AuthService(),
                   db: FirebaseFirestore.instance,
-                  child: MaterialApp(
-                    locale: provider.locale,
-                    debugShowCheckedModeBanner: false,
-                    home: AuthService().handleAuth(),
-                    routes: AppRoutes.define(),
-                    supportedLocales: L10n.all,
-                    localizationsDelegates: [
-                      AppLocalizations.delegate,
-                      GlobalMaterialLocalizations.delegate,
-                      GlobalCupertinoLocalizations.delegate,
-                      GlobalWidgetsLocalizations.delegate,
-                    ],
-                  ),
+                  child: ChangeNotifierProvider(
+                      create: (_) => ThemeProvider(),
+                      builder: (context, _) {
+                        final themeProvider = Provider.of<ThemeProvider>(context);
+
+                        return MaterialApp(
+                          locale: provider.locale,
+                          themeMode: themeProvider.themeMode,
+                          theme: MyThemes.light,
+                          darkTheme: MyThemes.dark,
+                          debugShowCheckedModeBanner: false,
+                          home: AuthService().handleAuth(),
+                          routes: AppRoutes.define(),
+                          supportedLocales: L10n.all,
+                          localizationsDelegates: [
+                            AppLocalizations.delegate,
+                            GlobalMaterialLocalizations.delegate,
+                            GlobalCupertinoLocalizations.delegate,
+                            GlobalWidgetsLocalizations.delegate,
+                          ],
+                        );
+                      }),
                 );
               }
 
@@ -145,7 +154,31 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       });
 }
 
-String translate(String code) {
+String translateRus(String code) {
+  print(code);
+  switch (code) {
+    case 'Nur-Sultan':
+      return 'Нур-Султан';
+    case 'Astana':
+      return 'Нур-Султан';
+    case 'Pavlodar':
+      return 'Павлодар';
+    case 'Aktau':
+      return 'Актау';
+    case 'Shymkent':
+      return 'Шымкент';
+    case 'Almaty':
+      return 'Алматы';
+    case 'Aktau':
+      return 'Актау';
+    case 'Aktau':
+      return 'Актау';
+    default:
+      return 'Павлодар';
+  }
+}
+
+String translateKaz(String code) {
   print(code);
   switch (code) {
     case 'Nur-Sultan':

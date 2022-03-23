@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flawtrack/views/auth/linknosent.dart';
 import 'package:flutter/material.dart';
 import 'package:flawtrack/routes.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -21,7 +22,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
     user = auth.currentUser;
     auth.currentUser!.sendEmailVerification();
 
-    timer = Timer.periodic(Duration(seconds: 50), (timer) {
+    timer = Timer.periodic(Duration(minutes: 5), (timer) {
       checkEmailVerified();
     });
     super.initState();
@@ -53,15 +54,27 @@ class _VerifyScreenState extends State<VerifyScreen> {
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 20),
-                TextButton(onPressed: () {}, child: Text(AppLocalizations.of(context).changeemail,)),
+                TextButton(
+                    onPressed: () {},
+                    child: Text(
+                      AppLocalizations.of(context).changeemail,
+                    )),
                 SizedBox(height: 10),
-                TextButton(onPressed: () {}, child: Text(AppLocalizations.of(context).resendlink)),
+                TextButton(
+                    onPressed: () {},
+                    child: Text(AppLocalizations.of(context).resendlink)),
                 SizedBox(height: 20),
-                InkWell(onTap: () {}, child: 
-                Text(
-                  AppLocalizations.of(context).linkwasnsent
-                  )
-                )
+                InkWell(
+                    onTap: () {
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (cotext) => LinkNoSent()));
+                    },
+                    child: Text(
+                      AppLocalizations.of(context).linkwasnsent,
+                      style: TextStyle(
+                          decoration: TextDecoration.underline,
+                          fontWeight: FontWeight.bold),
+                    ))
               ],
             )),
       ),
@@ -76,7 +89,6 @@ class _VerifyScreenState extends State<VerifyScreen> {
       Navigator.pushReplacementNamed(context, AppRoutes.homeVolunteer);
     } else {
       user!.delete();
-      
     }
   }
 }

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flawtrack/const.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -17,7 +15,6 @@ late BitmapDescriptor mapMarker5;
 late BitmapDescriptor mapMarker6;
 late BitmapDescriptor mapMarker7;
 late BitmapDescriptor fixedMarker;
-
 
 Set<Marker> markers = {};
 late String tempId;
@@ -42,6 +39,54 @@ List<String> iconList = [
   'assets/pins/drown.png'
 ];
 
+void panelControl(int index, BitmapDescriptor markerPin, String pintitle,
+    BuildContext context) {
+  switch (index) {
+    case 1:
+      {
+        markerPin = mapMarker6;
+        pintitle = AppLocalizations.of(context).cat;
+        print('1');
+      }
+      break;
+    case 2:
+      {
+        markerPin = mapMarker1;
+        pintitle = AppLocalizations.of(context).road;
+        print('2');
+      }
+      break;
+    case 3:
+      {
+        markerPin = mapMarker4;
+        pintitle = AppLocalizations.of(context).dog;
+        print('3');
+      }
+      break;
+    case 4:
+      {
+        markerPin = mapMarker5;
+        pintitle = AppLocalizations.of(context).trash;
+        print('4');
+      }
+      break;
+    case 5:
+      {
+        markerPin = mapMarker3;
+        pintitle = AppLocalizations.of(context).drown;
+        print('5');
+      }
+      break;
+    case 0:
+      {
+        markerPin = mapMarker2;
+        pintitle = AppLocalizations.of(context).trashcan;
+        print('0');
+      }
+      break;
+  }
+}
+
 void setCustomMaker() async {
   mapMarker1 = await BitmapDescriptor.fromAssetImage(
       ImageConfiguration(size: Size(50, 50)), 'assets/pins/road.png');
@@ -50,8 +95,7 @@ void setCustomMaker() async {
   mapMarker3 = await BitmapDescriptor.fromAssetImage(
       ImageConfiguration(size: Size(50, 50)), 'assets/pins/drown.png');
   mapMarker4 = await BitmapDescriptor.fromAssetImage(
-      ImageConfiguration(size: Size(50, 50)), 
-      'assets/pins/dog.png');
+      ImageConfiguration(size: Size(50, 50)), 'assets/pins/dog.png');
   mapMarker5 = await BitmapDescriptor.fromAssetImage(
       ImageConfiguration(size: Size(50, 50)), 'assets/pins/trash.png');
   mapMarker6 = await BitmapDescriptor.fromAssetImage(
@@ -61,7 +105,8 @@ void setCustomMaker() async {
 }
 
 void setFixedMarker() async {
-  fixedMarker = await BitmapDescriptor.fromAssetImage( ImageConfiguration(size: Size(50, 50)),'assets/pins/fixed.png');
+  fixedMarker = await BitmapDescriptor.fromAssetImage(
+      ImageConfiguration(size: Size(50, 50)), 'assets/pins/fixed.png');
 }
 
 mapMarker(int n) {
@@ -124,7 +169,7 @@ markerType(int n, BuildContext context) {
   }
 }
 
-timeExpired(double width, void func, BuildContext context) {
+  Future timeExpired(double width, void func, BuildContext context) async {
   showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -168,60 +213,8 @@ timeExpired(double width, void func, BuildContext context) {
       });
 }
 
-void descCardShow(String title, String desc, BuildContext context, String file) {
-  showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          child: Container(
-            width: widthGlobal * 0.8,
-            height: 400,
-            child: Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      IconButton(
-                          onPressed: () {
-                            Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                    builder: (context) => MapsOfProblems()));
-                          },
-                          icon: Icon(Icons.close, color: grey))
-                    ],
-                  ),
-                  Text(title,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                      )),
-                  SizedBox(height: 10),
-                  Container(
-                    width: widthGlobal * 0.7,
-                    child: Text(desc,
-                        style: TextStyle(
-                          fontSize: 15,
-                        )),
-                  ),
-                  SizedBox(height: 10),
-                  Image.asset(
-                    file,
-                    width: widthGlobal * 0.7,
-                    height: 210,
-                    fit: BoxFit.cover)
-                  // Container(child: Image.file(img) ??),
-                ],
-              ),
-            ),
-          ),
-        );
-      });
-}
+  Future descCardShow(String title, String desc, BuildContext context, List file) async {
 
-void descCardShow2(String title, String desc, BuildContext context, File url) {
   showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -260,11 +253,15 @@ void descCardShow2(String title, String desc, BuildContext context, File url) {
                         )),
                   ),
                   SizedBox(height: 10),
-                  Image.file(
-                    url,
-                    width: widthGlobal * 0.7,
-                    height: 210,
-                    fit: BoxFit.cover)
+                  ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Image.network(file[index],
+                          width: widthGlobal * 0.7,
+                          height: 210,
+                          fit: BoxFit.cover);
+                    },
+                  )
                   // Container(child: Image.file(img) ??),
                 ],
               ),
