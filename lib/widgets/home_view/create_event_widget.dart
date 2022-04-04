@@ -1,4 +1,4 @@
-import 'package:flawtrack/views/events/create_event.dart';
+import 'package:flawtrack/views/app/events/create_event.dart';
 import 'package:flutter/material.dart';
 
 import '../../const.dart';

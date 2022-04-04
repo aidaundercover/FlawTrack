@@ -1,31 +1,64 @@
 import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flawtrack/const.dart';
 import 'package:flutter/material.dart';
 
-// ignore: must_be_immutable
-
-bool selected=false; 
+import '../../models/Event.dart';
 
 class DayBlock extends StatefulWidget {
-
   DayBlock({
     Key? key,
     required this.add,
   }) : super(key: key);
-  int add;
-  
+  final int add;
 
   @override
   State<DayBlock> createState() => _DayBlockState();
 }
 
+List<Map> isSelected = [
+  {"selected": false, "add": -1},
+  {"selected": false, "add": -2},
+  {"selected": false, "add": 0},
+  {"selected": true, "add": 1},
+  {"selected": false, "add": 2},
+  {"selected": false, "add": 3},
+  {"selected": false, "add": 4},
+  {"selected": false, "add": 5},
+];
+
+var db = FirebaseFirestore.instance.collection('events');
+
+bool selected = false;
+
+Future retrieveEvents(DateTime date) async {
+  await db.get().then((QuerySnapshot querySnapshot) {
+    querySnapshot.docs.forEach((doc) async {
+      doc['${date.year}/${date.month}/${date.day}'].forEach((doc) {
+        events.add(doc as Event);
+      });
+    });
+  });
+}
+
 class _DayBlockState extends State<DayBlock> {
   void select() {
     setState(() {
-      selected = true;     
+      selected = true;
     });
   }
 
+  void changeCity() {
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    select();
+    changeCity();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +89,8 @@ class _DayBlockState extends State<DayBlock> {
         ),
         GestureDetector(
           onTap: () {
-              select();
+            retrieveEvents(DateTime.now().add(Duration(days: widget.add)));
+            select();
           },
           child: Container(
             width: 55,
@@ -74,8 +108,7 @@ class _DayBlockState extends State<DayBlock> {
               children: [
                 Text(
                     dateFormatter(
-                            DateTime.now().add(Duration(days: widget.add)))
-                        .toString(),
+                        DateTime.now().add(Duration(days: widget.add))),
                     style: styleDay),
                 SizedBox(
                   height: 11,
@@ -94,7 +127,7 @@ class _DayBlockState extends State<DayBlock> {
 }
 
 class HorizontalLizt extends StatefulWidget {
-  const HorizontalLizt({ Key? key }) : super(key: key);
+  const HorizontalLizt({Key? key}) : super(key: key);
 
   @override
   State<HorizontalLizt> createState() => _HorizontalLiztState();
@@ -103,31 +136,27 @@ class HorizontalLizt extends StatefulWidget {
 class _HorizontalLiztState extends State<HorizontalLizt> {
   @override
   Widget build(BuildContext context) {
-    return  Container(
-    height: 78,
-    child: ListView(
-      scrollDirection: Axis.horizontal,
-      children: <Widget>[
-        SizedBox(
-          width: 7,
-        ),
-        DayBlock(
-          add: -2,
-        ),
-        DayBlock(add: -1),
-        DayBlock(add: 0),
-        DayBlock(add: 1),
-        DayBlock(add: 2),
-        DayBlock(add: 3),
-        DayBlock(add: 4),
-        DayBlock(add: 5),
-        SizedBox(
-          width: 7,
-        ),
-      ],
-    ),
-  );
+    return Container(
+      height: 78,
+      child: ListView(
+          children: List.generate(isSelected.length, (index) {
+        return InkWell(
+          onTap: () {
+            setState(() {
+              for (int indexBtn = 0; indexBtn < isSelected.length; indexBtn++) {
+                if (indexBtn == index) {
+                  selected = isSelected[indexBtn]["selected"] =
+                      !isSelected[indexBtn]["selected"];
+                  isSelected[2]["selected"] = false;
+                } else {
+                  isSelected[indexBtn]["selected"] = false;
+                }
+              }
+            });
+          },
+          child: DayBlock(add: isSelected[index]["add"]),
+        );
+      })),
+    );
   }
 }
-
-

@@ -1,4 +1,4 @@
-import 'package:flawtrack/views/events/events_calendar.dart';
+import 'package:flawtrack/views/app/events/events_calendar.dart';
 import 'package:flutter/material.dart';
 
 import '../../const.dart';

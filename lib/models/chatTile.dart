@@ -1,5 +1,5 @@
 import 'package:flawtrack/const.dart';
-import 'package:flawtrack/views/chat/kenesary.dart';
+import 'package:flawtrack/views/app/chat/kenesary.dart';
 import 'package:flutter/material.dart';
 
 class ConversationList extends StatefulWidget{

@@ -1,21 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flawtrack/services/google_controller.dart';
 import 'package:flawtrack/views/auth/verify_email.dart';
-import 'package:flawtrack/views/terms_of_policy.dart';
+import 'package:flawtrack/views/intro/terms_of_policy.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 import '../../const.dart';
 import '../../routes.dart';
 import 'package:email_validator/email_validator.dart';
-
-
 
 late TextEditingController _nameController;
 late TextEditingController _emailController;
 late TextEditingController _passwordController;
 late TextEditingController _passwordCheckController;
 String? dropdownValue;
+
+GoogleSignInController googleSignInController = GoogleSignInController();
 
 class SignUp extends StatefulWidget {
   const SignUp({Key? key}) : super(key: key);
@@ -364,8 +366,7 @@ class _SignUpState extends State<SignUp> {
                         builder: (context) => VerifyScreen()));
                   });
                 } catch (e) {
-                  Fluttertoast.showToast(
-                      msg: 'Not every form was filled');
+                  Fluttertoast.showToast(msg: 'Not every form was filled');
                 }
               }
             },
@@ -393,17 +394,30 @@ class _SignUpState extends State<SignUp> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               OutlinedButton(
-                child: Image(
-                  image: AssetImage('assets/social/google_or.png'),
-                  width: 30,
-                ),
-                style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: primaryColor, width: 1),
-                  shape: CircleBorder(),
-                  padding: EdgeInsets.all(22),
-                ),
-                onPressed: () {},
-              ),
+                  child: Image(
+                    image: AssetImage('assets/social/google_or.png'),
+                    width: 30,
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(color: primaryColor, width: 1),
+                    shape: CircleBorder(),
+                    padding: EdgeInsets.all(22),
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      googleSignInController =
+                          Provider.of<GoogleSignInController>(context,
+                                  listen: false)
+                              .login();
+                      nameGlobal = googleSignInController
+                          .googleSignInAccount!.displayName!;
+                      email = googleSignInController.googleSignInAccount!.email;
+                      photoUrlGlobal =
+                          googleSignInController.googleSignInAccount!.photoUrl!;
+                      uid = googleSignInController.googleSignInAccount!.id;
+                      loginType = "google";
+                    });
+                  }),
               OutlinedButton(
                 child: Image(
                   image: AssetImage('assets/social/apple_or.png'),

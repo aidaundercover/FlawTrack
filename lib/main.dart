@@ -82,8 +82,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         lat = position.latitude;
         long = position.longitude;
 
-        cityGlobal = translateRus(currentLocality);
-        addressGlobal = translateRus(currentLocality) + ', Казахстан';
+        cityGlobal = translateRus(currentLocality,context);
+        addressGlobal = translateRus(currentLocality,context) + ', Казахстан';
       });
     } catch (e) {
       print(e);
@@ -154,14 +154,16 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       });
 }
 
-String translateRus(String code) {
+String translateRus(String code, BuildContext context) {
   print(code);
   switch (code) {
     case 'Nur-Sultan':
-      return 'Нур-Султан';
+      refEventCity = "nur-sultan";
+      return AppLocalizations.of(context).nursultan;
     case 'Astana':
       return 'Нур-Султан';
     case 'Pavlodar':
+      refEventCity = "pavlodar";
       return 'Павлодар';
     case 'Aktau':
       return 'Актау';

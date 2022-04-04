@@ -1,4 +1,4 @@
-import 'package:flawtrack/views/rules.dart';
+import 'package:flawtrack/views/intro/rules.dart';
 import 'package:flutter/material.dart';
 
 import '../../const.dart';

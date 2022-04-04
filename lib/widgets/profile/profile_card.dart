@@ -3,12 +3,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flawtrack/views/profile/activity.dart';
+import 'package:flawtrack/views/settings/settings_main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../const.dart';
+import '../../const.dart';
 
 class ProfuleCard extends StatefulWidget {
   final String name;
@@ -19,56 +20,41 @@ class ProfuleCard extends StatefulWidget {
 }
 
 class _ProfuleCardState extends State<ProfuleCard> {
-  File? image;
   String? imageUrl;
-  Future<String> profImg = FirebaseStorage.instance
-      .ref()
-      .child('user/${FirebaseAuth.instance.currentUser!.uid}')
-      .getDownloadURL();
 
   final _storage = FirebaseStorage.instance;
 
   Future pickImage(ImageSource source) async {
+
     try {
       final image = await ImagePicker().pickImage(source: source);
-      if (image == null) return;
 
-      final temporaryImage = File(image.path);
-
-      final _storage = FirebaseStorage.instance;
-
-      var snapshot = await _storage
+      await _storage
           .ref()
-          .child('users/${FirebaseAuth.instance.currentUser!.uid}')
-          .putFile(temporaryImage);
+          .child('user_profiles/${FirebaseAuth.instance.currentUser!.uid}')
+          .putFile(File(image!.path));
 
-      var downloadUrl = await snapshot.ref.getDownloadURL();
+      
+      imageUrl = await  _storage
+          .ref()
+          .child('user_profiles/${FirebaseAuth.instance.currentUser!.uid}').getDownloadURL();
 
-      FirebaseFirestore.instance
+      await FirebaseFirestore.instance
           .collection('users')
           .doc(FirebaseAuth.instance.currentUser!.uid)
-          .set({'profileImg': downloadUrl});
-      setState(() {
-        imageUrl = downloadUrl;
-      });
+          .update({'profileImg': imageUrl});
 
-      setState(() {
-        this.image = temporaryImage;
-      });
     } on PlatformException {
       Fluttertoast.showToast(msg: 'Access to camera was denied');
     }
   }
 
   Future<void> downloadURLExample() async {
-    String downloadURL = await _storage
-        .ref('users/${FirebaseAuth.instance.currentUser!.uid}.jpeg')
-        .getDownloadURL();
-
-    imageUrl = downloadURL;
-
-    // Within your widgets:
-    // Image.network(downloadURL);
+    DocumentSnapshot ds = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get();
+    imageUrl = ds.get('profileImg');
   }
 
   Future<ImageSource?> showImageSource(BuildContext context) async {
@@ -94,6 +80,7 @@ class _ProfuleCardState extends State<ProfuleCard> {
   @override
   void initState() {
     super.initState();
+    downloadURLExample();
   }
 
   Widget build(BuildContext context) {
@@ -106,36 +93,61 @@ class _ProfuleCardState extends State<ProfuleCard> {
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Stack(children: [
-                image != null
-                    ? Image.file(
-                        image!,
-                        width: width * 0.28,
-                        height: width * 0.28,
-                        fit: BoxFit.cover,
-                      )
-                    : Positioned(
-                        child: Container(
-                            height: width * 0.28,
+              child: StreamBuilder(
+                  stream: FirebaseFirestore.instance
+                      .collection('users')
+                      .doc(FirebaseAuth.instance.currentUser!.uid)
+                      .snapshots(),
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    if (snapshot.hasData) {
+                      imageUrl = snapshot.data['profileImg'];
+                      return Stack(children: [
+                        Positioned(
+                          child: Container(
                             width: width * 0.28,
-                            decoration: BoxDecoration(
-                              color: Color.fromRGBO(196, 196, 196, 1),
-                              borderRadius: BorderRadius.circular(15),
+                            height: width * 0.28,
+                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(30)),
+                            child: Image.network(
+                              imageUrl!,
+                              width: width * 0.28,
+                              height: width * 0.28,
+                              fit: BoxFit.cover,
                             ),
-                            child: Icon(Icons.person,
-                                size: width * 0.22,
-                                color: Color.fromRGBO(255, 235, 164, 1))),
-                      ),
-                Positioned(
-                    right: 4,
-                    bottom: 4,
-                    child: IconButton(
-                        onPressed: () {
-                          showImageSource(context);
-                        },
-                        icon: Icon(Icons.add_a_photo,
-                            size: 30, color: Colors.orange[700])))
-              ]),
+                          ),
+                        ),
+                        Positioned(
+                          top: 70,
+                          left: 70,
+                          child: IconButton(
+                              onPressed: () {
+                                showImageSource(context);
+                              },
+                              icon: Icon(Icons.add_a_photo)),
+                        )
+                      ]);
+                    } else
+                      return Stack(children: [
+                        Positioned(
+                          child: Container(
+                              height: width * 0.28,
+                              width: width * 0.28,
+                              decoration: BoxDecoration(
+                                color: Color.fromRGBO(196, 196, 196, 1),
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              child: Icon(Icons.person,
+                                  size: width * 0.22,
+                                  color: Color.fromRGBO(255, 235, 164, 1))),
+                        ),
+                        Positioned(
+                          child: IconButton(
+                              onPressed: () {
+                                showImageSource(context);
+                              },
+                              icon: Icon(Icons.add_a_photo)),
+                        )
+                      ]);
+                  }),
             ),
             Expanded(
               child: Column(
@@ -164,55 +176,61 @@ class _ProfuleCardState extends State<ProfuleCard> {
                     ],
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 10.0),
+                    padding: const EdgeInsets.only(top: 10.0, right: 3),
                     child: Container(
-                      width: width * 0.25,
+                      width: width * 0.23,
                       height: 50,
                       decoration: BoxDecoration(
                         color: Color.fromRGBO(231, 231, 231, 1),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'Пинов',
-                                style: TextStyle(
-                                    color: Color.fromRGBO(154, 154, 154, 1),
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 10),
-                              ),
-                              Text(
-                                '$pins',
-                                style: TextStyle(
-                                    color: black,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 20),
-                              )
-                            ],
+                          Flexible(
+                            flex: 1,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Пинов',
+                                  style: TextStyle(
+                                      color: Color.fromRGBO(154, 154, 154, 1),
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 10),
+                                ),
+                                Text(
+                                  '$pins',
+                                  style: TextStyle(
+                                      color: black,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 20),
+                                )
+                              ],
+                            ),
                           ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'Баллов',
-                                style: TextStyle(
-                                    color: Color.fromRGBO(154, 154, 154, 1),
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 10),
-                              ),
-                              Text(
-                                '$points',
-                                style: TextStyle(
-                                    color: black,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 20),
-                              )
-                            ],
+                          Flexible(
+                            flex: 1,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Баллов',
+                                  style: TextStyle(
+                                      color: Color.fromRGBO(154, 154, 154, 1),
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 10),
+                                ),
+                                Text(
+                                  '$points',
+                                  style: TextStyle(
+                                      color: black,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 20),
+                                )
+                              ],
+                            ),
                           ),
                         ],
                       ),
@@ -253,7 +271,12 @@ class _ProfuleCardState extends State<ProfuleCard> {
                 ),
               ),
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SettingsMainPage()));
+                },
                 style: ButtonStyle(
                     backgroundColor:
                         MaterialStateProperty.all<Color>(primaryColor),

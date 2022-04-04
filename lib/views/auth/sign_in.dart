@@ -1,8 +1,10 @@
 import 'package:flawtrack/services/auth_service.dart';
+import 'package:flawtrack/services/google_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:provider/provider.dart';
 import '../../const.dart';
 import '../../routes.dart';
 
@@ -14,6 +16,8 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   bool _obscureText = true;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  GoogleSignInController googleSignInController = GoogleSignInController();
 
   void _toggle() {
     setState(() {
@@ -100,10 +104,10 @@ class _LoginPageState extends State<LoginPage> {
                                       _emailController.text = input!,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
-                                      return  AppLocalizations.of(context).warn1;
+                                      return AppLocalizations.of(context).warn1;
                                     }
                                     if (!EmailValidator.validate(value)) {
-                                      return  AppLocalizations.of(context).warn2;
+                                      return AppLocalizations.of(context).warn2;
                                     }
                                     return null;
                                   },
@@ -141,7 +145,7 @@ class _LoginPageState extends State<LoginPage> {
                                   ),
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
-                                      return  AppLocalizations.of(context).warn1;
+                                      return AppLocalizations.of(context).warn1;
                                     }
                                     return null;
                                   },
@@ -251,7 +255,23 @@ class _LoginPageState extends State<LoginPage> {
                       shape: CircleBorder(),
                       padding: EdgeInsets.all(15),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      setState(() {
+                        googleSignInController =
+                            Provider.of<GoogleSignInController>(context,
+                                    listen: false)
+                                .login();
+                        nameGlobal = googleSignInController
+                            .googleSignInAccount!.displayName!;
+                        email = googleSignInController
+                            .googleSignInAccount!.email;
+                        photoUrlGlobal = googleSignInController
+                            .googleSignInAccount!.photoUrl!;
+                        uid = googleSignInController
+                            .googleSignInAccount!.id;
+                        loginType = "google";
+                      });
+                    },
                   ),
                   OutlinedButton(
                     child: Image(

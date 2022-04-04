@@ -36,9 +36,11 @@ class _HomeViewState extends State<HomeView> {
       onRefresh: _pullRefresh,
       child: Scaffold(
         appBar: AppBar(
-          toolbarHeight: 60,
+          backgroundColor: Colors.transparent,
+          toolbarHeight: 70,
           flexibleSpace: Container(
               decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(bottomLeft: Radius.circular(17), bottomRight: Radius.circular(17)),
             gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.topRight,
@@ -50,6 +52,7 @@ class _HomeViewState extends State<HomeView> {
           )),
           title: Text("FlawTrack",
               style: TextStyle(
+                  fontFamily: 'Intel',
                   fontSize: 25.0,
                   color: Colors.black,
                   fontWeight: FontWeight.bold)),

@@ -5,7 +5,7 @@ import 'package:flawtrack/services/auth_service.dart';
 import 'package:flawtrack/services/locale_provider.dart';
 import 'package:flawtrack/views/first_view.dart';
 import 'package:flawtrack/views/settings/settings_main.dart';
-import 'package:flawtrack/widgets/change_theme_switcher.dart';
+import 'package:flawtrack/widgets/home_view/change_theme_switcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flawtrack/const.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';

@@ -32,11 +32,39 @@ class _NewsTileState extends State<NewsTile> {
             'https://tengrinews.kz/kazakhstan_news/44-cheloveka-zaboleli-koronavirusom-za-sutki-v-kazahstane-464514/')
   ];
 
+  int i = 1;
+  void increament() {
+    setState(() {
+      if (newsList.length> i && i >0) {
+        i++;
+      
+      } else if(i==0) i--;
+      else i--;
+      print('$i');
+    });
+  }
+
+  void decreament() {
+    setState(() {
+      if (newsList.length> i && i > 0) {
+        i--;
+      }else if(i==0) i++;
+      else i++;
+
+      print('$i');
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    increament();
+    decreament();
+  }
+
   @override
   Widget build(BuildContext context) {
-    int i = 1;
-
-
     return Padding(
       padding: const EdgeInsets.only(bottom: 27.0),
       child: Container(
@@ -47,9 +75,7 @@ class _NewsTileState extends State<NewsTile> {
                 flex: 1,
                 child: GestureDetector(
                   onTap: () {
-                    setState(() {
-                      i--;
-                    });
+                    increament();
                   },
                   child: Container(
                       height: 184,
@@ -95,8 +121,8 @@ class _NewsTileState extends State<NewsTile> {
                                     GestureDetector(
                                       onTap: () async {
                                         await canLaunch(newsList[i].link)
-                                          ? await launch(newsList[i].link)
-                                        : throw 'Could not launch ${newsList[i].link}';
+                                            ? await launch(newsList[i].link)
+                                            : throw 'Could not launch ${newsList[i].link}';
                                       },
                                       child: Icon(
                                         Icons.language,
@@ -155,9 +181,7 @@ class _NewsTileState extends State<NewsTile> {
                 flex: 1,
                 child: GestureDetector(
                   onTap: () {
-                    setState(() {
-                      i++;
-                    });
+                    decreament();
                   },
                   child: Container(
                       height: 184,
@@ -167,7 +191,7 @@ class _NewsTileState extends State<NewsTile> {
                       child: Icon(
                         Icons.arrow_forward_ios_outlined,
                         size: 30,
-                        color: Color.fromRGBO(98, 98, 98, 1),
+                        color: Color.fromARGB(255, 185, 134, 134),
                       )),
                 )),
           ],

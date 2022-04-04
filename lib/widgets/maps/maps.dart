@@ -18,6 +18,7 @@ late BitmapDescriptor fixedMarker;
 
 Set<Marker> markers = {};
 late String tempId;
+late Marker marker;
 late String problemTile;
 
 Future<Uint8List> getBytesFromAsset(String path, int width) async {
@@ -169,7 +170,7 @@ markerType(int n, BuildContext context) {
   }
 }
 
-  Future timeExpired(double width, void func, BuildContext context) async {
+ Future timeExpired(double width, void func, BuildContext context) async{
   showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -196,7 +197,7 @@ markerType(int n, BuildContext context) {
                           ),
                           TextButton(
                             onPressed: () {
-                              markers.remove(tempId);
+                              markers.remove(marker);
                               Navigator.of(context).pop();
                             },
                             child: Text('OK'),
@@ -213,7 +214,7 @@ markerType(int n, BuildContext context) {
       });
 }
 
-  Future descCardShow(String title, String desc, BuildContext context, List file) async {
+descCardShow(String title, String desc, BuildContext context, List file) {
 
   showDialog(
       context: context,

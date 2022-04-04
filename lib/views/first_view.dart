@@ -3,7 +3,7 @@ import 'package:flawtrack/const.dart';
 import 'package:flawtrack/l10n/l10n.dart';
 import 'package:flawtrack/routes.dart';
 import 'package:flawtrack/services/locale_provider.dart';
-import 'package:flawtrack/welcome.dart';
+import 'package:flawtrack/views/intro/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

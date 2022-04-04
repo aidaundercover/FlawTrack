@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flawtrack/models/Event.dart';
 import 'package:flutter/material.dart';
 
 const primaryColor = Color.fromRGBO(244, 146, 2, 1.0);
@@ -14,6 +15,7 @@ const divider = Color.fromRGBO(232, 232, 232, 1);
 const darkBlue = Color.fromRGBO(63, 61, 86, 1);
 
 var widthGlobal;
+String loginType = "usual";
 late int lang;
 
 bool visibleV = false;
@@ -21,7 +23,8 @@ bool visibleV = false;
 bool volunteer = false;
 String nameGlobal = "";
 String email = "";
-late File imgProfile;
+String photoUrlGlobal = "";
+String uid = "";
 
 var points = 0;
 var pins = 4;
@@ -33,4 +36,7 @@ var addressGlobal;
 var cityGlobal = 'Павлодар';
 var lat = 52.2535496;
 var long = 76.940024;
+
+String refEventCity = "";
+List<Event> events = [];
 

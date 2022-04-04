@@ -1,11 +1,14 @@
 import 'package:flawtrack/home_widget_volunteer.dart';
+import 'package:flawtrack/services/auth_service.dart';
 import 'package:flawtrack/views/only_volunteer_views/become_volunteer/five.dart';
 import 'package:flawtrack/views/only_volunteer_views/become_volunteer/four.dart';
 import 'package:flawtrack/views/only_volunteer_views/become_volunteer/three.dart';
 import 'package:flawtrack/views/only_volunteer_views/become_volunteer/two.dart';
 import 'package:flawtrack/views/only_volunteer_views/become_volunteer/one.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:email_validator/email_validator.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import '../../const.dart';
 
 class BecomeVolunteer extends StatefulWidget {
@@ -16,6 +19,7 @@ class BecomeVolunteer extends StatefulWidget {
 }
 
 class _BecomeVolunteerState extends State<BecomeVolunteer> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late TextEditingController _emailController;
   late TextEditingController _passwordController;
 
@@ -196,10 +200,21 @@ class _BecomeVolunteerState extends State<BecomeVolunteer> {
             ),
           ),
         ),
-        onPressed: () {
-          volunteer = true;
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => HomeVolunteer()));
+        onPressed: ()async {
+                if (_formKey.currentState!.validate()) {
+                  try {
+                    setState(() {
+                      volunteer = true;
+                    });
+                    await AuthService.signInWithEmail(
+                            email: _emailController.text,
+                            password: _passwordController.text,
+                            context: context)
+                        .then((value) => {});
+                  } catch (e) {
+                    Fluttertoast.showToast(msg: e.toString());
+                  }
+                }
         },
       );
     }
@@ -242,6 +257,7 @@ class _BecomeVolunteerState extends State<BecomeVolunteer> {
                   height: 40,
                 ),
                 Form(
+                  key: _formKey,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -249,6 +265,19 @@ class _BecomeVolunteerState extends State<BecomeVolunteer> {
                         height: 55,
                         width: MediaQuery.of(context).size.width * 0.74,
                         child: TextFormField(
+                          controller: _emailController,
+                          keyboardType: TextInputType.emailAddress,
+                          onSaved: (input) =>
+                                      _emailController.text = input!,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return  AppLocalizations.of(context).warn1;
+                                    }
+                                    if (!EmailValidator.validate(value)) {
+                                      return  AppLocalizations.of(context).warn2;
+                                    }
+                                    return null;
+                                  },
                           decoration: InputDecoration(
                               hintText: 'Email/Номер телефона',
                               border: OutlineInputBorder(
@@ -263,6 +292,15 @@ class _BecomeVolunteerState extends State<BecomeVolunteer> {
                         height: 55,
                         width: MediaQuery.of(context).size.width * 0.74,
                         child: TextFormField(
+                          controller: _passwordController,
+                          validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return  AppLocalizations.of(context).warn1;
+                                    }
+                                    return null;
+                                  },
+                                  onSaved: (input) =>
+                                      _passwordController.text = input!,
                           obscureText: true,
                           decoration: InputDecoration(
                               hintText: 'Пароль',

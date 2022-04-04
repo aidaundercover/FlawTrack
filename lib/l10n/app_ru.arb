@@ -79,6 +79,9 @@
    "namesurname" : "Имя-фамилдия",
    "findnearby" : "Найи рядом",
    "topfiftyv" : "Рейтинг ТОП-50 волонтеров",
-   "pins" : "Пины"
-  
+   "pins" : "Пины",
+   "nursultan" : "Нур-султан",
+   "pavlodar" : "Павлодар",
+   "shymekent" : "Шымкент",
+   "almaty" : "Алматы"
 }

@@ -331,6 +331,21 @@
    "pins" : "Pins",
    "@pins" : {
       "description" : "namenamenamename"
+   },
+   "nursultan" : "Nur-Sultan",
+   "@nursultan" : {
+      "description" : ""
+   },
+   "pavlodar" : "Pavlodar",
+   "@pavlodar" : {
+      "description" : ""
+   },
+   "shymekent" : "Shymekent",
+   "@shymekent" : {
+      "description" : ""
+   },
+   "almaty" : "Almaty",
+   "@almaty" : {
+      "description" : ""
    }
-   
 }

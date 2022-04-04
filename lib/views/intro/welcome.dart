@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:lottie/lottie.dart';
 
 
 class Welcome extends StatefulWidget {
@@ -27,7 +28,7 @@ class _WelcomeState extends State<Welcome> {
     var _width = MediaQuery.of(context).size.width;
 
     Widget _buildImage(String assetName) {
-    return Image.asset('assets/welcome/$assetName', 
+    return Lottie.file('assets/lottie/$assetName', 
           width: _width*0.72,
           alignment: Alignment.center,
           );
@@ -53,19 +54,19 @@ class _WelcomeState extends State<Welcome> {
       pages: [
         PageViewModel(
           title: AppLocalizations.of(context).weltitle1,
-          image: _buildImage('welone.png'),
+          image: _buildImage('locate_on_map.json'),
           body: AppLocalizations.of(context).weldesc1,
           decoration: pageDecoration,
         ),
         PageViewModel(
           title: AppLocalizations.of(context).weltitle2,
-          image: _buildImage('weltwo.png'),
+          image: _buildImage('connect.json'),
           body: AppLocalizations.of(context).weldesc2,
           decoration: pageDecoration,
         ),
         PageViewModel(
           title: AppLocalizations.of(context).weltitle3,
-          image: _buildImage('welthree.png'),
+          image: _buildImage('achive.json'),
           body: AppLocalizations.of(context).weldesc3,
           decoration: pageDecoration,
         ),
