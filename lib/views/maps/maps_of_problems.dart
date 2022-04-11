@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -5,9 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flawtrack/const.dart';
 import 'package:flawtrack/home_widget_citizen.dart';
 import 'package:flawtrack/home_widget_volunteer.dart';
-import 'package:flawtrack/pages.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import "dart:async";
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -15,6 +14,7 @@ import 'package:flawtrack/widgets/maps/maps.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:uuid/uuid.dart';
 
 class MapsOfProblems extends StatefulWidget {
   const MapsOfProblems({Key? key}) : super(key: key);
@@ -41,16 +41,18 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
   double opReload = 0.5;
   bool pressRel = false;
   bool selected = false;
-  late TextEditingController pindesc;
+  TextEditingController pindesc = TextEditingController();
   bool pinPressed = false;
   List<XFile> problemImages = [];
-  List<String> problemImagesUrls = [];
+  List<dynamic> problemImagesUrls = [];
+
+  bool wasCancelled = false;
 
   // temporary//
 
-  late String tempDescDesc;
   late LatLng tempPoinf;
-  late String pintitle;
+  late String pintitle = "";
+  late int pintitleN;
 
   List<bool> isSelected = [false, false, false, false, false, false];
 
@@ -74,7 +76,7 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
             ));
   }
 
-  void _addImage(XFile _image) {
+  Future _addImage(XFile _image) async {
     setState(() {
       problemImages.add(_image);
     });
@@ -82,9 +84,11 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
 
   pickImageCamera() async {
     try {
-      XFile? tempImg = await ImagePicker()
-          .pickImage(source: ImageSource.camera, maxWidth: 300, maxHeight: 300);
-      _addImage(tempImg!);
+      XFile? tempImg =
+          await ImagePicker().pickImage(source: ImageSource.camera);
+      tempImg?.path != null
+          ? _addImage(tempImg!)
+          : Fluttertoast.showToast(msg: "rrr");
     } catch (e) {
       Fluttertoast.showToast(msg: AppLocalizations.of(context).accesswasdenied);
     }
@@ -116,6 +120,12 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
   }
 
   void pressReload() {
+    setState(() {
+      pressRel = true;
+    });
+  }
+
+  void cancelPressed() {
     setState(() {
       pressRel = true;
     });
@@ -389,14 +399,22 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                         markerId: MarkerId(nextMarker['id']),
                         position: LatLng(nextMarker['lat'], nextMarker['long']),
                         icon: mapMarker(nextMarker['mapMarker']),
-                        onTap: () {
-                          descCardShow(
-                              markerType(
-                                  mapMarker(int.parse(nextMarker['mapMarker'])),
-                                  context),
-                              nextMarker['desc'],
-                              context,
-                              nextMarker['image']);
+                        onTap: () async {
+                          await showDialog(
+                              context: context,
+                              builder: (_) => Dialog(
+                                    child: Container(
+                                        width: 300,
+                                        height: 600,
+                                        child: Column(children: [
+                                          Text(markerType(
+                                              nextMarker['mapMarker'],
+                                              context)),
+                                          Text(nextMarker['desc']),
+                                          Image.network(nextMarker['image'],
+                                              width: 260, height: 400)
+                                        ])),
+                                  ));
                         });
                     markers.add(mapre);
                   });
@@ -523,15 +541,18 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                                             case 1:
                                               {
                                                 markerPin = mapMarker6;
+                                                pintitleN = 6;
                                                 pintitle =
                                                     AppLocalizations.of(context)
                                                         .cat;
+
                                                 print('1');
                                               }
                                               break;
                                             case 2:
                                               {
                                                 markerPin = mapMarker1;
+                                                pintitleN = 1;
                                                 pintitle =
                                                     AppLocalizations.of(context)
                                                         .road;
@@ -541,6 +562,7 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                                             case 3:
                                               {
                                                 markerPin = mapMarker4;
+                                                pintitleN = 4;
                                                 pintitle =
                                                     AppLocalizations.of(context)
                                                         .dog;
@@ -550,6 +572,7 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                                             case 4:
                                               {
                                                 markerPin = mapMarker5;
+                                                pintitleN = 5;
                                                 pintitle =
                                                     AppLocalizations.of(context)
                                                         .trash;
@@ -559,6 +582,7 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                                             case 5:
                                               {
                                                 markerPin = mapMarker3;
+                                                pintitleN = 3;
                                                 pintitle =
                                                     AppLocalizations.of(context)
                                                         .drown;
@@ -577,6 +601,7 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                                             case 0:
                                               {
                                                 markerPin = mapMarker2;
+                                                pintitleN = 2;
                                                 pintitle =
                                                     AppLocalizations.of(context)
                                                         .trashcan;
@@ -605,7 +630,7 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                                         ),
                                         child: Container(
                                           width: widthGlobal * 0.15,
-                                          height: 42,
+                                          height: 30,
                                           decoration: BoxDecoration(
                                               boxShadow: [
                                                 BoxShadow(
@@ -704,9 +729,9 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                               ),
                               TextButton(
                                 onPressed: () {
-                                  pinPress();
                                   if (selected) {
-                                    addInfo();
+                                    pinPress();
+                                    addInfo(context);
                                   } else {
                                     Fluttertoast.showToast(
                                       msg: "Select type of problem",
@@ -823,6 +848,7 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                   child: Container(
                     width: widthGlobal * 0.8,
                     decoration: BoxDecoration(
+                        color: white,
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: [
                           BoxShadow(
@@ -831,6 +857,7 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                         ]),
                     height: 150,
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Center(
                           child: Container(
@@ -847,7 +874,9 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                               Row(
                                 children: [
                                   TextButton(
-                                    onPressed: () => addInfo(),
+                                    onPressed: () {
+                                      addInfo(context);
+                                    },
                                     child: Text('Add'),
                                   ),
                                   SizedBox(
@@ -875,7 +904,7 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
 
   void handleTap(LatLng tappedPoint) {
     tempPoinf = tappedPoint;
-    tempId = tappedPoint.toString();
+    tempId = Uuid().v1();
     marker = Marker(
       icon: markerPin,
       markerId: MarkerId(tempId),
@@ -888,12 +917,12 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
       );
     });
     print("$pinned");
-    delay();
+    wasCancelled ? dont(tappedPoint) : delay();
   }
 
   searchandNavigate() {}
 
-  void addInfo() {
+  void addInfo(BuildContext context) {
     cancelButton(BuildContext context) {
       return TextButton(
         child: Container(
@@ -915,6 +944,10 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
           setState(() {
             problemImages.clear();
             pinPressed = false;
+            cancelPressed();
+            Future.delayed(Duration(minutes: 2), () {
+              wasCancelled = false;
+            });
           });
         },
       );
@@ -938,46 +971,68 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
         ),
         onPressed: () async {
           try {
-            final newProblemKey =
-                FirebaseDatabase.instance.ref().child('problems').push().key;
-
             for (int i = 0; i < problemImages.length; i++) {
-              _storage
+              await _storage
                   .ref()
-                  .child('/problems/$newProblemKey/images')
+                  .child('/problems/$tempId')
                   .putFile(File(problemImages[i].path));
 
-              final myImages = List.from(_storage
-                  .ref()
-                  .child('/problems/$newProblemKey/images') as List);
+              // final myImages = List.from(_storage
+              //     .ref()
+              //     .child('/problems/$tempId') as List<dynamic>);
 
-              for (int i = 0; i < myImages.length; i++) {
-                problemImagesUrls.add(myImages[i].getDownloadURL());
-              }
+              // for (int i = 0; i < myImages.length; i++) {
+              //   problemImagesUrls.add(_storage
+              //     .ref()
+              //     .child('/problems/$tempId').getDownloadURL());
+              // }
             }
 
-            ref.child('problems/$newProblemKey').set({
-              "id": newProblemKey ?? "hjl",
-              "mapMarker": pintitle,
+            await ref.child('/problems/$tempId').set({
+              "id": tempId,
+              "mapMarker": pintitleN,
               "lat": tempPoinf.latitude,
               "long": tempPoinf.longitude,
               "desc": pindesc.text,
               "user": FirebaseAuth.instance.currentUser!.uid,
               "timestamp": DateTime.now().toString(),
-              "image": problemImagesUrls
+              "image": await _storage
+                  .ref()
+                  .child('/problems/$tempId')
+                  .getDownloadURL()
+            });
+
+            await FirebaseFirestore.instance
+                .collection('users')
+                .doc(FirebaseAuth.instance.currentUser!.uid)
+                .get()
+                .then((DocumentSnapshot documentSnapshot) {
+              if (documentSnapshot.exists) {
+                int lastPinNumber = documentSnapshot.get(FieldPath(['pins']));
+                FirebaseFirestore.instance
+                    .collection('users')
+                    .doc(FirebaseAuth.instance.currentUser!.uid)
+                    .update({'pins': lastPinNumber + 1});
+              } else {
+                print('Document does not exist on the database');
+              }
             });
 
             pin();
-            pinned = false;
-            selected = false;
 
-            problemImages.clear();
-            problemImagesUrls.clear();
+            setState(() {
+              pinned = false;
+              selected = false;
+              wasCancelled = false;
+
+              problemImages.clear();
+              problemImagesUrls.clear();
+            });
 
             Navigator.of(context).push(
                 MaterialPageRoute(builder: (context) => MapsOfProblems()));
           } catch (e) {
-            Fluttertoast.showToast(msg: "Error occured!");
+            Fluttertoast.showToast(msg: "$e");
           }
 
           print('ok button was pressed');
@@ -991,10 +1046,10 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
           return Dialog(
               child: Container(
             width: MediaQuery.of(context).size.width * 0.9,
-            height: problemImages.isNotEmpty ? 450 : 320,
+            height: problemImages.isNotEmpty ? 450 : 350,
             decoration: BoxDecoration(
                 color: white,
-                borderRadius: BorderRadius.all(Radius.circular(15))),
+                borderRadius: BorderRadius.all(Radius.circular(30))),
             child: Column(
               children: [
                 SizedBox(
@@ -1021,7 +1076,13 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                         height: 55,
                         width: MediaQuery.of(context).size.width * 0.74,
                         child: TextFormField(
-                          onSaved: (newValue) => pindesc.text = newValue!,
+                          minLines: 3,
+                          maxLines: 5,
+                          onChanged: (newValue) => {
+                            setState(() {
+                              pindesc.text = newValue;
+                            })
+                          },
                           decoration: InputDecoration(
                               hintText: 'Мәселе сипаты/детальдер',
                               border: OutlineInputBorder(
@@ -1032,59 +1093,39 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                       SizedBox(
                         height: 20,
                       ),
-                      problemImages.isNotEmpty
-                          ? Row(
-                              children: [
-                                problemImages.isEmpty
-                                    ? DottedBorder(
-                                        child: Container(
-                                            height: 50,
-                                            width: widthGlobal * 0.74,
-                                            decoration: BoxDecoration(
-                                                color: grey.withOpacity(0.7)),
-                                            child: IconButton(
-                                                onPressed: () {
-                                                  showImageSource(context);
-                                                },
-                                                icon: Icon(Icons.add_a_photo))),
-                                      )
-                                    : ListView.builder(
-                                        scrollDirection: Axis.horizontal,
-                                        itemCount: problemImages.length,
-                                        itemBuilder: (BuildContext context, i) {
-                                          return Image.file(
-                                              File(problemImages[i].path),
-                                              width: widthGlobal * 0.74,
-                                              height: 150,
-                                              fit: BoxFit.cover);
-                                        },
-                                      ),
-                                IconButton(
-                                    onPressed: () {
-                                      showImageSource(context);
-                                    },
-                                    icon: Icon(Icons.add_a_photo))
-                              ],
-                            )
-                          : DottedBorder(
+                      problemImages.isEmpty
+                          ? DottedBorder(
                               child: Container(
                                   height: 50,
                                   width: widthGlobal * 0.74,
                                   decoration: BoxDecoration(
-                                      color: grey.withOpacity(0.7)),
+                                      color: grey.withOpacity(0.4)),
                                   child: IconButton(
                                       onPressed: () {
                                         showImageSource(context);
                                       },
                                       icon: Icon(Icons.add_a_photo))),
+                            )
+                          : Stack(
+                              children: [
+                                ListView(
+                                  children:
+                                      List.generate(problemImages.length, (i) {
+                                    return Image.file(
+                                        File(problemImages[i].path),
+                                        width: widthGlobal * 0.74,
+                                        height: 150,
+                                        fit: BoxFit.cover);
+                                  }),
+                                  scrollDirection: Axis.horizontal,
+                                ),
+                                IconButton(
+                                    onPressed: () async {
+                                      await showImageSource(context);
+                                    },
+                                    icon: Icon(Icons.add_a_photo))
+                              ],
                             ),
-                      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                        IconButton(
-                            onPressed: () {
-                              showImageSource(context);
-                            },
-                            icon: Icon(Icons.add_a_photo))
-                      ])
                     ],
                   ),
                 ),
@@ -1112,11 +1153,5 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
             ),
           ));
         });
-  }
-
-  dont(LatLng tappedPoint) {
-    Fluttertoast.showToast(
-      msg: "Select type of problem",
-    );
   }
 }

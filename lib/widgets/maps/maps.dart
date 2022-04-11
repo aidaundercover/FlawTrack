@@ -1,5 +1,6 @@
 import 'package:flawtrack/const.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
@@ -170,104 +171,10 @@ markerType(int n, BuildContext context) {
   }
 }
 
- Future timeExpired(double width, void func, BuildContext context) async{
-  showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          child: Container(
-            width: width * 0.8,
-            height: 300,
-            child: Column(
-              children: [
-                Text('Your time for pinning details of problem is expired'),
-                Container(
-                  width: width * 0.76,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Row(
-                        children: [
-                          TextButton(
-                            onPressed: () => func,
-                            child: Text('Add'),
-                          ),
-                          SizedBox(
-                            width: 18,
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              markers.remove(marker);
-                              Navigator.of(context).pop();
-                            },
-                            child: Text('OK'),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ),
-        );
-      });
-}
 
-descCardShow(String title, String desc, BuildContext context, List file) {
 
-  showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          child: Container(
-            width: widthGlobal * 0.8,
-            height: 400,
-            child: Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      IconButton(
-                          onPressed: () {
-                            Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                    builder: (context) => MapsOfProblems()));
-                          },
-                          icon: Icon(Icons.close, color: grey))
-                    ],
-                  ),
-                  Text(title,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                      )),
-                  SizedBox(height: 10),
-                  Container(
-                    width: widthGlobal * 0.7,
-                    child: Text(desc,
-                        style: TextStyle(
-                          fontSize: 15,
-                        )),
-                  ),
-                  SizedBox(height: 10),
-                  ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Image.network(file[index],
-                          width: widthGlobal * 0.7,
-                          height: 210,
-                          fit: BoxFit.cover);
-                    },
-                  )
-                  // Container(child: Image.file(img) ??),
-                ],
-              ),
-            ),
-          ),
-        );
-      });
-}
+  dont(LatLng tappedPoint) {
+    Fluttertoast.showToast(
+      msg: "Select type of problem",
+    );
+  }

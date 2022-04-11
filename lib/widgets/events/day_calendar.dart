@@ -1,128 +1,65 @@
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flawtrack/const.dart';
+import 'package:flawtrack/widgets/events/even_tile.dart';
+import 'package:flawtrack/widgets/events/event_list.dart';
 import 'package:flutter/material.dart';
 
-import '../../models/Event.dart';
-
-class DayBlock extends StatefulWidget {
-  DayBlock({
-    Key? key,
-    required this.add,
-  }) : super(key: key);
-  final int add;
-
-  @override
-  State<DayBlock> createState() => _DayBlockState();
-}
-
 List<Map> isSelected = [
-  {"selected": false, "add": -1},
   {"selected": false, "add": -2},
-  {"selected": false, "add": 0},
-  {"selected": true, "add": 1},
+  {"selected": false, "add": -1},
+  {"selected": true, "add": 0},
+  {"selected": false, "add": 1},
   {"selected": false, "add": 2},
   {"selected": false, "add": 3},
   {"selected": false, "add": 4},
   {"selected": false, "add": 5},
 ];
 
-var db = FirebaseFirestore.instance.collection('events');
+int info = 3;
+
+// var db = FirebaseFirestore.instance.collection('events/$refEventCity');
 
 bool selected = false;
 
-Future retrieveEvents(DateTime date) async {
-  await db.get().then((QuerySnapshot querySnapshot) {
-    querySnapshot.docs.forEach((doc) async {
-      doc['${date.year}/${date.month}/${date.day}'].forEach((doc) {
-        events.add(doc as Event);
-      });
-    });
-  });
+String dateFormatter(DateTime date) {
+  dynamic dayData =
+      '{ "1" : "ДС", "2" : "СС", "3" : "СР", "4" : "БС", "5" : "ЖМ", "6" : "СБ", "7" : "ЖС" }';
+
+  return json.decode(dayData)['${date.weekday}'];
 }
 
-class _DayBlockState extends State<DayBlock> {
-  void select() {
-    setState(() {
-      selected = true;
-    });
-  }
+String getTheDay(DateTime date) {
+  return date.day.toString();
+}
 
-  void changeCity() {
-    setState(() {});
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    select();
-    changeCity();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    selected = widget.add == 0 ? true : false;
-
-    var styleDay = selected
-        ? TextStyle(color: white, fontSize: 18)
-        : TextStyle(color: Color.fromRGBO(161, 161, 161, 1.0), fontSize: 18);
-    var styleDate = selected
-        ? TextStyle(color: white, fontSize: 23, fontWeight: FontWeight.bold)
-        : TextStyle(color: darkBlue, fontSize: 23, fontWeight: FontWeight.bold);
-
-    String dateFormatter(DateTime date) {
-      dynamic dayData =
-          '{ "1" : "ДС", "2" : "СС", "3" : "СР", "4" : "БС", "5" : "ЖМ", "6" : "СБ", "7" : "ЖС" }';
-
-      return json.decode(dayData)['${date.weekday}'];
-    }
-
-    String getTheDay(DateTime date) {
-      return date.day.toString();
-    }
-
-    return Row(
-      children: [
-        SizedBox(
-          width: 16,
-        ),
-        GestureDetector(
-          onTap: () {
-            retrieveEvents(DateTime.now().add(Duration(days: widget.add)));
-            select();
-          },
-          child: Container(
-            width: 55,
-            height: 75,
-            decoration: BoxDecoration(
-                color: widget.add == 0 || selected == true
-                    ? primaryColor
-                    : Colors.transparent,
-                borderRadius: BorderRadius.circular(15),
-                border: Border.all(
-                    color: Color.fromRGBO(161, 161, 161, 1.0), width: 1)),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                    dateFormatter(
-                        DateTime.now().add(Duration(days: widget.add))),
-                    style: styleDay),
-                SizedBox(
-                  height: 11,
-                ),
-                Text(
-                  getTheDay(DateTime.now().add(Duration(days: widget.add))),
-                  style: styleDate,
-                )
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
+// Future retrieveEvents(DateTime date) async {
+//   await db.get().then((QuerySnapshot querySnapshot) {
+//     querySnapshot.docs.forEach((doc) async {
+//       doc['${date.year}-${date.month}'].forEach((doc) {
+//         events.add(doc as Event);
+//       });
+//     });
+//   });
+// }
+convertToIndex(int n) {
+  switch (n) {
+    case -2:
+      return 0;
+    case -1:
+      return 1;
+    case 0:
+      return 2;
+    case 1:
+      return 3;
+    case 2:
+      return 4;
+    case 3:
+      return 5;
+    case 4:
+      return 6;
+    case 5:
+      return 7;
   }
 }
 
@@ -135,28 +72,85 @@ class HorizontalLizt extends StatefulWidget {
 
 class _HorizontalLiztState extends State<HorizontalLizt> {
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    // eventList(context, events[info]);
+  }
+
+  int globalHeight = 2;
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 78,
-      child: ListView(
-          children: List.generate(isSelected.length, (index) {
-        return InkWell(
-          onTap: () {
-            setState(() {
-              for (int indexBtn = 0; indexBtn < isSelected.length; indexBtn++) {
-                if (indexBtn == index) {
-                  selected = isSelected[indexBtn]["selected"] =
-                      !isSelected[indexBtn]["selected"];
-                  isSelected[2]["selected"] = false;
-                } else {
-                  isSelected[indexBtn]["selected"] = false;
-                }
-              }
-            });
-          },
-          child: DayBlock(add: isSelected[index]["add"]),
-        );
-      })),
+    return Column(
+      children: [
+        Container(
+          height: 100,
+          child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: List.generate(isSelected.length, (index) {
+                var styleDay;
+                var styleDate;
+                return InkWell(
+                    onTap: () {
+                      setState(() {
+                        for (int indexBtn = 0;
+                            indexBtn < isSelected.length;
+                            indexBtn++) {
+                          if (indexBtn == index) {
+                            selected = isSelected[indexBtn]["selected"] = true;
+                            globalHeight =
+                                convertToIndex(isSelected[indexBtn]["add"]);
+                          } else {
+                            isSelected[indexBtn]["selected"] = false;
+                          }
+                        }
+                      });
+                    },
+                    child: Column(children: [
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 16,
+                          ),
+                          Container(
+                            width: 55,
+                            height: 75,
+                            decoration: BoxDecoration(
+                                color: isSelected[index]["selected"]
+                                    ? primaryColor
+                                    : Colors.transparent,
+                                borderRadius: BorderRadius.circular(15),
+                                border: Border.all(
+                                    color: Color.fromRGBO(161, 161, 161, 1.0),
+                                    width: 1)),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                    dateFormatter(DateTime.now().add(Duration(
+                                        days: isSelected[index]["add"]))),
+                                    style: styleDay),
+                                SizedBox(
+                                  height: 11,
+                                ),
+                                Text(
+                                  getTheDay(DateTime.now().add(Duration(
+                                      days: isSelected[index]["add"]))),
+                                  style: styleDate,
+                                )
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ]));
+              })),
+        ),
+        Container(
+            height: 200,
+            child: ListView.builder(itemBuilder: (context, i) => eventTile(context, events[globalHeight][i]["title"], events[globalHeight][i]["imgUrl"],  events[globalHeight][i]["description"], MediaQuery.of(context).size.width,  events[globalHeight][i]["color"])))
+      ],
     );
   }
 }

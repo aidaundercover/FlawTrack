@@ -484,7 +484,9 @@ class _SignUpState extends State<SignUp> {
       'uid': user!.uid.toString(),
       'volunteer': volunteer,
       'name': _nameController.text,
-      'city': cityGlobal
+      'city': cityGlobal,
+      'pins' : 0,
+      'points': 0
     });
   }
 }

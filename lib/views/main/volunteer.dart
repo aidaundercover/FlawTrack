@@ -19,7 +19,6 @@ class _VolunteerViewState extends State<VolunteerView> {
     final Stream<QuerySnapshot> _usersStream = FirebaseFirestore.instance
         .collection('users')
         .orderBy('pins', descending: true)
-        .limit(50)
         .snapshots();
 
     return Scaffold(
@@ -153,9 +152,7 @@ class _VolunteerViewState extends State<VolunteerView> {
                             color: primaryColor,
                             fontSize: 22,
                             fontWeight: FontWeight.bold))),
-              ], rows: 
-                _buildListItem()
-              );
+              ], rows: _buildListItem());
             },
           )
         ],
@@ -165,6 +162,22 @@ class _VolunteerViewState extends State<VolunteerView> {
 }
 
 var number = 1;
+
+class ListVolunteer extends StatefulWidget {
+  const ListVolunteer({Key? key}) : super(key: key);
+
+  @override
+  State<ListVolunteer> createState() => _ListVolunteerState();
+}
+
+class _ListVolunteerState extends State<ListVolunteer> {
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(builder: (context, AsyncSnapshot snapshot) {
+      return Container();
+    });
+  }
+}
 
 List<DataRow> _buildListItem() {
   return [

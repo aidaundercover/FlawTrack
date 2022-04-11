@@ -1,6 +1,4 @@
-import 'dart:io';
 
-import 'package:flawtrack/models/Event.dart';
 import 'package:flutter/material.dart';
 
 const primaryColor = Color.fromRGBO(244, 146, 2, 1.0);
@@ -27,7 +25,7 @@ String photoUrlGlobal = "";
 String uid = "";
 
 var points = 0;
-var pins = 4;
+var pins = 0;
 
 var name;
 
@@ -38,5 +36,191 @@ var lat = 52.2535496;
 var long = 76.940024;
 
 String refEventCity = "";
-List<Event> events = [];
 
+
+List events = [
+  [
+    {
+      "title": "Субботник у Айтматова",
+      "imgUrl":
+          "https://miro.medium.com/max/1200/1*5r8b4M0dhRoAT_s_zgokqw.jpeg",
+      "description": "встречаемся у памятника Абая",
+      "color": Colors.amber,
+    },
+    {
+      "title": "Субботник у Айтматова",
+      "imgUrl":
+          "https://miro.medium.com/max/1200/1*5r8b4M0dhRoAT_s_zgokqw.jpeg",
+      "description": "встречаемся у памятника Абая",
+      "color": Colors.amber,
+    },
+    {
+      "title": "Субботник у Айтматова",
+      "imgUrl":
+          "https://miro.medium.com/max/1200/1*5r8b4M0dhRoAT_s_zgokqw.jpeg",
+      "description": "встречаемся у памятника Абая",
+      "color": Colors.amber,
+    }
+  ],
+  [
+    {
+      "title": "Субботник у Айтматова",
+      "imgUrl":
+          "https://miro.medium.com/max/1200/1*5r8b4M0dhRoAT_s_zgokqw.jpeg",
+      "description": "встречаемся у памятника Абая",
+      "color": Colors.amber,
+    },
+    {
+      "title": "Субботник у Айтматова",
+      "imgUrl":
+          "https://miro.medium.com/max/1200/1*5r8b4M0dhRoAT_s_zgokqw.jpeg",
+      "description": "встречаемся у памятника Абая",
+      "color": Colors.amber,
+    },
+    {
+      "title": "Субботник у Айтматова",
+      "imgUrl":
+          "https://miro.medium.com/max/1200/1*5r8b4M0dhRoAT_s_zgokqw.jpeg",
+      "description": "встречаемся у памятника Абая",
+      "color": Colors.amber,
+    }
+  ],
+  [
+    {
+      "title": "Субботник у Айтматова",
+      "imgUrl":
+          "https://miro.medium.com/max/1200/1*5r8b4M0dhRoAT_s_zgokqw.jpeg",
+      "description": "встречаемся у памятника Абая",
+      "color": Colors.amber,
+    },
+    {
+      "title": "Субботник у Айтматова",
+      "imgUrl":
+          "https://miro.medium.com/max/1200/1*5r8b4M0dhRoAT_s_zgokqw.jpeg",
+      "description": "встречаемся у памятника Абая",
+      "color": Colors.amber,
+    },
+    {
+      "title": "Субботник у Айтматова",
+      "imgUrl":
+          "https://miro.medium.com/max/1200/1*5r8b4M0dhRoAT_s_zgokqw.jpeg",
+      "description": "встречаемся у памятника Абая",
+      "color": Colors.amber,
+    }
+  ],
+  [
+    {
+      "title": "Субботник у Айтматова",
+      "imgUrl":
+          "https://miro.medium.com/max/1200/1*5r8b4M0dhRoAT_s_zgokqw.jpeg",
+      "description": "встречаемся у памятника Абая",
+      "color": Colors.amber,
+    },
+    {
+      "title": "Субботник у Айтматова",
+      "imgUrl":
+          "https://miro.medium.com/max/1200/1*5r8b4M0dhRoAT_s_zgokqw.jpeg",
+      "description": "встречаемся у памятника Абая",
+      "color": Colors.amber,
+    },
+    {
+      "title": "Субботник у Айтматова",
+      "imgUrl":
+          "https://miro.medium.com/max/1200/1*5r8b4M0dhRoAT_s_zgokqw.jpeg",
+      "description": "встречаемся у памятника Абая",
+      "color": Colors.amber,
+    }
+  ],
+  [
+    {
+      "title": "Субботник у Айтматова",
+      "imgUrl":
+          "https://miro.medium.com/max/1200/1*5r8b4M0dhRoAT_s_zgokqw.jpeg",
+      "description": "встречаемся у памятника Абая",
+      "color": Colors.amber,
+    },
+    {
+      "title": "Субботник у Айтматова",
+      "imgUrl":
+          "https://miro.medium.com/max/1200/1*5r8b4M0dhRoAT_s_zgokqw.jpeg",
+      "description": "встречаемся у памятника Абая",
+      "color": Colors.amber,
+    },
+    {
+      "title": "Субботник у Айтматова",
+      "imgUrl":
+          "https://miro.medium.com/max/1200/1*5r8b4M0dhRoAT_s_zgokqw.jpeg",
+      "description": "встречаемся у памятника Абая",
+      "color": Colors.amber,
+    }
+  ],
+  [
+    {
+      "title": "Субботник у Айтматова",
+      "imgUrl":
+          "https://miro.medium.com/max/1200/1*5r8b4M0dhRoAT_s_zgokqw.jpeg",
+      "description": "встречаемся у памятника Абая",
+      "color": Colors.amber,
+    },
+    {
+      "title": "Субботник у Айтматова",
+      "imgUrl":
+          "https://miro.medium.com/max/1200/1*5r8b4M0dhRoAT_s_zgokqw.jpeg",
+      "description": "встречаемся у памятника Абая",
+      "color": Colors.amber,
+    },
+    {
+      "title": "Субботник у Айтматова",
+      "imgUrl":
+          "https://miro.medium.com/max/1200/1*5r8b4M0dhRoAT_s_zgokqw.jpeg",
+      "description": "встречаемся у памятника Абая",
+      "color": Colors.amber,
+    }
+  ],
+  [
+    {
+      "title": "Субботник у Айтматова",
+      "imgUrl":
+          "https://miro.medium.com/max/1200/1*5r8b4M0dhRoAT_s_zgokqw.jpeg",
+      "description": "встречаемся у памятника Абая",
+      "color": Colors.amber,
+    },
+    {
+      "title": "Субботник у Айтматова",
+      "imgUrl":
+          "https://miro.medium.com/max/1200/1*5r8b4M0dhRoAT_s_zgokqw.jpeg",
+      "description": "встречаемся у памятника Абая",
+      "color": Colors.amber,
+    },
+    {
+      "title": "Субботник у Айтматова",
+      "imgUrl":
+          "https://miro.medium.com/max/1200/1*5r8b4M0dhRoAT_s_zgokqw.jpeg",
+      "description": "встречаемся у памятника Абая",
+      "color": Colors.amber,
+    }
+  ],
+  [
+    {
+      "title": "Субботник у Айтматова",
+      "imgUrl":
+          "https://miro.medium.com/max/1200/1*5r8b4M0dhRoAT_s_zgokqw.jpeg",
+      "description": "встречаемся у памятника Абая",
+      "color": Colors.amber,
+    },
+    {
+      "title": "Субботник у Айтматова",
+      "imgUrl":
+          "https://miro.medium.com/max/1200/1*5r8b4M0dhRoAT_s_zgokqw.jpeg",
+      "description": "встречаемся у памятника Абая",
+      "color": Colors.amber,
+    },
+    {
+      "title": "Субботник у Айтматова",
+      "imgUrl":
+          "https://miro.medium.com/max/1200/1*5r8b4M0dhRoAT_s_zgokqw.jpeg",
+      "description": "встречаемся у памятника Абая",
+      "color": Colors.amber,
+    }
+  ],
+];

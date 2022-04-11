@@ -45,7 +45,7 @@ class _DrawerCustomState extends State<DrawerCustom> {
     
       return Drawer(
         child: Container(
-            color: Color.fromRGBO(245, 245, 245, 1.0),
+            color: Theme.of(context).scaffoldBackgroundColor,
             child: Column(
               children: [
                 Flexible(

@@ -7,44 +7,25 @@ class Event {
   String title;
   DateTime startDate;
   late DateTime endDate;
-  late double budget;
   String address;
   String description;
   String organization;
   String imgUrl;
   late String eventType;
-  String documentId;
-  Color bc;
 
-  final DocumentReference reference;
+  late DocumentReference reference;
 
-  Event.fromSnapshot(DocumentSnapshot snapshot)
-      : this.fromMap(
-          snapshot.data() as Map<String, dynamic>,
-          'title',
-          DateTime.now(),
-          0,
-          'description',
-          'organization',
-          'imgUrl',
-          'eventType',
-          'documentId',
-          Color(0xFFA28D),
-          reference: snapshot.reference,
-        );
+
 
   Event.fromMap(
       Map<String, dynamic> map,
       this.title,
       this.startDate,
-      this.budget,
       this.address,
       this.description,
       this.organization,
       this.imgUrl,
-      this.documentId,
-      this.bc,
-      {required this.reference});
+    );
 
   @override
   String toString() => 'Event<$title:$description>';

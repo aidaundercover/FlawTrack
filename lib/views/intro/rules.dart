@@ -3,7 +3,6 @@ import 'package:flawtrack/widgets/stepper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-
 class UsingRules extends StatefulWidget {
   const UsingRules({Key? key}) : super(key: key);
 
@@ -14,17 +13,17 @@ class UsingRules extends StatefulWidget {
 class _UsingRulesState extends State<UsingRules> {
   @override
   Widget build(BuildContext context) {
-    var width = MediaQuery.of(context).size.width;
+    double width = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: white,
+      backgroundColor: Color.fromRGBO(249, 249, 249, 1.0),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         toolbarHeight: 60,
         centerTitle: true,
         title: Text(
-          'Қолдану ережелері',
+          AppLocalizations.of(context).advises,
           style: TextStyle(
               color: black,
               fontSize: 24,
@@ -44,178 +43,47 @@ class _UsingRulesState extends State<UsingRules> {
         child: Center(
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 30.0),
+              Container(
+                width: width*0.8,
                 child: Text(
                   'Шартты белгілер: ',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 20,
+                    fontSize: 18,
                   ),
                 ),
               ),
               SizedBox(
                 height: 15,
               ),
-              Table(
-                border: TableBorder.all(
-                    color: Color.fromRGBO(227, 227, 227, 1),
-                    style: BorderStyle.solid,
-                    width: 1),
-                children: [
-                  TableRow(children: [
-                    Container(
-                        height: 50,
-                        child: Column(children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ImageIcon(
-                                AssetImage('assets/pins/trashcan.png'),
-                                size: 24,
-                                color: black),
-                          )
-                        ])),
-                    Container(
-                        height: 50,
-                        child: Column(children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text('Орынды емес қоқыс',
-                                style: TextStyle(fontSize: 15.0)),
-                          )
-                        ])),
-                  ]),
-                  TableRow(children: [
-                    Column(children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ImageIcon(AssetImage('assets/pins/road.png'),
-                            size: 24, color: black),
+              Container(
+                width: width * 0.85,
+                decoration: BoxDecoration(
+                    color: white,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        offset: Offset(6, 6),
+                        color: black.withOpacity(0.2),
+                        blurRadius: 18,
                       )
                     ]),
-                    Column(children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          'Жол/тратуар сынған',
-                          style: TextStyle(fontSize: 15.0),
-                        ),
-                      )
-                    ]),
-                  ]),
-                  TableRow(children: [
-                    Column(children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ImageIcon(AssetImage('assets/pins/dog.png'),
-                            size: 24, color: black),
-                      )
-                    ]),
-                    Column(children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text('Үйсіз/жоғалған ит',
-                            style: TextStyle(fontSize: 15.0)),
-                      )
-                    ]),
-                  ]),
-                  TableRow(children: [
-                    Column(children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ImageIcon(AssetImage('assets/pins/cat.png'),
-                            size: 24, color: black),
-                      )
-                    ]),
-                    Column(children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text('Үйсіз/жоғалған мысық',
-                            style: TextStyle(fontSize: 15.0)),
-                      )
-                    ]),
-                  ]),
-                  TableRow(children: [
-                    Column(children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ImageIcon(AssetImage('assets/pins/trash.png'),
-                            size: 24, color: black),
-                      )
-                    ]),
-                    Column(children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text('Орынды емес свалка',
-                            style: TextStyle(fontSize: 15.0)),
-                      )
-                    ]),
-                  ]),
-                  TableRow(children: [
-                    Column(children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ImageIcon(AssetImage('assets/pins/drown.png'),
-                            size: 24, color: black),
-                      )
-                    ]),
-                    Column(children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text('Су басылуы',
-                            style: TextStyle(fontSize: 15.0)),
-                      )
-                    ]),
-                  ]),
-                  TableRow(children: [
-                    Column(children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ImageIcon(AssetImage('assets/pins/homeless.png'),
-                            size: 24, color: black),
-                      )
-                    ]),
-                    Column(children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text('БОМЖ', style: TextStyle(fontSize: 15.0)),
-                      )
-                    ]),
-                  ]),
-                  TableRow(children: [
-                    Column(children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ImageIcon(
-                            AssetImage('assets/pins/volunteer.png'),
-                            size: 24,
-                            color: black),
-                      )
-                    ]),
-                    Column(children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child:
-                            Text(AppLocalizations.of(context).volunteer, style: TextStyle(fontSize: 15.0)),
-                      )
-                    ]),
-                  ]),
-                  TableRow(children: [
-                    Column(children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ImageIcon(AssetImage('assets/pins/fixed.png'),
-                            size: 24, color: black),
-                      )
-                    ]),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(children: [
-                        Text('Түзетілді', style: TextStyle(fontSize: 15.0))
-                      ]),
-                    ),
-                  ]),
-                ],
+                child: Table(
+                  border: TableBorder(
+                      horizontalInside: BorderSide(
+                          width: 1,
+                          color: Color.fromARGB(255, 216, 216, 216),
+                          style: BorderStyle.solid)),
+                  children: [
+                    row(AppLocalizations.of(context).trashcan, 'assets/pins/trashcan.png'),
+                    row(AppLocalizations.of(context).road, 'assets/pins/road.png'),
+                    row(AppLocalizations.of(context).homeless, 'assets/pins/homeless.png'),
+                    row(AppLocalizations.of(context).dog, 'assets/pins/dog.png'),
+                    row(AppLocalizations.of(context).cat, 'assets/pins/cat.png'),
+                    row(AppLocalizations.of(context).drown, 'assets/pins/drown.png'),
+                    row(AppLocalizations.of(context).volunteer, 'assets/pins/volunteer.png'),
+                  ],
+                ),
               ),
               SizedBox(
                 height: 30,
@@ -229,12 +97,16 @@ class _UsingRulesState extends State<UsingRules> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      width: width*0.9,
-                      child: Text('Как закреплять проблемы на карте?', style: TextStyle(color: primaryColor,  fontWeight: FontWeight.bold,
-                      fontSize: 18, decoration: TextDecoration.underline),
-                      ))
-                  
-                    ],
+                        width: width * 0.9,
+                        child: Text(
+                          'Как закреплять проблемы на карте?',
+                          style: TextStyle(
+                              color: primaryColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              decoration: TextDecoration.underline),
+                        ))
+                  ],
                 ),
               ),
               Center(
@@ -338,4 +210,41 @@ class _UsingRulesState extends State<UsingRules> {
       ),
     );
   }
+}
+
+row(String desc, String img) {
+  return TableRow(
+    children: [
+    Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 30),
+          child: Container(
+              height: 50,
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    ImageIcon(AssetImage(img),
+                        size: 24, color: black)
+                  ])),
+        ),
+        Container(
+            height: 50,
+            width:230,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text('$desc', style: TextStyle(fontSize: 15.0)))
+                  ]),
+            )),
+      ],
+    )
+  ]);
 }
