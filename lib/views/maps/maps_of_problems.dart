@@ -54,6 +54,8 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
   late String pintitle = "";
   late int pintitleN;
 
+  bool isSearch = false;
+
   List<bool> isSelected = [false, false, false, false, false, false];
 
   showImageSource(BuildContext context) {
@@ -148,208 +150,221 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
-        return SimpleDialog(
-          title: new Text('Қаланы таңданыз:'),
-          children: <Widget>[
-            SimpleDialogOption(
-              onPressed: () {
-                setState(() {
-                  mapCity = 'Алматы';
-                  lat = 43.2290871;
-                  long = 76.9137495;
-                });
-                Navigator.pop(context);
-              },
-              child: const Text('Алматы'),
-            ),
-            SimpleDialogOption(
-              onPressed: () {
-                setState(() {
-                  mapCity = 'Актобе';
-                  lat = 50.273819;
-                  long = 57.053706;
-                });
-                Navigator.pop(context);
-              },
-              child: const Text('Актобе'),
-            ),
-            SimpleDialogOption(
-              onPressed: () {
-                setState(() {
-                  mapCity = 'Актау';
-                  lat = 43.641492;
-                  long = 51.1890056;
-                });
-                Navigator.pop(context);
-              },
-              child: const Text('Актау'),
-            ),
-            SimpleDialogOption(
-              onPressed: () {
-                setState(() {
-                  mapCity = 'Атырау';
-                  lat = 47.1037403;
-                  long = 51.9077089;
-                });
-                Navigator.pop(context);
-              },
-              child: const Text('Атырау'),
-            ),
-            SimpleDialogOption(
-              onPressed: () {
-                setState(() {
-                  mapCity = 'Қарағанды';
-                  lat = 49.8157172;
-                  long = 73.1079241;
-                });
-                Navigator.pop(context);
-              },
-              child: const Text('Қарағанды'),
-            ),
-            SimpleDialogOption(
-              onPressed: () {
-                setState(() {
-                  mapCity = 'Көкшетау';
-                  lat = 53.2981896;
-                  long = 69.3380369;
-                });
-                Navigator.pop(context);
-              },
-              child: const Text('Көкшетау'),
-            ),
-            SimpleDialogOption(
-              onPressed: () {
-                setState(() {
-                  mapCity = 'Қызылорда';
-                  lat = 44.8281817;
-                  long = 65.4350109;
-                });
-                Navigator.pop(context);
-              },
-              child: const Text('Қызылорда'),
-            ),
-            SimpleDialogOption(
-              onPressed: () {
-                setState(() {
-                  mapCity = 'Қостанай';
-                  lat = 53.2055331;
-                  long = 63.5517867;
-                });
-                Navigator.pop(context);
-              },
-              child: const Text('Қостанай'),
-            ),
-            SimpleDialogOption(
-              onPressed: () {
-                setState(() {
-                  mapCity = 'Нур-султан';
-                  lat = 51.1480774;
-                  long = 71.339307;
-                });
-                Navigator.pop(context);
-              },
-              child: const Text('Нур-султан'),
-            ),
-            SimpleDialogOption(
-              onPressed: () {
-                setState(() {
-                  mapCity = 'Семей';
-                  lat = 50.4130211;
-                  long = 80.2054882;
-                });
-                Navigator.pop(context);
-              },
-              child: const Text('Семей'),
-            ),
-            SimpleDialogOption(
-              onPressed: () {
-                setState(() {
-                  mapCity = 'Талдықорған';
-                  lat = 45.0106102;
-                  long = 78.354835;
-                });
-                Navigator.pop(context);
-              },
-              child: const Text('Талдықорған'),
-            ),
-            SimpleDialogOption(
-              onPressed: () {
-                setState(() {
-                  mapCity = 'Тараз';
-                  lat = 42.8962377;
-                  long = 76.9137495;
-                });
-                Navigator.pop(context);
-              },
-              child: const Text('Тараз'),
-            ),
-            SimpleDialogOption(
-              onPressed: () {
-                setState(() {
-                  mapCity = 'Түркістан';
-                  lat = 43.2290871;
-                  long = 76.9137495;
-                });
-                Navigator.pop(context);
-              },
-              child: const Text('Түркістан'),
-            ),
-            SimpleDialogOption(
-              onPressed: () {
-                setState(() {
-                  mapCity = 'Өскемен';
-                  lat = 43.2290871;
-                  long = 76.9137495;
-                });
-                Navigator.pop(context);
-              },
-              child: const Text('Өскемен'),
-            ),
-            SimpleDialogOption(
-              onPressed: () {
-                setState(() {
-                  mapCity = 'Уральск';
-                  lat = 43.2290871;
-                  long = 76.9137495;
-                });
-                Navigator.pop(context);
-              },
-              child: const Text('Уральск'),
-            ),
-            SimpleDialogOption(
-              onPressed: () {
-                setState(() {
-                  mapCity = 'Павлодар';
-                  lat = 52.2535496;
-                  long = 76.940024;
-                });
-                Navigator.pop(context);
-              },
-              child: const Text('Павлодар'),
-            ),
-            SimpleDialogOption(
-              onPressed: () {
-                setState(() {
-                  mapCity = 'Петропавлск';
-                  lat = 43.2290871;
-                  long = 76.9137495;
-                });
-                Navigator.pop(context);
-              },
-              child: const Text('Петропавлск'),
-            ),
-            SimpleDialogOption(
-              onPressed: () {
-                setState(() {
-                  mapCity = 'Шымкент';
-                  lat = 42.3361304;
-                  long = 69.5108012;
-                });
-                Navigator.pop(context);
-              },
-              child: const Text('Шымкент'),
-            ),
-          ],
+        return Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20)
+          ),
+          child: SimpleDialog(
+            title: new Text('Қаланы таңданыз:'),
+            children: <Widget>[
+              SimpleDialogOption(
+                onPressed: () {
+                  setState(() {
+                    mapCity = 'Алматы';
+                    lat = 43.2290871;
+                    long = 76.9137495;
+                  });
+                  Navigator.pop(context);
+                },
+                child: Row(
+                  children: [
+                    // Padding(
+                    //   padding: const EdgeInsets.only(right: 8.0),
+                    //   child: Icon(Icons.apple),
+                    // ),
+                    const Text('Алматы'),
+                  ],
+                ),
+              ),
+              SimpleDialogOption(
+                onPressed: () {
+                  setState(() {
+                    mapCity = 'Актобе';
+                    lat = 50.273819;
+                    long = 57.053706;
+                  });
+                  Navigator.pop(context);
+                },
+                child: const Text('Актобе'),
+              ),
+              SimpleDialogOption(
+                onPressed: () {
+                  setState(() {
+                    mapCity = 'Актау';
+                    lat = 43.641492;
+                    long = 51.1890056;
+                  });
+                  Navigator.pop(context);
+                },
+                child: const Text('Актау'),
+              ),
+              SimpleDialogOption(
+                onPressed: () {
+                  setState(() {
+                    mapCity = 'Атырау';
+                    lat = 47.1037403;
+                    long = 51.9077089;
+                  });
+                  Navigator.pop(context);
+                },
+                child: const Text('Атырау'),
+              ),
+              SimpleDialogOption(
+                onPressed: () {
+                  setState(() {
+                    mapCity = 'Қарағанды';
+                    lat = 49.8157172;
+                    long = 73.1079241;
+                  });
+                  Navigator.pop(context);
+                },
+                child: const Text('Қарағанды'),
+              ),
+              SimpleDialogOption(
+                onPressed: () {
+                  setState(() {
+                    mapCity = 'Көкшетау';
+                    lat = 53.2981896;
+                    long = 69.3380369;
+                  });
+                  Navigator.pop(context);
+                },
+                child: const Text('Көкшетау'),
+              ),
+              SimpleDialogOption(
+                onPressed: () {
+                  setState(() {
+                    mapCity = 'Қызылорда';
+                    lat = 44.8281817;
+                    long = 65.4350109;
+                  });
+                  Navigator.pop(context);
+                },
+                child: const Text('Қызылорда'),
+              ),
+              SimpleDialogOption(
+                onPressed: () {
+                  setState(() {
+                    mapCity = 'Қостанай';
+                    lat = 53.2055331;
+                    long = 63.5517867;
+                  });
+                  Navigator.pop(context);
+                },
+                child: const Text('Қостанай'),
+              ),
+              SimpleDialogOption(
+                onPressed: () {
+                  setState(() {
+                    mapCity = 'Нур-султан';
+                    lat = 51.1480774;
+                    long = 71.339307;
+                  });
+                  Navigator.pop(context);
+                },
+                child: const Text('Нур-султан'),
+              ),
+              SimpleDialogOption(
+                onPressed: () {
+                  setState(() {
+                    mapCity = 'Семей';
+                    lat = 50.4130211;
+                    long = 80.2054882;
+                  });
+                  Navigator.pop(context);
+                },
+                child: const Text('Семей'),
+              ),
+              SimpleDialogOption(
+                onPressed: () {
+                  setState(() {
+                    mapCity = 'Талдықорған';
+                    lat = 45.0106102;
+                    long = 78.354835;
+                  });
+                  Navigator.pop(context);
+                },
+                child: const Text('Талдықорған'),
+              ),
+              SimpleDialogOption(
+                onPressed: () {
+                  setState(() {
+                    mapCity = 'Тараз';
+                    lat = 42.8962377;
+                    long = 76.9137495;
+                  });
+                  Navigator.pop(context);
+                },
+                child: const Text('Тараз'),
+              ),
+              SimpleDialogOption(
+                onPressed: () {
+                  setState(() {
+                    mapCity = 'Түркістан';
+                    lat = 43.2290871;
+                    long = 76.9137495;
+                  });
+                  Navigator.pop(context);
+                },
+                child: const Text('Түркістан'),
+              ),
+              SimpleDialogOption(
+                onPressed: () {
+                  setState(() {
+                    mapCity = 'Өскемен';
+                    lat = 43.2290871;
+                    long = 76.9137495;
+                  });
+                  Navigator.pop(context);
+                },
+                child: const Text('Өскемен'),
+              ),
+              SimpleDialogOption(
+                onPressed: () {
+                  setState(() {
+                    mapCity = 'Уральск';
+                    lat = 43.2290871;
+                    long = 76.9137495;
+                  });
+                  Navigator.pop(context);
+                },
+                child: const Text('Уральск'),
+              ),
+              SimpleDialogOption(
+                onPressed: () {
+                  setState(() {
+                    mapCity = 'Павлодар';
+                    lat = 52.2535496;
+                    long = 76.940024;
+                  });
+                  Navigator.pop(context);
+                },
+                child: const Text('Павлодар'),
+              ),
+              SimpleDialogOption(
+                onPressed: () {
+                  setState(() {
+                    mapCity = 'Петропавлск';
+                    lat = 43.2290871;
+                    long = 76.9137495;
+                  });
+                  Navigator.pop(context);
+                },
+                child: const Text('Петропавлск'),
+              ),
+              SimpleDialogOption(
+                onPressed: () {
+                  setState(() {
+                    mapCity = 'Шымкент';
+                    lat = 42.3361304;
+                    long = 69.5108012;
+                  });
+                  Navigator.pop(context);
+                },
+                child: const Text('Шымкент'),
+              ),
+            ],
+          ),
         );
       },
     );
@@ -368,24 +383,6 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
     widthGlobal = MediaQuery.of(context).size.width;
 
     return Scaffold(
-        appBar: AppBar(
-          toolbarHeight: 60,
-          backgroundColor: primaryColor,
-          title: Text(
-            AppLocalizations.of(context).mapsp,
-            style: TextStyle(
-                fontSize: 25, fontWeight: FontWeight.bold, color: black),
-          ),
-          centerTitle: true,
-          leading: Builder(
-            builder: (context) => IconButton(
-              icon: Icon(Icons.chevron_left_outlined, size: 35, color: black),
-              onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) =>
-                      volunteer ? HomeCitizen() : HomeVolunteer())),
-            ),
-          ),
-        ),
         body: Stack(children: [
           StreamBuilder(
               stream: ref.child('problems').onValue,
@@ -420,6 +417,7 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                   });
 
                   return GoogleMap(
+                      compassEnabled: false,
                       initialCameraPosition: CameraPosition(
                           target: LatLng(lat, long),
                           zoom: 12,
@@ -435,7 +433,74 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                   return Center(child: CircularProgressIndicator());
               }),
           Positioned(
-            top: 30.0,
+            top: 20.0,
+            child: Container(
+              width: widthGlobal,
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        width: 35,
+                        height: 35,
+                        decoration: BoxDecoration(
+                            color: white,
+                            borderRadius: BorderRadius.circular(30),
+                            boxShadow: [
+                              BoxShadow(
+                                  offset: Offset(2, 3),
+                                  color: black.withOpacity(0.2),
+                                  blurRadius: 5)
+                            ]),
+                        child: Center(
+                          child: InkWell(
+                            child: Icon(Icons.chevron_left_outlined,
+                                size: 35, color: black),
+                            onTap: () => Navigator.of(context).push(
+                                MaterialPageRoute(
+                                    builder: (context) => volunteer
+                                        ? HomeVolunteer()
+                                        : HomeCitizen())),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Text(AppLocalizations.of(context).mapsp,
+                        style: TextStyle(
+                            fontFamily: "Inter",
+                            fontSize: 26,
+                            fontWeight: FontWeight.bold)),
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Container(
+                          width: 35,
+                          height: 35,
+                          decoration: BoxDecoration(
+                              color: white,
+                              borderRadius: BorderRadius.circular(30),
+                              boxShadow: [
+                                BoxShadow(
+                                    offset: Offset(2, 3),
+                                    color: black.withOpacity(0.2),
+                                    blurRadius: 5)
+                              ]),
+                          child: Center(
+                            child: InkWell(
+                                child:
+                                    Icon(Icons.search, size: 25, color: black),
+                                onTap: () {
+                                  setState(() {
+                                    isSearch = !isSearch;
+                                  });
+                                }),
+                          )),
+                    ),
+                  ]),
+            ),
+          ),
+          isSearch ? Positioned(
+            top: 80.0,
             right: 15.0,
             left: 15.0,
             child: Column(
@@ -445,7 +510,7 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                   width: double.infinity,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10.0),
-                      color: Colors.white),
+                      color: Colors.white.withOpacity(0.8)),
                   child: TextField(
                     decoration: InputDecoration(
                         hintText: AppLocalizations.of(context).enteraddress,
@@ -464,9 +529,10 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
                 ),
               ],
             ),
-          ),
-          Positioned(top: 60, left: 0, right: 0, child: Container())
+          ) : Positioned(top: 60, left: 0, right: 0, child: Container()),
+          
         ]),
+        extendBody: true,
         bottomNavigationBar: popped
             ? Container(
                 width: widthGlobal,
@@ -799,40 +865,71 @@ class _MapsOfProblemsState extends State<MapsOfProblems> {
               )
             : Container(
                 width: widthGlobal,
-                height: 52,
+                height: 80,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20)),
+                      topLeft: Radius.circular(30),
+                      topRight: Radius.circular(30)),
                   color: white,
                 ),
-                child: Container(
-                  width: widthGlobal * 0.898,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8.0),
-                        child: Text(
-                          mapCity.isEmpty
-                              ? '${cityGlobal.toString()}'
-                              : '$mapCity',
-                          style: TextStyle(
-                              fontSize: 20,
-                              decoration: TextDecoration.underline),
-                        ),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        width: widthGlobal*0.15,
+                        height: 4,
+                        decoration: BoxDecoration(
+                            color: grey.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(3)
+                        )
                       ),
-                      IconButton(
-                          onPressed: () {
-                            dropDown();
-                          },
-                          icon: Icon(
-                            Icons.keyboard_arrow_down_rounded,
-                            size: 35,
-                            color: grey,
-                          ))
-                    ],
-                  ),
+                    ),
+                    Row(
+                      children:[
+                        
+                    Padding(
+                      padding: const EdgeInsets.only(left: 60),
+                      child: Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                              color: white,
+                              borderRadius: BorderRadius.circular(30),
+                              boxShadow: [
+                                BoxShadow(
+                                    offset: Offset(2, 3),
+                                    color: black.withOpacity(0.2),
+                                    blurRadius: 5)
+                              ]),
+                          child: Center(
+                            child: InkWell(
+                              child: Icon(Icons.location_city,
+                                  size: 30, color: primaryColor),
+                              onTap: () => _chooseCity()),
+                            ),
+                          ),
+                    ),
+
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20.0),
+                      child: Text(
+                        mapCity.isEmpty
+                            ? '${cityGlobal.toString()}, Қазақстан' 
+                            : '$mapCity, Қазақстан',
+                        style: TextStyle(
+                            fontSize: 17,
+                            fontFamily: "Inter",
+                            fontWeight: FontWeight.bold
+                           ),
+                      ),
+                    ),
+                      
+                    
+                      ]
+                    )
+                    
+                  ],
                 ),
               ));
     // });

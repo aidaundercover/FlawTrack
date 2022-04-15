@@ -22,6 +22,7 @@ class ThemeProvider extends ChangeNotifier {
 
 class MyThemes {
   static final dark = ThemeData(
+    fontFamily: "Inter",
     scaffoldBackgroundColor: Colors.grey.shade900,
     primaryColor: Colors.black,
     colorScheme: ColorScheme.dark(),
@@ -29,6 +30,7 @@ class MyThemes {
   );
 
   static final light = ThemeData(
+    fontFamily: "Inter",
     scaffoldBackgroundColor: Colors.white,
     primaryColor: Colors.white,
     colorScheme: ColorScheme.light(),

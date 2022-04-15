@@ -16,10 +16,6 @@ class _VolunteerViewState extends State<VolunteerView> {
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
-    final Stream<QuerySnapshot> _usersStream = FirebaseFirestore.instance
-        .collection('users')
-        .orderBy('pins', descending: true)
-        .snapshots();
 
     return Scaffold(
       appBar: AppBar(
@@ -122,39 +118,7 @@ class _VolunteerViewState extends State<VolunteerView> {
               ),
             ),
           ),
-          StreamBuilder<QuerySnapshot>(
-            stream: _usersStream,
-            builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              if (snapshot.hasError) {
-                return SomethingWentWrong();
-              }
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
-              }
-              return DataTable(columns: [
-                DataColumn(
-                    label: Text(
-                  '№',
-                  style: TextStyle(
-                      color: primaryColor,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold),
-                )),
-                DataColumn(
-                    label: Text(AppLocalizations.of(context).name,
-                        style: TextStyle(
-                            color: primaryColor,
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold))),
-                DataColumn(
-                    label: Text(AppLocalizations.of(context).pins,
-                        style: TextStyle(
-                            color: primaryColor,
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold))),
-              ], rows: _buildListItem());
-            },
-          )
+          
         ],
       )),
     );
@@ -172,15 +136,66 @@ class ListVolunteer extends StatefulWidget {
 
 class _ListVolunteerState extends State<ListVolunteer> {
   @override
-  Widget build(BuildContext context) {
-    return StreamBuilder(builder: (context, AsyncSnapshot snapshot) {
-      return Container();
-    });
+  void initState() {
+    // TODO: implement initState
+    super.initState();
   }
-}
 
-List<DataRow> _buildListItem() {
-  return [
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: StreamBuilder(
+          stream: FirebaseFirestore.instance.collection('users').snapshots(),
+          builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (snapshot.hasError) {
+              return SomethingWentWrong();
+            }
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return CircularProgressIndicator();
+            }
+            if (!snapshot.hasData) {
+              return SomethingWentWrong();
+            } else {
+              final myMaps = Map<String, dynamic>.from(
+                  snapshot.data! as Map<dynamic, dynamic>);
+
+              myMaps.forEach((key, value) {
+                final nextVolunteer = Map<String, dynamic>.from(value);
+
+                rows.add(DataRow(cells: <DataCell>[
+                  DataCell(Text('$key')),
+                  DataCell(Text('${nextVolunteer['name']}')),
+                  DataCell(Text('${nextVolunteer['pins'].toString()}')),
+                ]));
+              });
+            }
+            return DataTable(columns: [
+            DataColumn(
+                label: Text(
+              '№',
+              style: TextStyle(
+                  color: primaryColor,
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold),
+            )),
+            DataColumn(
+                label: Text(AppLocalizations.of(context).name,
+                    style: TextStyle(
+                        color: primaryColor,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold))),
+            DataColumn(
+                label: Text(AppLocalizations.of(context).pins,
+                    style: TextStyle(
+                        color: primaryColor,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold))),
+          ], rows: rows);
+          }),
+    );
+  }
+
+  List<DataRow> rows = [
     DataRow(cells: <DataCell>[
       DataCell(Text('1')),
       DataCell(Text('Аскар Дирханов')),
